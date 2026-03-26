@@ -183,7 +183,7 @@ export default function Showcase() {
                       </div>
                     )}
                   </div>
-                  <div className="hexagon-overlay">
+                  <div className="hexagon-overlay" style={{width: '300px', height: '300px'}}>
                     <span className="text-white text-xl font-bold">点击查看详情</span>
                   </div>
                 </motion.div>
