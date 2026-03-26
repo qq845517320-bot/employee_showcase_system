@@ -106,9 +106,11 @@ export default function Showcase() {
       clearInterval(detailIntervalRef.current);
     }
     
+    let index = currentDetailIndex;
     detailIntervalRef.current = setInterval(() => {
-      setCurrentDetailIndex(prev => (prev + 1) % filteredEmployees.length);
-      setSelectedEmployee(filteredEmployees[(currentDetailIndex + 1) % filteredEmployees.length]);
+      index = (index + 1) % filteredEmployees.length;
+      setCurrentDetailIndex(index);
+      setSelectedEmployee(filteredEmployees[index]);
     }, 5000); // 每5秒切换一位员工
   };
 
@@ -131,6 +133,27 @@ export default function Showcase() {
   useEffect(() => {
     resetInactivityTimer();
   }, [filteredEmployees]);
+
+  // 当进入详情轮播模式时，启动轮播
+  useEffect(() => {
+    if (isAutoPlayDetail && filteredEmployees.length > 0) {
+      if (!selectedEmployee) {
+        setSelectedEmployee(filteredEmployees[0]);
+        setCurrentDetailIndex(0);
+      }
+      startDetailRotation();
+    }
+    return () => {
+      if (detailIntervalRef.current) {
+        clearInterval(detailIntervalRef.current);
+      }
+    };
+  }, [isAutoPlayDetail, filteredEmployees]);
+
+  // 处理详情轮播面板点击
+  const handleDetailPanelClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   if (isLoading) {
     return <div className="w-full h-screen flex items-center justify-center bg-red-900">加载中...</div>;
@@ -156,10 +179,12 @@ export default function Showcase() {
         backgroundPosition: 'center',
       }}
       onClick={() => {
-        if (!isAutoPlayDetail) {
-          setSelectedEmployee(null);
-          resetInactivityTimer();
+        setSelectedEmployee(null);
+        setIsAutoPlayDetail(false);
+        if (detailIntervalRef.current) {
+          clearInterval(detailIntervalRef.current);
         }
+        resetInactivityTimer();
       }}
     >
       {/* 顶部导航栏 */}
@@ -185,7 +210,7 @@ export default function Showcase() {
               exit={{ opacity: 0, scale: 0.9, x: 50 }}
               transition={{ duration: 0.4 }}
               className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleDetailPanelClick}
             >
               {/* 关闭按钮 */}
               <button
@@ -248,7 +273,7 @@ export default function Showcase() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6 }}
               className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleDetailPanelClick}
             >
               {/* 详情头部 */}
               <div className="flex gap-8">
