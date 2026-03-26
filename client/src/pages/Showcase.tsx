@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { trpc } from '@/lib/trpc';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export default function Showcase() {
   const [employees, setEmployees] = useState<any[]>([]);
@@ -9,11 +9,12 @@ export default function Showcase() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
+  const [currentDetailIndex, setCurrentDetailIndex] = useState(0);
   const [backgroundUrl, setBackgroundUrl] = useState<string>('');
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const batchIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [isAutoPlay, setIsAutoPlay] = useState(false);
+  const detailIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
 
   // 获取员工列表
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
@@ -40,12 +41,18 @@ export default function Showcase() {
   const handleSearch = () => {
     if (!searchTerm.trim()) {
       setFilteredEmployees(employees);
+      setSelectedEmployee(null);
     } else {
       const results = employees.filter(emp =>
         emp.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.position?.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredEmployees(results);
+      // 搜索后显示第一个结果的详情
+      if (results.length > 0) {
+        setSelectedEmployee(results[0]);
+        setCurrentDetailIndex(0);
+      }
     }
     resetInactivityTimer();
   };
@@ -55,15 +62,24 @@ export default function Showcase() {
     if (inactivityTimeoutRef.current) {
       clearTimeout(inactivityTimeoutRef.current);
     }
-    setIsAutoPlay(false);
+    setIsAutoPlayDetail(false);
+    
+    // 停止详情轮播
+    if (detailIntervalRef.current) {
+      clearInterval(detailIntervalRef.current);
+    }
+    
+    // 启动照片墙轮播
+    startBatchRotation();
     
     inactivityTimeoutRef.current = setTimeout(() => {
-      setIsAutoPlay(true);
-      startBatchRotation();
-    }, 30000); // 30秒无操作后启动轮播
+      setIsAutoPlayDetail(true);
+      stopBatchRotation();
+      startDetailRotation();
+    }, 30000); // 30秒无操作后启动详情轮播
   };
 
-  // 启动批次轮播
+  // 启动批次轮播（照片墙）
   const startBatchRotation = () => {
     if (batchIntervalRef.current) {
       clearInterval(batchIntervalRef.current);
@@ -77,6 +93,25 @@ export default function Showcase() {
     }, 5000); // 每5秒切换一批
   };
 
+  // 停止批次轮播
+  const stopBatchRotation = () => {
+    if (batchIntervalRef.current) {
+      clearInterval(batchIntervalRef.current);
+    }
+  };
+
+  // 启动详情轮播
+  const startDetailRotation = () => {
+    if (detailIntervalRef.current) {
+      clearInterval(detailIntervalRef.current);
+    }
+    
+    detailIntervalRef.current = setInterval(() => {
+      setCurrentDetailIndex(prev => (prev + 1) % filteredEmployees.length);
+      setSelectedEmployee(filteredEmployees[(currentDetailIndex + 1) % filteredEmployees.length]);
+    }, 5000); // 每5秒切换一位员工
+  };
+
   // 处理员工点击
   const handleEmployeeClick = (employee: any) => {
     setSelectedEmployee(employee);
@@ -87,15 +122,15 @@ export default function Showcase() {
   useEffect(() => {
     return () => {
       if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
-      if (autoPlayIntervalRef.current) clearInterval(autoPlayIntervalRef.current);
       if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
+      if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     };
   }, []);
 
   // 初始化无操作计时器
   useEffect(() => {
     resetInactivityTimer();
-  }, []);
+  }, [filteredEmployees]);
 
   if (isLoading) {
     return <div className="w-full h-screen flex items-center justify-center bg-red-900">加载中...</div>;
@@ -121,8 +156,10 @@ export default function Showcase() {
         backgroundPosition: 'center',
       }}
       onClick={() => {
-        setSelectedEmployee(null);
-        resetInactivityTimer();
+        if (!isAutoPlayDetail) {
+          setSelectedEmployee(null);
+          resetInactivityTimer();
+        }
       }}
     >
       {/* 顶部导航栏 */}
@@ -139,8 +176,8 @@ export default function Showcase() {
       {/* 内容区域 */}
       <div className="absolute inset-0 pt-24 pb-24 flex items-center justify-center">
         <AnimatePresence mode="wait">
-          {selectedEmployee ? (
-            // 详情面板
+          {selectedEmployee && !isAutoPlayDetail ? (
+            // 详情面板（用户操作时）
             <motion.div
               key={`detail-${selectedEmployee.id}`}
               initial={{ opacity: 0, scale: 0.9, x: -50 }}
@@ -152,7 +189,10 @@ export default function Showcase() {
             >
               {/* 关闭按钮 */}
               <button
-                onClick={() => setSelectedEmployee(null)}
+                onClick={() => {
+                  setSelectedEmployee(null);
+                  resetInactivityTimer();
+                }}
                 className="absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
               >
                 ✕
@@ -199,25 +239,77 @@ export default function Showcase() {
                 </div>
               </div>
             </motion.div>
+          ) : isAutoPlayDetail && selectedEmployee ? (
+            // 详情轮播面板（无操作时）
+            <motion.div
+              key={`detail-auto-${selectedEmployee.id}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* 详情头部 */}
+              <div className="flex gap-8">
+                {/* 左侧照片 */}
+                <div className="flex-shrink-0">
+                  {selectedEmployee.workPhoto ? (
+                    <img
+                      src={selectedEmployee.workPhoto}
+                      alt={selectedEmployee.name}
+                      className="w-48 h-48 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-48 h-48 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-6xl font-bold">{selectedEmployee.name?.charAt(0)}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 右侧信息 */}
+                <div className="space-y-4 flex-1">
+                  <div>
+                    <div className="text-3xl font-bold mb-1">{selectedEmployee.name}</div>
+                    <div className="text-red-200">职级：{selectedEmployee.level}</div>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <div>岗位：{selectedEmployee.position}</div>
+                    <div>入职时间：{new Date(selectedEmployee.joinDate || 0).toLocaleDateString()}</div>
+                  </div>
+
+                  <div className="border-t border-white/30 pt-3">
+                    <div className="font-semibold mb-2 text-sm">工作职责：</div>
+                    <div className="text-xs leading-relaxed">{selectedEmployee.jobResponsibilities}</div>
+                  </div>
+
+                  <div className="border-t border-white/30 pt-3">
+                    <div className="font-semibold mb-2 text-sm">工作信条：</div>
+                    <div className="text-xs italic">{selectedEmployee.motto}</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           ) : (
-            // 2-3-3-2 六边形布局 - 中间大空白
+            // 照片墙（2-3-3-2 六边形布局）
             <div className="w-full h-full flex items-center justify-between px-4">
               {/* 左侧组 (左2 + 左中3) */}
-              <div className="flex gap-12 items-center justify-end flex-1">
+              <div className="flex gap-6 items-center justify-end">
                 {/* 左2列 */}
                 <div className="flex flex-col gap-8 justify-center items-center">
                   {leftColumn.map((employee) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
                       onClick={() => handleEmployeeClick(employee)}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
                         style={{
-                          width: '120px',
-                          height: '120px',
+                          width: '150px',
+                          height: '150px',
                           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
                         }}
                       >
@@ -229,12 +321,10 @@ export default function Showcase() {
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
-                        </div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -245,15 +335,15 @@ export default function Showcase() {
                   {leftMiddleColumn.map((employee) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
                       onClick={() => handleEmployeeClick(employee)}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
                         style={{
-                          width: '120px',
-                          height: '120px',
+                          width: '150px',
+                          height: '150px',
                           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
                         }}
                       >
@@ -265,12 +355,10 @@ export default function Showcase() {
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
-                        </div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -278,24 +366,24 @@ export default function Showcase() {
               </div>
 
               {/* 中间大空白 */}
-              <div className="flex-1 mx-8"></div>
+              <div className="flex-1 mx-12"></div>
 
               {/* 右侧组 (右中3 + 右2) */}
-              <div className="flex gap-12 items-center justify-start flex-1">
+              <div className="flex gap-6 items-center justify-start">
                 {/* 右中3列 */}
                 <div className="flex flex-col gap-8 justify-center items-center">
                   {rightMiddleColumn.map((employee) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
                       onClick={() => handleEmployeeClick(employee)}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
                         style={{
-                          width: '120px',
-                          height: '120px',
+                          width: '150px',
+                          height: '150px',
                           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
                         }}
                       >
@@ -307,12 +395,10 @@ export default function Showcase() {
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
-                        </div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -323,15 +409,15 @@ export default function Showcase() {
                   {rightColumn.map((employee) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
                       onClick={() => handleEmployeeClick(employee)}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
                         style={{
-                          width: '120px',
-                          height: '120px',
+                          width: '150px',
+                          height: '150px',
                           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
                         }}
                       >
@@ -343,12 +429,10 @@ export default function Showcase() {
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
-                        </div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -360,30 +444,25 @@ export default function Showcase() {
       </div>
 
       {/* 底部搜索框 */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
-        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
-          <Search className="w-5 h-5 text-white" />
-          <input
-            type="text"
-            placeholder="搜索员工..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            className="bg-transparent text-white placeholder-white/60 outline-none w-64"
-          />
-          <button
-            onClick={handleSearch}
-            className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all"
-          >
-            搜索
-          </button>
-        </div>
-      </div>
-
-      {/* 批次指示器 */}
-      {isAutoPlay && (
-        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-sm">
-          第 {currentBatchIndex + 1} / {Math.ceil(filteredEmployees.length / 10)} 批
+      {!isAutoPlayDetail && (
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
+          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
+            <Search className="w-5 h-5 text-white" />
+            <input
+              type="text"
+              placeholder="搜索员工..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              className="bg-transparent text-white placeholder-white/60 outline-none w-64"
+            />
+            <button
+              onClick={handleSearch}
+              className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all"
+            >
+              搜索
+            </button>
+          </div>
         </div>
       )}
     </div>
