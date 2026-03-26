@@ -106,7 +106,7 @@ export default function Showcase() {
   const startIndex = currentBatchIndex * batchSize;
   const currentBatch = filteredEmployees.slice(startIndex, startIndex + batchSize);
 
-  // 分布：左2 - 中3 - 中间空白 - 中3 - 右2
+  // 分布：左2 - 左中3 - 中间空白 - 右中3 - 右2
   const leftColumn = currentBatch.slice(0, 2);
   const leftMiddleColumn = currentBatch.slice(2, 5);
   const rightMiddleColumn = currentBatch.slice(5, 8);
@@ -200,150 +200,159 @@ export default function Showcase() {
               </div>
             </motion.div>
           ) : (
-            // 2-3-3-2 六边形布局
-            <div className="w-full h-full flex items-center justify-center px-8">
-              {/* 左2列 */}
-              <div className="flex flex-col gap-8 justify-center items-center">
-                {leftColumn.map((employee) => (
-                  <motion.div
-                    key={employee.id}
-                    whileHover={{ scale: 1.1 }}
-                    className="cursor-pointer"
-                    onClick={() => handleEmployeeClick(employee)}
-                  >
-                    <div
-                      className="relative flex items-center justify-center overflow-hidden group"
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                      }}
+            // 2-3-3-2 六边形布局 - 中间大空白
+            <div className="w-full h-full flex items-center justify-between px-4">
+              {/* 左侧组 (左2 + 左中3) */}
+              <div className="flex gap-12 items-center justify-end flex-1">
+                {/* 左2列 */}
+                <div className="flex flex-col gap-8 justify-center items-center">
+                  {leftColumn.map((employee) => (
+                    <motion.div
+                      key={employee.id}
+                      whileHover={{ scale: 1.1 }}
+                      className="cursor-pointer"
+                      onClick={() => handleEmployeeClick(employee)}
                     >
-                      {employee.workPhoto ? (
-                        <img
-                          src={employee.workPhoto}
-                          alt={employee.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                      <div
+                        className="relative flex items-center justify-center overflow-hidden group"
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                        }}
+                      >
+                        {employee.workPhoto ? (
+                          <img
+                            src={employee.workPhoto}
+                            alt={employee.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
                         </div>
-                      )}
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                        <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* 左中3列 */}
+                <div className="flex flex-col gap-8 justify-center items-center">
+                  {leftMiddleColumn.map((employee) => (
+                    <motion.div
+                      key={employee.id}
+                      whileHover={{ scale: 1.1 }}
+                      className="cursor-pointer"
+                      onClick={() => handleEmployeeClick(employee)}
+                    >
+                      <div
+                        className="relative flex items-center justify-center overflow-hidden group"
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                        }}
+                      >
+                        {employee.workPhoto ? (
+                          <img
+                            src={employee.workPhoto}
+                            alt={employee.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
 
-              {/* 左中3列 */}
-              <div className="flex flex-col gap-8 justify-center items-center mx-6">
-                {leftMiddleColumn.map((employee) => (
-                  <motion.div
-                    key={employee.id}
-                    whileHover={{ scale: 1.1 }}
-                    className="cursor-pointer"
-                    onClick={() => handleEmployeeClick(employee)}
-                  >
-                    <div
-                      className="relative flex items-center justify-center overflow-hidden group"
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                      }}
-                    >
-                      {employee.workPhoto ? (
-                        <img
-                          src={employee.workPhoto}
-                          alt={employee.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                        <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+              {/* 中间大空白 */}
+              <div className="flex-1 mx-8"></div>
 
-              {/* 右中3列 */}
-              <div className="flex flex-col gap-8 justify-center items-center mx-6">
-                {rightMiddleColumn.map((employee) => (
-                  <motion.div
-                    key={employee.id}
-                    whileHover={{ scale: 1.1 }}
-                    className="cursor-pointer"
-                    onClick={() => handleEmployeeClick(employee)}
-                  >
-                    <div
-                      className="relative flex items-center justify-center overflow-hidden group"
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                      }}
+              {/* 右侧组 (右中3 + 右2) */}
+              <div className="flex gap-12 items-center justify-start flex-1">
+                {/* 右中3列 */}
+                <div className="flex flex-col gap-8 justify-center items-center">
+                  {rightMiddleColumn.map((employee) => (
+                    <motion.div
+                      key={employee.id}
+                      whileHover={{ scale: 1.1 }}
+                      className="cursor-pointer"
+                      onClick={() => handleEmployeeClick(employee)}
                     >
-                      {employee.workPhoto ? (
-                        <img
-                          src={employee.workPhoto}
-                          alt={employee.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                      <div
+                        className="relative flex items-center justify-center overflow-hidden group"
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                        }}
+                      >
+                        {employee.workPhoto ? (
+                          <img
+                            src={employee.workPhoto}
+                            alt={employee.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
                         </div>
-                      )}
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                        <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </div>
 
-              {/* 右2列 */}
-              <div className="flex flex-col gap-8 justify-center items-center">
-                {rightColumn.map((employee) => (
-                  <motion.div
-                    key={employee.id}
-                    whileHover={{ scale: 1.1 }}
-                    className="cursor-pointer"
-                    onClick={() => handleEmployeeClick(employee)}
-                  >
-                    <div
-                      className="relative flex items-center justify-center overflow-hidden group"
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                      }}
+                {/* 右2列 */}
+                <div className="flex flex-col gap-8 justify-center items-center">
+                  {rightColumn.map((employee) => (
+                    <motion.div
+                      key={employee.id}
+                      whileHover={{ scale: 1.1 }}
+                      className="cursor-pointer"
+                      onClick={() => handleEmployeeClick(employee)}
                     >
-                      {employee.workPhoto ? (
-                        <img
-                          src={employee.workPhoto}
-                          alt={employee.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                      <div
+                        className="relative flex items-center justify-center overflow-hidden group"
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                        }}
+                      >
+                        {employee.workPhoto ? (
+                          <img
+                            src={employee.workPhoto}
+                            alt={employee.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                            <span className="text-white text-xl font-bold">{employee.name?.charAt(0)}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                          <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
                         </div>
-                      )}
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                        <span className="text-white text-xs font-bold text-center px-2">{employee.name}</span>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
