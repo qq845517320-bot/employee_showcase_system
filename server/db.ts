@@ -1,6 +1,6 @@
 import { eq, and, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, departments, employees, honors, playbackStrategies } from "../drizzle/schema";
+import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -190,4 +190,26 @@ export async function getAllPlaybackStrategies() {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(playbackStrategies);
+}
+
+// ========== 背景图片相关查询 ==========
+
+export async function getActiveBackground() {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db
+    .select()
+    .from(showcaseBackgrounds)
+    .where(eq(showcaseBackgrounds.isActive, true))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getAllBackgrounds() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db.select().from(showcaseBackgrounds).orderBy(showcaseBackgrounds.createdAt);
 }

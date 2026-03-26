@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { PhotoUpload } from '@/components/PhotoUpload';
 import type { Employee } from '../../../../drizzle/schema';
 
 export default function EmployeeManagement() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Partial<Employee>>({});
+  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
 
   const { data: employees = [], refetch } = trpc.employees.list.useQuery({});
   const { data: departments = [] } = trpc.departments.list.useQuery();
@@ -19,6 +21,7 @@ export default function EmployeeManagement() {
       refetch();
       setIsAddingNew(false);
       setFormData({});
+      setUploadedPhotoUrl(null);
     },
   });
 
@@ -27,6 +30,7 @@ export default function EmployeeManagement() {
       refetch();
       setEditingId(null);
       setFormData({});
+      setUploadedPhotoUrl(null);
     },
   });
 
@@ -36,9 +40,35 @@ export default function EmployeeManagement() {
     },
   });
 
+  const uploadMutation = trpc.upload.uploadPhoto.useMutation();
+
+  const handleUploadPhoto = async (file: File) => {
+    // 读取文件为 base64
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64 = (reader.result as string).split(',')[1];
+          const result = await uploadMutation.mutateAsync({
+            fileName: file.name,
+            fileData: base64,
+            fileType: file.type,
+          });
+          resolve(result.url);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = () => reject(new Error('文件读取失败'));
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    const photoUrl = uploadedPhotoUrl || (editingId ? formData.workPhoto : null);
+
     if (editingId) {
       await updateMutation.mutateAsync({
         id: editingId,
@@ -60,7 +90,31 @@ export default function EmployeeManagement() {
         jobResponsibilities: formData.jobResponsibilities || undefined,
         motto: formData.motto || undefined,
       });
+      
+      // 如果有上传的照片，单独更新
+      if (photoUrl && !editingId) {
+        const newEmployee = employees[employees.length - 1];
+        if (newEmployee) {
+          await updateMutation.mutateAsync({
+            id: newEmployee.id,
+            name: newEmployee.name,
+            departmentId: newEmployee.departmentId,
+            position: newEmployee.position,
+            level: newEmployee.level,
+            joinDate: newEmployee.joinDate,
+            jobResponsibilities: newEmployee.jobResponsibilities || undefined,
+            motto: newEmployee.motto || undefined,
+          });
+        }
+      }
     }
+  };
+
+  const handleEdit = (emp: Employee) => {
+    setEditingId(emp.id);
+    setFormData(emp);
+    setUploadedPhotoUrl(null);
+    setIsAddingNew(false);
   };
 
   return (
@@ -72,6 +126,7 @@ export default function EmployeeManagement() {
           onClick={() => {
             setIsAddingNew(!isAddingNew);
             setFormData({});
+            setUploadedPhotoUrl(null);
           }}
           className="flex items-center gap-2"
         >
@@ -92,16 +147,18 @@ export default function EmployeeManagement() {
             <Input
               placeholder="姓名"
               value={formData.name || ''}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
             />
             <select
               value={String(formData.departmentId || '')}
-              onChange={e => setFormData({ ...formData, departmentId: parseInt(e.target.value) })}
+              onChange={(e) =>
+                setFormData({ ...formData, departmentId: parseInt(e.target.value) })
+              }
               className="px-3 py-2 border rounded-lg"
             >
               <option value="">选择部门</option>
-              {departments.map(dept => (
+              {departments.map((dept) => (
                 <option key={dept.id} value={String(dept.id)}>
                   {dept.name}
                 </option>
@@ -110,38 +167,66 @@ export default function EmployeeManagement() {
             <Input
               placeholder="岗位"
               value={formData.position || ''}
-              onChange={e => setFormData({ ...formData, position: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, position: e.target.value })
+              }
               required
             />
             <Input
               placeholder="职级"
               value={formData.level || ''}
-              onChange={e => setFormData({ ...formData, level: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, level: e.target.value })}
               required
             />
             <Input
               type="date"
-              value={formData.joinDate ? new Date(formData.joinDate as any).toISOString().split('T')[0] : ''}
-              onChange={e => setFormData({ ...formData, joinDate: new Date(e.target.value) })}
+              value={
+                formData.joinDate
+                  ? new Date(formData.joinDate as any)
+                      .toISOString()
+                      .split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({ ...formData, joinDate: new Date(e.target.value) })
+              }
               required
             />
           </div>
+
+          {/* 照片上传 */}
+          <div>
+            <label className="block text-sm font-medium mb-2">工作照</label>
+            <PhotoUpload
+              onUpload={handleUploadPhoto}
+              onPhotoSelected={setUploadedPhotoUrl}
+              currentPhotoUrl={uploadedPhotoUrl || (formData.workPhoto as string | undefined)}
+              isLoading={uploadMutation.isPending || createMutation.isPending || updateMutation.isPending}
+            />
+          </div>
+
           <textarea
             placeholder="工作职责"
             value={(formData.jobResponsibilities as string) || ''}
-            onChange={e => setFormData({ ...formData, jobResponsibilities: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, jobResponsibilities: e.target.value })
+            }
             className="w-full px-3 py-2 border rounded-lg"
             rows={3}
           />
           <textarea
             placeholder="座右铭"
             value={(formData.motto as string) || ''}
-            onChange={e => setFormData({ ...formData, motto: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, motto: e.target.value })}
             className="w-full px-3 py-2 border rounded-lg"
             rows={2}
           />
           <div className="flex gap-2">
-            <Button type="submit" variant="default">
+            <Button
+              type="submit"
+              variant="default"
+              disabled={createMutation.isPending || updateMutation.isPending}
+            >
               {editingId ? '保存修改' : '添加员工'}
             </Button>
             <Button
@@ -151,6 +236,7 @@ export default function EmployeeManagement() {
                 setIsAddingNew(false);
                 setEditingId(null);
                 setFormData({});
+                setUploadedPhotoUrl(null);
               }}
             >
               取消
@@ -164,6 +250,7 @@ export default function EmployeeManagement() {
         <table className="w-full text-sm">
           <thead className="bg-muted">
             <tr>
+              <th className="px-4 py-2 text-left">照片</th>
               <th className="px-4 py-2 text-left">姓名</th>
               <th className="px-4 py-2 text-left">部门</th>
               <th className="px-4 py-2 text-left">岗位</th>
@@ -173,20 +260,31 @@ export default function EmployeeManagement() {
             </tr>
           </thead>
           <tbody>
-            {employees.map(emp => (
+            {employees.map((emp) => (
               <tr key={emp.id} className="border-b hover:bg-muted/50">
+                <td className="px-4 py-2">
+                  {emp.workPhoto ? (
+                    <img
+                      src={emp.workPhoto}
+                      alt={emp.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xs">
+                      无
+                    </div>
+                  )}
+                </td>
                 <td className="px-4 py-2">{emp.name}</td>
                 <td className="px-4 py-2">{emp.departmentId}</td>
                 <td className="px-4 py-2">{emp.position}</td>
                 <td className="px-4 py-2">{emp.level}</td>
-                <td className="px-4 py-2">{new Date(emp.joinDate).toLocaleDateString('zh-CN')}</td>
+                <td className="px-4 py-2">
+                  {new Date(emp.joinDate).toLocaleDateString('zh-CN')}
+                </td>
                 <td className="px-4 py-2 flex gap-2">
                   <button
-                    onClick={() => {
-                      setEditingId(emp.id);
-                      setFormData(emp);
-                      setIsAddingNew(false);
-                    }}
+                    onClick={() => handleEdit(emp)}
                     className="p-1 hover:bg-blue-100 rounded"
                   >
                     <Edit2 className="w-4 h-4 text-blue-600" />
@@ -204,7 +302,7 @@ export default function EmployeeManagement() {
         </table>
       </div>
 
-      {employees.length === 0 && (
+      {employees.length === 0 && !isAddingNew && (
         <div className="text-center py-8 text-muted-foreground">
           暂无员工信息
         </div>

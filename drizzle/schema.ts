@@ -89,3 +89,20 @@ export const playbackStrategies = mysqlTable("playback_strategies", {
 
 export type PlaybackStrategy = typeof playbackStrategies.$inferSelect;
 export type InsertPlaybackStrategy = typeof playbackStrategies.$inferInsert;
+
+/**
+ * 大屏背景配置表
+ */
+export const showcaseBackgrounds = mysqlTable("showcase_backgrounds", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(), // 背景名称
+  backgroundUrl: varchar("backgroundUrl", { length: 500 }).notNull(), // 背景图片 URL（S3）
+  description: text("description"), // 背景描述
+  isActive: boolean("isActive").default(false).notNull(), // 是否为当前活跃背景
+  displayMode: mysqlEnum("displayMode", ["all", "core_bones", "honors"]).default("all").notNull(), // 适用的展示模式
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ShowcaseBackground = typeof showcaseBackgrounds.$inferSelect;
+export type InsertShowcaseBackground = typeof showcaseBackgrounds.$inferInsert;

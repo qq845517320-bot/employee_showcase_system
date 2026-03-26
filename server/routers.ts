@@ -15,12 +15,15 @@ import {
   getEmployeesWithNewHonors,
   getActivePlaybackStrategy,
   getAllPlaybackStrategies,
-  getDepartmentById
+  getDepartmentById,
+  getActiveBackground,
+  getAllBackgrounds
 } from "./db";
-import { departments, employees, honors, playbackStrategies } from "../drizzle/schema";
+import { departments, employees, honors, playbackStrategies, showcaseBackgrounds } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
+import { TRPCError } from "@trpc/server";
 
 // ========== 部门路由 ==========
 const departmentRouter = router({
@@ -334,6 +337,96 @@ const playbackRouter = router({
     }),
 });
 
+// ========== 背景图片路由 ==========
+const backgroundRouter = router({
+  getActive: publicProcedure.query(async () => {
+    return getActiveBackground();
+  }),
+  
+  list: publicProcedure.query(async () => {
+    return getAllBackgrounds();
+  }),
+  
+  create: protectedProcedure
+    .input(z.object({
+      name: z.string().min(1),
+      backgroundUrl: z.string().url(),
+      description: z.string().optional(),
+      displayMode: z.enum(['all', 'core_bones', 'honors']).optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+      
+      const result = await db.insert(showcaseBackgrounds).values({
+        name: input.name,
+        backgroundUrl: input.backgroundUrl,
+        description: input.description,
+        displayMode: input.displayMode || 'all',
+        isActive: false,
+      });
+      return result;
+    }),
+  
+  setActive: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+      
+      await db.update(showcaseBackgrounds).set({ isActive: false });
+      
+      const result = await db.update(showcaseBackgrounds).set({ isActive: true }).where(eq(showcaseBackgrounds.id, input.id));
+      return result;
+    }),
+  
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+      
+      const result = await db.delete(showcaseBackgrounds).where(eq(showcaseBackgrounds.id, input.id));
+      return result;
+    }),
+});
+
+// ========== 文件上传路由 ==========
+const uploadRouter = router({
+  uploadPhoto: protectedProcedure
+    .input(z.object({
+      fileName: z.string(),
+      fileData: z.string(), // base64 编码的文件数据
+      fileType: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'UNAUTHORIZED' });
+      
+      try {
+        // 转换 base64 为 Buffer
+        const buffer = Buffer.from(input.fileData, 'base64');
+        
+        // 生成安全的文件名
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(7);
+        const fileKey = `employees/${timestamp}-${randomStr}-${input.fileName}`;
+        
+        // 上传到 S3
+        const { url } = await storagePut(fileKey, buffer, input.fileType);
+        
+        return { url };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: '文件上传失败',
+        });
+      }
+    }),
+});
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -351,6 +444,8 @@ export const appRouter = router({
   employees: employeeRouter,
   honors: honorRouter,
   playback: playbackRouter,
+  backgrounds: backgroundRouter,
+  upload: uploadRouter,
 });
 
 export type AppRouter = typeof appRouter;
