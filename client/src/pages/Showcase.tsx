@@ -123,9 +123,9 @@ export default function Showcase() {
     return <div className="w-full h-screen flex items-center justify-center bg-red-900">加载中...</div>;
   }
 
-  // 分左右两列
-  const leftColumn = employees.slice(0, Math.ceil(employees.length / 2));
-  const rightColumn = employees.slice(Math.ceil(employees.length / 2));
+  // 分左右两列 - 每列最多4个
+  const leftColumn = employees.slice(0, Math.min(4, employees.length));
+  const rightColumn = employees.slice(Math.min(4, employees.length), Math.min(8, employees.length));
 
   return (
     <div
@@ -159,7 +159,7 @@ export default function Showcase() {
       </div>
 
       {/* 内容区域 */}
-      <div className="absolute inset-0 pt-24 flex items-center justify-center">
+      <div className="absolute inset-0 pt-24 pb-20 flex items-center justify-center">
         <AnimatePresence mode="wait">
           {isAutoPlay && employees.length > 0 ? (
             // 自动轮播模式 - 全屏展示单个员工
@@ -231,79 +231,77 @@ export default function Showcase() {
             </motion.div>
           ) : (
             // 交互模式 - 显示所有员工的六边形
-            <div className="w-full h-full flex items-center justify-center px-8">
-              <div className="flex gap-16">
-                {/* 左列 */}
-                <div className="flex flex-col gap-8 justify-center">
-                  {leftColumn.map((employee) => (
-                    <motion.div
-                      key={employee.id}
-                      whileHover={{ scale: 1.1 }}
-                      className="cursor-pointer"
-                      onClick={() => handleEmployeeClick(employee)}
+            <div className="w-full h-full flex items-center justify-between px-12">
+              {/* 左列 - 4个六边形 */}
+              <div className="flex flex-col gap-6 justify-center">
+                {leftColumn.map((employee) => (
+                  <motion.div
+                    key={employee.id}
+                    whileHover={{ scale: 1.15 }}
+                    className="cursor-pointer"
+                    onClick={() => handleEmployeeClick(employee)}
+                  >
+                    <div
+                      className="relative flex items-center justify-center overflow-hidden group"
+                      style={{
+                        width: '140px',
+                        height: '140px',
+                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                      }}
                     >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group"
-                        style={{
-                          width: '300px',
-                          height: '300px',
-                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                        }}
-                      >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-6xl font-bold">{employee.name?.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">点击查看详情</span>
+                      {employee.workPhoto ? (
+                        <img
+                          src={employee.workPhoto}
+                          alt={employee.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                          <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                         </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                        <span className="text-white text-xs font-bold text-center px-2">点击查看</span>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
 
-                {/* 右列 */}
-                <div className="flex flex-col gap-8 justify-center">
-                  {rightColumn.map((employee) => (
-                    <motion.div
-                      key={employee.id}
-                      whileHover={{ scale: 1.1 }}
-                      className="cursor-pointer"
-                      onClick={() => handleEmployeeClick(employee)}
+              {/* 右列 - 4个六边形 */}
+              <div className="flex flex-col gap-6 justify-center">
+                {rightColumn.map((employee) => (
+                  <motion.div
+                    key={employee.id}
+                    whileHover={{ scale: 1.15 }}
+                    className="cursor-pointer"
+                    onClick={() => handleEmployeeClick(employee)}
+                  >
+                    <div
+                      className="relative flex items-center justify-center overflow-hidden group"
+                      style={{
+                        width: '140px',
+                        height: '140px',
+                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                      }}
                     >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group"
-                        style={{
-                          width: '300px',
-                          height: '300px',
-                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                        }}
-                      >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-6xl font-bold">{employee.name?.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">点击查看详情</span>
+                      {employee.workPhoto ? (
+                        <img
+                          src={employee.workPhoto}
+                          alt={employee.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                          <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                         </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                        <span className="text-white text-xs font-bold text-center px-2">点击查看</span>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
           )}
@@ -325,7 +323,7 @@ export default function Showcase() {
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, x: 50 }}
               transition={{ duration: 0.4 }}
-              className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-2xl w-full mx-4 text-white shadow-2xl"
+              className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* 关闭按钮 */}
