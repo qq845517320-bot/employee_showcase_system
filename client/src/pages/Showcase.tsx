@@ -1,184 +1,360 @@
-import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { trpc } from '@/lib/trpc';
-import { EmployeeCard } from '@/components/EmployeeCard';
-import { EmployeeDetailModal } from '@/components/EmployeeDetailModal';
-import { Clock, Grid3x3, Users } from 'lucide-react';
-import type { Department, Employee } from '../../../drizzle/schema';
-
-interface EmployeeWithHonor extends Employee {
-  hasNewHonor?: boolean;
-}
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import type { Employee } from '../../../drizzle/schema';
 
 export default function Showcase() {
-  const [currentTime, setCurrentTime] = useState<string>('');
-  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
-  const [displayMode, setDisplayMode] = useState<'all' | 'core_bones' | 'honors'>('all');
-  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeWithHonor | null>(null);
-
-  // 实时时间更新
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(
-        now.toLocaleString('zh-CN', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
-      );
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // 获取部门列表
-  const { data: departments = [] } = trpc.departments.list.useQuery();
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [isAutoPlay, setIsAutoPlay] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // 获取员工列表
-  const { data: employees = [] } = trpc.employees.list.useQuery({
-    departmentId: selectedDepartment || undefined,
-    displayMode,
-  });
+  const { data: employeesData, isLoading } = trpc.employees.list.useQuery({});
 
-  // 获取新荣誉列表
-  const { data: newHonors = [] } = trpc.honors.listNew.useQuery();
+  useEffect(() => {
+    if (employeesData) {
+      setEmployees(employeesData);
+    }
+  }, [employeesData]);
 
-  // 标记员工是否有新荣誉
-  const employeesWithHonor: EmployeeWithHonor[] = useMemo(() => {
-    const newHonorEmployeeIds = new Set(newHonors.map(h => h.employeeId));
-    return employees.map(emp => ({
-      ...emp,
-      hasNewHonor: newHonorEmployeeIds.has(emp.id),
-    }));
-  }, [employees, newHonors]);
+  // 重置无操作计时器
+  const resetInactivityTimer = () => {
+    if (inactivityTimeoutRef.current) {
+      clearTimeout(inactivityTimeoutRef.current);
+    }
 
-  // 部门筛选选项
-  const filterOptions = [
-    { id: null, name: '全部', icon: Grid3x3 },
-    { id: -1, name: '荣誉榜', icon: null },
-    ...departments,
-  ];
-
-  const handleDepartmentFilter = (deptId: number | null) => {
-    if (deptId === -1) {
-      setDisplayMode('honors');
-      setSelectedDepartment(null);
-    } else {
-      setDisplayMode('all');
-      setSelectedDepartment(deptId);
+    if (!selectedEmployee) {
+      inactivityTimeoutRef.current = setTimeout(() => {
+        setIsAutoPlay(true);
+      }, 30000) as unknown as NodeJS.Timeout; // 30秒无操作后开始自动轮播
     }
   };
 
+  // 监听用户操作
+  useEffect(() => {
+    const handleUserActivity = () => {
+      if (isAutoPlay) {
+        setIsAutoPlay(false);
+        setCurrentIndex(0);
+      }
+      resetInactivityTimer();
+    };
+
+    window.addEventListener('click', handleUserActivity);
+    window.addEventListener('touchstart', handleUserActivity);
+    window.addEventListener('keydown', handleUserActivity);
+
+    resetInactivityTimer();
+
+    return () => {
+      window.removeEventListener('click', handleUserActivity);
+      window.removeEventListener('touchstart', handleUserActivity);
+      window.removeEventListener('keydown', handleUserActivity);
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+    };
+  }, [isAutoPlay, selectedEmployee]);
+
+  // 自动轮播逻辑
+  useEffect(() => {
+    if (isAutoPlay && employees.length > 0) {
+      autoPlayIntervalRef.current = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % employees.length);
+      }, 5000) as unknown as NodeJS.Timeout; // 每5秒切换一次
+
+      return () => {
+        if (autoPlayIntervalRef.current) {
+          clearInterval(autoPlayIntervalRef.current);
+        }
+      };
+    }
+  }, [isAutoPlay, employees.length]);
+
+  // 处理员工卡片点击
+  const handleEmployeeClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setIsAutoPlay(false);
+  };
+
+  // 处理下一个员工
+  const handleNextEmployee = () => {
+    const currentIdx = employees.findIndex((e) => e.id === selectedEmployee?.id);
+    if (currentIdx !== -1) {
+      const nextIdx = (currentIdx + 1) % employees.length;
+      setSelectedEmployee(employees[nextIdx]);
+    }
+  };
+
+  // 处理上一个员工
+  const handlePrevEmployee = () => {
+    const currentIdx = employees.findIndex((e) => e.id === selectedEmployee?.id);
+    if (currentIdx !== -1) {
+      const prevIdx = currentIdx === 0 ? employees.length - 1 : currentIdx - 1;
+      setSelectedEmployee(employees[prevIdx]);
+    }
+  };
+
+  // 处理关闭详情面板
+  const handleCloseDetail = () => {
+    setSelectedEmployee(null);
+    resetInactivityTimer();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="showcase-container flex items-center justify-center">
+        <div className="text-white text-2xl">加载中...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="showcase-container">
       {/* 顶部导航栏 */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-border/50 shadow-elegant"
-      >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* 左侧：LOGO 和标题 */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
-                <Users className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                  员工风采
-                </h1>
-                <p className="text-xs md:text-sm text-muted-foreground">
-                  深国际靖江港
-                </p>
-              </div>
+      <div className="bg-black/30 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">港</span>
             </div>
-
-            {/* 右侧：实时时间 */}
-            <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
-              <Clock className="w-5 h-5" />
-              <span className="font-mono">{currentTime}</span>
-            </div>
+            <h1 className="text-3xl font-bold text-white">深国际靖江港 - 员工风采展示</h1>
           </div>
-        </div>
-      </motion.header>
-
-      {/* 部门筛选栏 */}
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="sticky top-20 z-40 bg-white/90 backdrop-blur-md border-b border-border/50 shadow-sm"
-      >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {filterOptions.map((option, idx) => {
-              const isActive =
-                (option.id === null && displayMode === 'all' && selectedDepartment === null) ||
-                (option.id === -1 && displayMode === 'honors') ||
-                (option.id && option.id > 0 && selectedDepartment === option.id);
-
-              return (
-                <motion.button
-                  key={option.id ?? 'all'}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleDepartmentFilter(option.id ?? null)}
-                  className={`px-4 py-2 rounded-full font-medium text-sm md:text-base transition-all duration-300 ${
-                    isActive
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-muted text-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {option.name}
-                </motion.button>
-              );
+          <div className="text-white text-lg font-semibold">
+            {new Date().toLocaleTimeString('zh-CN', {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
             })}
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* 员工矩阵网格 */}
-      <main className="container mx-auto px-6 py-12">
-        {employeesWithHonor.length === 0 ? (
+      {/* 主内容区域 */}
+      <div className="container mx-auto px-6 py-12">
+        {/* 自动轮播状态指示 */}
+        {isAutoPlay && (
+          <div className="text-center mb-8">
+            <motion.div
+              animate={{ opacity: [0.5, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="inline-block px-6 py-2 bg-white/20 rounded-full text-white text-lg font-semibold"
+            >
+              自动轮播中... 点击任意位置可交互
+            </motion.div>
+          </div>
+        )}
+
+        {/* 六边形网格布局 */}
+        <div className="hexagon-grid">
+          <AnimatePresence mode="wait">
+            {isAutoPlay ? (
+              // 自动轮播模式 - 显示当前员工
+              <motion.div
+                key={`carousel-${currentIndex}`}
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+                transition={{ duration: 0.6 }}
+                className="w-full flex justify-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => handleEmployeeClick(employees[currentIndex])}
+                  className="hexagon-item group"
+                >
+                  <div className="hexagon-clip bg-white/10">
+                  {employees[currentIndex]?.workPhoto ? (
+                    <img
+                      src={employees[currentIndex].workPhoto}
+                        alt={employees[currentIndex].name}
+                        className="hexagon-image"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                        <span className="text-white text-4xl font-bold">
+                          {employees[currentIndex]?.name?.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="hexagon-overlay">
+                    <span className="text-white text-xl font-bold">点击查看详情</span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ) : (
+              // 交互模式 - 显示所有员工
+              <>
+                {employees.map((employee) => (
+                  <motion.div
+                    key={employee.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.1 }}
+                    onClick={() => handleEmployeeClick(employee)}
+                    className="hexagon-item group"
+                  >
+                    <div className="hexagon-clip bg-white/10">
+                      {employee.workPhoto ? (
+                        <img
+                          src={employee.workPhoto}
+                          alt={employee.name}
+                          className="hexagon-image"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                          <span className="text-white text-4xl font-bold">
+                            {employee.name?.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="hexagon-overlay">
+                      <div className="text-center">
+                        <div className="text-white text-lg font-bold">{employee.name}</div>
+                        <div className="text-white/80 text-sm">{employee.position}</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* 轮播指示器 */}
+        {isAutoPlay && employees.length > 0 && (
+          <div className="carousel-indicator mt-8">
+            {employees.map((_, idx) => (
+              <div
+                key={idx}
+                className={`indicator-dot ${idx === currentIndex ? 'active' : ''}`}
+                onClick={() => setCurrentIndex(idx)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 详情面板 */}
+      <AnimatePresence>
+        {selectedEmployee && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-20"
+            exit={{ opacity: 0 }}
+            className="detail-panel"
+            onClick={handleCloseDetail}
           >
-            <div className="text-6xl mb-4">📭</div>
-            <p className="text-xl text-muted-foreground">暂无员工信息</p>
-          </motion.div>
-        ) : (
-          <motion.div
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8"
-          >
-            {employeesWithHonor.map((employee, idx) => (
-              <EmployeeCard
-                key={employee.id}
-                employee={employee}
-                delay={idx * 0.05}
-                onClick={() => setSelectedEmployee(employee)}
-              />
-            ))}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, x: -50 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: 50 }}
+              transition={{ duration: 0.4 }}
+              className="detail-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* 关闭按钮 */}
+              <button
+                onClick={handleCloseDetail}
+                className="absolute top-4 right-4 z-10 p-2 hover:bg-white/20 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6 text-white" />
+              </button>
+
+              {/* 详情头部 */}
+              <div className="detail-header">
+                <div className="detail-photo">
+                  {selectedEmployee.workPhoto ? (
+                    <img
+                      src={selectedEmployee.workPhoto}
+                      alt={selectedEmployee.name}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                      <span className="text-white text-6xl font-bold">
+                        {selectedEmployee.name?.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="detail-info">
+                  <div className="text-4xl font-bold mb-6">{selectedEmployee.name}</div>
+                  <div className="detail-info-item">
+                    <span className="detail-info-label">部门：</span>
+                    <span className="detail-info-value">{selectedEmployee.departmentId}</span>
+                  </div>
+                  <div className="detail-info-item">
+                    <span className="detail-info-label">岗位：</span>
+                    <span className="detail-info-value">{selectedEmployee.position}</span>
+                  </div>
+                  <div className="detail-info-item">
+                    <span className="detail-info-label">职务：</span>
+                    <span className="detail-info-value">{selectedEmployee.level}</span>
+                  </div>
+                  <div className="detail-info-item">
+                    <span className="detail-info-label">入职时间：</span>
+                    <span className="detail-info-value">
+                      {selectedEmployee.joinDate
+                        ? new Date(selectedEmployee.joinDate).toLocaleDateString('zh-CN')
+                        : '-'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 详情内容 */}
+              <div className="detail-body">
+                {selectedEmployee.jobResponsibilities && (
+                  <div className="detail-section">
+                    <div className="detail-section-title">工作职责</div>
+                    <div className="detail-section-content">
+                      {selectedEmployee.jobResponsibilities}
+                    </div>
+                  </div>
+                )}
+
+                {selectedEmployee.motto && (
+                  <div className="detail-section">
+                    <div className="detail-section-title">工作信条</div>
+                    <div className="detail-section-content italic">
+                      "{selectedEmployee.motto}"
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 导航按钮 */}
+              <div className="flex items-center justify-between px-8 py-4 border-t border-red-600/50">
+                <button
+                  onClick={handlePrevEmployee}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6 text-white" />
+                </button>
+
+                <div className="text-white/70 text-sm">
+                  {employees.findIndex((e) => e.id === selectedEmployee?.id) + 1} / {employees.length}
+                </div>
+
+                <button
+                  onClick={handleNextEmployee}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6 text-white" />
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
-      </main>
-
-      {/* 员工详情弹窗 */}
-      <EmployeeDetailModal
-        employee={selectedEmployee}
-        allEmployees={employeesWithHonor}
-        onClose={() => setSelectedEmployee(null)}
-        onNavigate={setSelectedEmployee}
-      />
+      </AnimatePresence>
     </div>
   );
 }
