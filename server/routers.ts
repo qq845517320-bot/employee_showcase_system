@@ -126,6 +126,7 @@ const employeeRouter = router({
       joinDate: z.date(),
       jobResponsibilities: z.string().optional(),
       motto: z.string().optional(),
+      workPhoto: z.string().optional(),
       isCoreBone: z.boolean().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
@@ -141,6 +142,7 @@ const employeeRouter = router({
         joinDate: input.joinDate,
         jobResponsibilities: input.jobResponsibilities,
         motto: input.motto,
+        workPhoto: input.workPhoto,
         isCoreBone: input.isCoreBone || false,
       });
       return result;

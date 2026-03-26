@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trpc } from '@/lib/trpc';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Search } from 'lucide-react';
 import type { Employee } from '../../../drizzle/schema';
 
 export default function Showcase() {
@@ -9,6 +9,7 @@ export default function Showcase() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -355,6 +356,48 @@ export default function Showcase() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 搜索框 - 底部中央 */}
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative"
+        >
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-white/20">
+            <Search className="w-5 h-5 text-gray-600" />
+            <input
+              type="text"
+              placeholder="搜索员工..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                // 搜索员工
+                if (e.target.value.trim()) {
+                  const found = employees.find(
+                    (emp) =>
+                      emp.name.includes(e.target.value) ||
+                      emp.position.includes(e.target.value)
+                  );
+                  if (found) {
+                    setSelectedEmployee(found);
+                    setIsAutoPlay(false);
+                  }
+                }
+              }}
+              className="bg-transparent outline-none text-gray-900 placeholder-gray-500 w-64"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }

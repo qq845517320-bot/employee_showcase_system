@@ -67,9 +67,8 @@ export default function EmployeeManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const photoUrl = uploadedPhotoUrl || (editingId ? formData.workPhoto : null);
-
     if (editingId) {
+      // 编辑模式 - 包含照片
       await updateMutation.mutateAsync({
         id: editingId,
         name: formData.name,
@@ -79,8 +78,10 @@ export default function EmployeeManagement() {
         joinDate: formData.joinDate,
         jobResponsibilities: formData.jobResponsibilities || undefined,
         motto: formData.motto || undefined,
+        workPhoto: uploadedPhotoUrl || undefined,
       });
     } else {
+      // 新增模式 - 包含照片
       await createMutation.mutateAsync({
         name: formData.name || '',
         departmentId: formData.departmentId || 1,
@@ -89,24 +90,8 @@ export default function EmployeeManagement() {
         joinDate: formData.joinDate || new Date(),
         jobResponsibilities: formData.jobResponsibilities || undefined,
         motto: formData.motto || undefined,
+        workPhoto: uploadedPhotoUrl || undefined,
       });
-      
-      // 如果有上传的照片，单独更新
-      if (photoUrl && !editingId) {
-        const newEmployee = employees[employees.length - 1];
-        if (newEmployee) {
-          await updateMutation.mutateAsync({
-            id: newEmployee.id,
-            name: newEmployee.name,
-            departmentId: newEmployee.departmentId,
-            position: newEmployee.position,
-            level: newEmployee.level,
-            joinDate: newEmployee.joinDate,
-            jobResponsibilities: newEmployee.jobResponsibilities || undefined,
-            motto: newEmployee.motto || undefined,
-          });
-        }
-      }
     }
   };
 

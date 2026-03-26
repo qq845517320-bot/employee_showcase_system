@@ -35,40 +35,35 @@ export default function BackgroundManagement() {
     },
   });
 
+  const uploadMutation = trpc.upload.uploadPhoto.useMutation();
+
   const handleUploadPhoto = async (file: File) => {
-    // 这里需要调用后端的文件上传 API
-    // 临时实现：使用 FormData 上传到后端
-    const formDataObj = new FormData();
-    formDataObj.append('file', file);
-    formDataObj.append('type', 'background');
-
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formDataObj,
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64 = (reader.result as string).split(',')[1];
+          const result = await uploadMutation.mutateAsync({
+            fileName: file.name,
+            fileData: base64,
+            fileType: file.type,
+          });
+          resolve(result.url);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = () => reject(new Error('文件读取失败'));
+      reader.readAsDataURL(file);
     });
-
-    if (!response.ok) {
-      throw new Error('上传失败');
-    }
-
-    const data = await response.json();
-    setUploadedUrl(data.url);
-    return data.url;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!uploadedUrl) {
-      alert('请先上传背景图片');
-      return;
-    }
-
     await createMutation.mutateAsync({
       name: formData.name || '',
-      backgroundUrl: uploadedUrl,
-      description: formData.description || undefined,
-      displayMode: (formData.displayMode || 'all') as any,
+      backgroundUrl: uploadedUrl || '',
     });
   };
 
@@ -135,7 +130,7 @@ export default function BackgroundManagement() {
               onUpload={handleUploadPhoto}
               onPhotoSelected={setUploadedUrl}
               currentPhotoUrl={uploadedUrl || undefined}
-              isLoading={createMutation.isPending}
+              isLoading={uploadMutation.isPending || createMutation.isPending}
             />
           </div>
 

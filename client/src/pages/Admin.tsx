@@ -7,8 +7,9 @@ import EmployeeManagement from '@/components/admin/EmployeeManagement';
 import DepartmentManagement from '@/components/admin/DepartmentManagement';
 import HonorManagement from '@/components/admin/HonorManagement';
 import PlaybackStrategyManagement from '@/components/admin/PlaybackStrategyManagement';
+import BackgroundManagement from '@/components/admin/BackgroundManagement';
 
-type AdminTab = 'employees' | 'departments' | 'honors' | 'playback';
+type AdminTab = 'employees' | 'departments' | 'honors' | 'playback' | 'background';
 
 export default function Admin() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -43,6 +44,7 @@ export default function Admin() {
     { id: 'departments' as AdminTab, label: '部门管理', icon: Settings },
     { id: 'honors' as AdminTab, label: '荣誉管理', icon: Settings },
     { id: 'playback' as AdminTab, label: '轮播策略', icon: Settings },
+    { id: 'background' as AdminTab, label: '背景管理', icon: Settings },
   ];
 
   return (
@@ -94,6 +96,7 @@ export default function Admin() {
               {activeTab === 'departments' && <DepartmentManagement />}
               {activeTab === 'honors' && <HonorManagement />}
               {activeTab === 'playback' && <PlaybackStrategyManagement />}
+              {activeTab === 'background' && <BackgroundManagement />}
             </div>
           </div>
         </main>
