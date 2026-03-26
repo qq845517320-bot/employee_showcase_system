@@ -1,17 +1,10 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, decimal } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
  */
 export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
   id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
@@ -25,4 +18,74 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * 部门表
+ */
+export const departments = mysqlTable("departments", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  order: int("order").default(0).notNull(), // 用于排序
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Department = typeof departments.$inferSelect;
+export type InsertDepartment = typeof departments.$inferInsert;
+
+/**
+ * 员工表
+ */
+export const employees = mysqlTable("employees", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  departmentId: int("departmentId").notNull(), // 外键关联部门
+  position: varchar("position", { length: 100 }).notNull(), // 岗位
+  level: varchar("level", { length: 50 }).notNull(), // 职级（如：高级、中级、初级）
+  joinDate: timestamp("joinDate").notNull(), // 入职时间
+  workPhoto: varchar("workPhoto", { length: 500 }), // 工作照 URL（S3）
+  jobResponsibilities: text("jobResponsibilities"), // 工作职责
+  motto: text("motto"), // 座右铭
+  status: mysqlEnum("status", ["active", "inactive", "archived"]).default("active").notNull(), // 在职、离职、归档
+  isCoreBone: boolean("isCoreBone").default(false).notNull(), // 是否为核心骨干
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Employee = typeof employees.$inferSelect;
+export type InsertEmployee = typeof employees.$inferInsert;
+
+/**
+ * 荣誉表
+ */
+export const honors = mysqlTable("honors", {
+  id: int("id").autoincrement().primaryKey(),
+  employeeId: int("employeeId").notNull(), // 外键关联员工
+  title: varchar("title", { length: 100 }).notNull(), // 荣誉名称（如：班组之星、优秀员工等）
+  description: text("description"), // 荣誉描述
+  awardDate: timestamp("awardDate").notNull(), // 获奖时间
+  isNew: boolean("isNew").default(true).notNull(), // 是否为新荣誉（用于显示 New 标签）
+  icon: varchar("icon", { length: 50 }).default("trophy").notNull(), // 图标类型（trophy、star 等）
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Honor = typeof honors.$inferSelect;
+export type InsertHonor = typeof honors.$inferInsert;
+
+/**
+ * 轮播策略表
+ */
+export const playbackStrategies = mysqlTable("playback_strategies", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(), // 策略名称（如：普通工作日、参观接待）
+  displayMode: mysqlEnum("displayMode", ["all", "core_bones", "honors"]).notNull(), // 展示模式
+  description: text("description"), // 策略描述
+  isActive: boolean("isActive").default(false).notNull(), // 是否为当前活跃策略
+  autoPlayInterval: int("autoPlayInterval").default(5000).notNull(), // 自动轮播间隔（毫秒）
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PlaybackStrategy = typeof playbackStrategies.$inferSelect;
+export type InsertPlaybackStrategy = typeof playbackStrategies.$inferInsert;

@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, departments, employees, honors, playbackStrategies } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,105 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ========== 部门相关查询 ==========
+
+export async function getAllDepartments() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(departments).orderBy(departments.order);
+}
+
+export async function getDepartmentById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(departments).where(eq(departments.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+// ========== 员工相关查询 ==========
+
+export async function getEmployeesByDepartment(departmentId: number | null) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  if (departmentId === null) {
+    // 获取所有在职员工
+    return db.select().from(employees).where(eq(employees.status, 'active'));
+  }
+  
+  return db.select().from(employees).where(
+    and(
+      eq(employees.departmentId, departmentId),
+      eq(employees.status, 'active')
+    )
+  );
+}
+
+export async function getEmployeeById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(employees).where(eq(employees.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getActiveEmployees() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(employees).where(eq(employees.status, 'active'));
+}
+
+export async function getCoreEmployees() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(employees).where(
+    and(
+      eq(employees.status, 'active'),
+      eq(employees.isCoreBone, true)
+    )
+  );
+}
+
+// ========== 荣誉相关查询 ==========
+
+export async function getHonorsByEmployeeId(employeeId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(honors).where(eq(honors.employeeId, employeeId));
+}
+
+export async function getNewHonors() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(honors).where(eq(honors.isNew, true));
+}
+
+export async function getEmployeesWithNewHonors() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const newHonorsList = await db.select().from(honors).where(eq(honors.isNew, true));
+  if (newHonorsList.length === 0) return [];
+  
+  const employeeIds = Array.from(new Set(newHonorsList.map(h => h.employeeId)));
+  return db.select().from(employees).where(
+    and(
+      inArray(employees.id, employeeIds),
+      eq(employees.status, 'active')
+    )
+  );
+}
+
+// ========== 轮播策略相关查询 ==========
+
+export async function getActivePlaybackStrategy() {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(playbackStrategies).where(eq(playbackStrategies.isActive, true)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getAllPlaybackStrategies() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(playbackStrategies);
+}

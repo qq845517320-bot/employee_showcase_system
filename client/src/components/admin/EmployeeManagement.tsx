@@ -1,0 +1,214 @@
+import { useState } from 'react';
+import { trpc } from '@/lib/trpc';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Plus, Edit2, Trash2, Upload } from 'lucide-react';
+import { motion } from 'framer-motion';
+import type { Employee } from '../../../../drizzle/schema';
+
+export default function EmployeeManagement() {
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState<Partial<Employee>>({});
+
+  const { data: employees = [], refetch } = trpc.employees.list.useQuery({});
+  const { data: departments = [] } = trpc.departments.list.useQuery();
+
+  const createMutation = trpc.employees.create.useMutation({
+    onSuccess: () => {
+      refetch();
+      setIsAddingNew(false);
+      setFormData({});
+    },
+  });
+
+  const updateMutation = trpc.employees.update.useMutation({
+    onSuccess: () => {
+      refetch();
+      setEditingId(null);
+      setFormData({});
+    },
+  });
+
+  const deleteMutation = trpc.employees.delete.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (editingId) {
+      await updateMutation.mutateAsync({
+        id: editingId,
+        name: formData.name,
+        departmentId: formData.departmentId,
+        position: formData.position,
+        level: formData.level,
+        joinDate: formData.joinDate,
+        jobResponsibilities: formData.jobResponsibilities || undefined,
+        motto: formData.motto || undefined,
+      });
+    } else {
+      await createMutation.mutateAsync({
+        name: formData.name || '',
+        departmentId: formData.departmentId || 1,
+        position: formData.position || '',
+        level: formData.level || '',
+        joinDate: formData.joinDate || new Date(),
+        jobResponsibilities: formData.jobResponsibilities || undefined,
+        motto: formData.motto || undefined,
+      });
+    }
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* 添加按钮 */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold">员工列表</h2>
+        <Button
+          onClick={() => {
+            setIsAddingNew(!isAddingNew);
+            setFormData({});
+          }}
+          className="flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          添加员工
+        </Button>
+      </div>
+
+      {/* 添加/编辑表单 */}
+      {(isAddingNew || editingId) && (
+        <motion.form
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          onSubmit={handleSubmit}
+          className="bg-muted p-6 rounded-lg space-y-4"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              placeholder="姓名"
+              value={formData.name || ''}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+            <select
+              value={String(formData.departmentId || '')}
+              onChange={e => setFormData({ ...formData, departmentId: parseInt(e.target.value) })}
+              className="px-3 py-2 border rounded-lg"
+            >
+              <option value="">选择部门</option>
+              {departments.map(dept => (
+                <option key={dept.id} value={String(dept.id)}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+            <Input
+              placeholder="岗位"
+              value={formData.position || ''}
+              onChange={e => setFormData({ ...formData, position: e.target.value })}
+              required
+            />
+            <Input
+              placeholder="职级"
+              value={formData.level || ''}
+              onChange={e => setFormData({ ...formData, level: e.target.value })}
+              required
+            />
+            <Input
+              type="date"
+              value={formData.joinDate ? new Date(formData.joinDate as any).toISOString().split('T')[0] : ''}
+              onChange={e => setFormData({ ...formData, joinDate: new Date(e.target.value) })}
+              required
+            />
+          </div>
+          <textarea
+            placeholder="工作职责"
+            value={(formData.jobResponsibilities as string) || ''}
+            onChange={e => setFormData({ ...formData, jobResponsibilities: e.target.value })}
+            className="w-full px-3 py-2 border rounded-lg"
+            rows={3}
+          />
+          <textarea
+            placeholder="座右铭"
+            value={(formData.motto as string) || ''}
+            onChange={e => setFormData({ ...formData, motto: e.target.value })}
+            className="w-full px-3 py-2 border rounded-lg"
+            rows={2}
+          />
+          <div className="flex gap-2">
+            <Button type="submit" variant="default">
+              {editingId ? '保存修改' : '添加员工'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setIsAddingNew(false);
+                setEditingId(null);
+                setFormData({});
+              }}
+            >
+              取消
+            </Button>
+          </div>
+        </motion.form>
+      )}
+
+      {/* 员工列表 */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-muted">
+            <tr>
+              <th className="px-4 py-2 text-left">姓名</th>
+              <th className="px-4 py-2 text-left">部门</th>
+              <th className="px-4 py-2 text-left">岗位</th>
+              <th className="px-4 py-2 text-left">职级</th>
+              <th className="px-4 py-2 text-left">入职时间</th>
+              <th className="px-4 py-2 text-left">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees.map(emp => (
+              <tr key={emp.id} className="border-b hover:bg-muted/50">
+                <td className="px-4 py-2">{emp.name}</td>
+                <td className="px-4 py-2">{emp.departmentId}</td>
+                <td className="px-4 py-2">{emp.position}</td>
+                <td className="px-4 py-2">{emp.level}</td>
+                <td className="px-4 py-2">{new Date(emp.joinDate).toLocaleDateString('zh-CN')}</td>
+                <td className="px-4 py-2 flex gap-2">
+                  <button
+                    onClick={() => {
+                      setEditingId(emp.id);
+                      setFormData(emp);
+                      setIsAddingNew(false);
+                    }}
+                    className="p-1 hover:bg-blue-100 rounded"
+                  >
+                    <Edit2 className="w-4 h-4 text-blue-600" />
+                  </button>
+                  <button
+                    onClick={() => deleteMutation.mutate({ id: emp.id })}
+                    className="p-1 hover:bg-red-100 rounded"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-600" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {employees.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          暂无员工信息
+        </div>
+      )}
+    </div>
+  );
+}
