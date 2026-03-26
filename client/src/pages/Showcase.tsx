@@ -270,7 +270,7 @@ export default function Showcase() {
               </button>
 
               {/* 详情头部 */}
-              <div className="detail-header">
+              <div className="detail-header" style={{width: '650px'}}>
                 <div className="detail-photo">
                   {selectedEmployee.workPhoto ? (
                     <img
