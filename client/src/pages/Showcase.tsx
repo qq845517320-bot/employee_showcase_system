@@ -116,7 +116,11 @@ export default function Showcase() {
 
   // 处理员工点击
   const handleEmployeeClick = (employee: any) => {
+    setIsAutoPlayDetail(false);
     setSelectedEmployee(employee);
+    if (batchIntervalRef.current) {
+      clearInterval(batchIntervalRef.current);
+    }
     resetInactivityTimer();
   };
 
@@ -149,6 +153,12 @@ export default function Showcase() {
       }
     };
   }, [isAutoPlayDetail, filteredEmployees]);
+
+  // 打印调试信息
+  useEffect(() => {
+    console.log('selectedEmployee:', selectedEmployee);
+    console.log('isAutoPlayDetail:', isAutoPlayDetail);
+  }, [selectedEmployee, isAutoPlayDetail]);
 
   // 处理详情轮播面板点击
   const handleDetailPanelClick = (e: React.MouseEvent) => {
@@ -328,7 +338,10 @@ export default function Showcase() {
                       key={employee.id}
                       whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
-                      onClick={() => handleEmployeeClick(employee)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEmployeeClick(employee);
+                      }}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
@@ -362,7 +375,10 @@ export default function Showcase() {
                       key={employee.id}
                       whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
-                      onClick={() => handleEmployeeClick(employee)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEmployeeClick(employee);
+                      }}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
@@ -402,7 +418,10 @@ export default function Showcase() {
                       key={employee.id}
                       whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
-                      onClick={() => handleEmployeeClick(employee)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEmployeeClick(employee);
+                      }}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
@@ -436,7 +455,10 @@ export default function Showcase() {
                       key={employee.id}
                       whileHover={{ scale: 1.15 }}
                       className="cursor-pointer"
-                      onClick={() => handleEmployeeClick(employee)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEmployeeClick(employee);
+                      }}
                     >
                       <div
                         className="relative flex items-center justify-center overflow-hidden group"
