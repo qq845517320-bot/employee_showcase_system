@@ -276,11 +276,34 @@ export default function Showcase() {
   const rightMiddleColumn = currentBatch.slice(5, 8);
   const rightColumn = currentBatch.slice(8, 10);
 
-  // Auto-play mode: use all employees for the photo wall (stable, no batch rotation)
-  const allLeft1 = filteredEmployees.slice(0, 2);
-  const allLeft2 = filteredEmployees.slice(2, 5);
-  const allRight1 = filteredEmployees.slice(5, 8);
-  const allRight2 = filteredEmployees.slice(8, 10);
+  // Auto-play mode: calculate batch based on current playing employee
+  const getAutoPlayBatch = () => {
+    if (!selectedEmployee || filteredEmployees.length === 0) {
+      return { left1: [], left2: [], right1: [], right2: [] };
+    }
+    // Find which batch the current employee belongs to
+    const empIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
+    if (empIndex === -1) {
+      return { left1: [], left2: [], right1: [], right2: [] };
+    }
+    // Calculate batch start index
+    const batchStartIdx = Math.floor(empIndex / batchSize) * batchSize;
+    const batchEndIdx = Math.min(batchStartIdx + batchSize, filteredEmployees.length);
+    const batch = filteredEmployees.slice(batchStartIdx, batchEndIdx);
+    
+    return {
+      left1: batch.slice(0, 2),
+      left2: batch.slice(2, 5),
+      right1: batch.slice(5, 8),
+      right2: batch.slice(8, 10)
+    };
+  };
+  
+  const autoPlayBatch = getAutoPlayBatch();
+  const allLeft1 = autoPlayBatch.left1;
+  const allLeft2 = autoPlayBatch.left2;
+  const allRight1 = autoPlayBatch.right1;
+  const allRight2 = autoPlayBatch.right2;
 
   const highlightedId = selectedEmployee?.id || null;
 
