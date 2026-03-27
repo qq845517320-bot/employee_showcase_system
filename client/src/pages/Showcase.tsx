@@ -27,7 +27,7 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
         }}
       >
         {employee.workPhoto ? (
-          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover object-center" />
+          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain object-center" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
@@ -425,7 +425,7 @@ export default function Showcase() {
                         <div className="relative flex items-center justify-center overflow-hidden group rounded-lg shadow-lg"
                           style={{ width: '160px', height: '160px', backgroundColor: '#dc2626' }}>
                           {employee.workPhoto ? (
-                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover object-center" />
+                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain object-center" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
                               <span className="text-white text-4xl font-bold">{employee.name?.charAt(0)}</span>

@@ -1,0 +1,195 @@
+{
+  "query": "SELECT id, name, workPhoto FROM employees ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3of7Fiw6XCyDJc5.50ff283b5a85 --database dTX999GnT8s8oqjJyp2eQW --execute SELECT id, name, workPhoto FROM employees ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "2",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "3",
+      "name": "丁建",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574008058-v8a2m9-丁建.png"
+    },
+    {
+      "id": "4",
+      "name": "丁桥",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574021683-ka09i-丁桥.png"
+    },
+    {
+      "id": "5",
+      "name": "环亚军",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574034867-1aslah-环亚军.png"
+    },
+    {
+      "id": "6",
+      "name": "孔超",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574047033-xfbvs8-孔超.png"
+    },
+    {
+      "id": "7",
+      "name": "李泽卿",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574059320-bhylm-李泽卿.png"
+    },
+    {
+      "id": "8",
+      "name": "孟忠兵",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574075643-up890s-孟忠兵.png"
+    },
+    {
+      "id": "9",
+      "name": "秦旺兴",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574091118-2yf3yk-秦旺兴.png"
+    },
+    {
+      "id": "10",
+      "name": "屈晓东",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574106331-lkdffu-屈晓东.png"
+    },
+    {
+      "id": "11",
+      "name": "王奕凡",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574118215-gmapzl-王奕凡.png"
+    },
+    {
+      "id": "12",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "13",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "30001",
+      "name": "赵一诺",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774500357060-enbc1n-赵一诺.png"
+    },
+    {
+      "id": "30002",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "60001",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "60002",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "60003",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90001",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90002",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90003",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90004",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90005",
+      "name": "文小兵",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574129861-8ykc99-文小兵.png"
+    },
+    {
+      "id": "90006",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90007",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90008",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "90009",
+      "name": "杨凯",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774508806775-ld6rqm-杨凯.jpg"
+    },
+    {
+      "id": "90010",
+      "name": "乐其",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774508881378-c8iinb-乐其.jpg"
+    },
+    {
+      "id": "90011",
+      "name": "卢万龙",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774508911652-22lf8x-卢万龙.jpg"
+    },
+    {
+      "id": "90012",
+      "name": "谷紫琦",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774509131319-szl4oe-谷紫琦.jpg"
+    },
+    {
+      "id": "90013",
+      "name": "窦庆胜",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602544953-5q56si-窦庆胜.jpg"
+    },
+    {
+      "id": "120001",
+      "name": "林嘉成",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602523446-k0zx8v-林嘉成.png"
+    },
+    {
+      "id": "120002",
+      "name": "谢斌斌",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602502363-9483y-谢斌斌.jpg"
+    },
+    {
+      "id": "120003",
+      "name": "赵澎",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602464984-6fzm69-赵澎.png"
+    },
+    {
+      "id": "150001",
+      "name": "孙文彬",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602419093-s8r4hl-孙文彬.jpg"
+    },
+    {
+      "id": "150002",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "150003",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tworkPhoto\n1\tTest Employee\tNULL\n2\tTest Employee\tNULL\n3\t丁建\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574008058-v8a2m9-丁建.png\n4\t丁桥\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574021683-ka09i-丁桥.png\n5\t环亚军\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574034867-1aslah-环亚军.png\n6\t孔超\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574047033-xfbvs8-孔超.png\n7\t李泽卿\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574059320-bhylm-李泽卿.png\n8\t孟忠兵\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574075643-up890s-孟忠兵.png\n9\t秦旺兴\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574091118-2yf3yk-秦旺兴.png\n10\t屈晓东\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574106331-lkdffu-屈晓东.png\n11\t王奕凡\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574118215-gmapzl-王奕凡.png\n12\tTest Employee\tNULL\n13\tTest Employee\tNULL\n30001\t赵一诺\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774500357060-enbc1n-赵一诺.png\n30002\tTest Employee\tNULL\n60001\tTest Employee\tNULL\n60002\tTest Employee\tNULL\n60003\tTest Employee\tNULL\n90001\tTest Employee\tNULL\n90002\tTest Employee\tNULL\n90003\tTest Employee\tNULL\n90004\tTest Employee\tNULL\n90005\t文小兵\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574129861-8ykc99-文小兵.png\n90006\tTest Employee\tNULL\n90007\tTest Employee\tNULL\n90008\tTest Employee\tNULL\n90009\t杨凯\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774508806775-ld6rqm-杨凯.jpg\n90010\t乐其\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774508881378-c8iinb-乐其.jpg\n90011\t卢万龙\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774508911652-22lf8x-卢万龙.jpg\n90012\t谷紫琦\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774509131319-szl4oe-谷紫琦.jpg\n90013\t窦庆胜\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602544953-5q56si-窦庆胜.jpg\n120001\t林嘉成\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602523446-k0zx8v-林嘉成.png\n120002\t谢斌斌\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602502363-9483y-谢斌斌.jpg\n120003\t赵澎\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602464984-6fzm69-赵澎.png\n150001\t孙文彬\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774602419093-s8r4hl-孙文彬.jpg\n150002\tTest Employee\tNULL\n150003\tTest Employee\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 359
+}

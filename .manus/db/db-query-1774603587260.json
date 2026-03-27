@@ -1,0 +1,15 @@
+{
+  "query": "SELECT COUNT(*) as total, SUM(CASE WHEN workPhoto IS NOT NULL THEN 1 ELSE 0 END) as with_photo, SUM(CASE WHEN workPhoto IS NULL THEN 1 ELSE 0 END) as without_photo FROM employees;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3of7Fiw6XCyDJc5.50ff283b5a85 --database dTX999GnT8s8oqjJyp2eQW --execute SELECT COUNT(*) as total, SUM(CASE WHEN workPhoto IS NOT NULL THEN 1 ELSE 0 END) as with_photo, SUM(CASE WHEN workPhoto IS NULL THEN 1 ELSE 0 END) as without_photo FROM employees;",
+  "rows": [
+    {
+      "total": "37",
+      "with_photo": "20",
+      "without_photo": "17"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\twith_photo\twithout_photo\n37\t20\t17\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}

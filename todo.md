@@ -115,3 +115,17 @@
   - [x] 检查部门字段的存储结构（departmentId）
   - [x] 在前端显示时将部门ID转换为部门名称
   - [x] 将 getDepartmentName 函数作为 prop 传递给 DetailPanel 组件
+
+
+## 照片显示问题诊断和修复（2026-03-27 第七轮）
+- [x] 查询数据库中的照片URL，分析显示问题规律
+  - [x] 发现问题：某些照片宽高比与容器不匹配，object-cover 导致过度裁剪
+  - [x] 识别问题员工：谢斌斌、窦庆胜、卢万龙、乐其、谷紫琦、杨凯
+- [x] 修改照片显示策略从 object-cover 改为 object-contain
+  - [x] 六边形照片：改用 object-contain object-center
+  - [x] 正方形照片：改用 object-contain object-center
+  - [x] 详情面板照片：改用 object-contain
+- [x] 测试修复效果
+  - [x] 验证谷紫琦等员工照片显示正常
+  - [x] 所有照片完整显示，不再被过度裁剪
+  - [x] 部门显示正确（汉字而非数字）
