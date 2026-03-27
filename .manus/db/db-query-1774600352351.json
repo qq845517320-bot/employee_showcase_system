@@ -1,0 +1,35 @@
+{
+  "query": "SELECT id, name, workPhoto FROM employees LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3of7Fiw6XCyDJc5.50ff283b5a85 --database dTX999GnT8s8oqjJyp2eQW --execute SELECT id, name, workPhoto FROM employees LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "2",
+      "name": "Test Employee",
+      "workPhoto": "NULL"
+    },
+    {
+      "id": "3",
+      "name": "丁建",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574008058-v8a2m9-丁建.png"
+    },
+    {
+      "id": "4",
+      "name": "丁桥",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574021683-ka09i-丁桥.png"
+    },
+    {
+      "id": "5",
+      "name": "环亚军",
+      "workPhoto": "https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574034867-1aslah-环亚军.png"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tworkPhoto\n1\tTest Employee\tNULL\n2\tTest Employee\tNULL\n3\t丁建\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574008058-v8a2m9-丁建.png\n4\t丁桥\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574021683-ka09i-丁桥.png\n5\t环亚军\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/employees/1774574034867-1aslah-环亚军.png\n",
+  "stderr": "",
+  "execution_time_ms": 349
+}
