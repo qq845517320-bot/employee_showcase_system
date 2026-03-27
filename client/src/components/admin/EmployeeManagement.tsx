@@ -261,7 +261,7 @@ export default function EmployeeManagement() {
                   )}
                 </td>
                 <td className="px-4 py-2">{emp.name}</td>
-                <td className="px-4 py-2">{emp.departmentId}</td>
+                <td className="px-4 py-2">{departments.find(d => d.id === emp.departmentId)?.name || emp.departmentId}</td>
                 <td className="px-4 py-2">{emp.position}</td>
                 <td className="px-4 py-2">{emp.level}</td>
                 <td className="px-4 py-2">

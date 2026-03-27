@@ -3,6 +3,122 @@ import { trpc } from '@/lib/trpc';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 
+/* ========== HexPhoto ========== */
+function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0 }: {
+  employee: any; size?: number; isHighlighted?: boolean; onClick?: (e: React.MouseEvent) => void; delay?: number; fromX?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: fromX }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: fromX }}
+      transition={{ duration: 0.5, delay }}
+      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239,68,68,0.6))' }}
+      className="cursor-pointer"
+      onClick={onClick}
+    >
+      <div
+        className={`relative flex items-center justify-center overflow-hidden group transition-all duration-500 ${isHighlighted ? 'scale-110 z-10' : ''}`}
+        style={{
+          width: `${size}px`, height: `${size}px`,
+          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+          filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(250,204,21,0.8))' : undefined,
+        }}
+      >
+        {employee.workPhoto ? (
+          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
+          </div>
+        )}
+        <div className={`absolute inset-0 transition-all duration-500 ${isHighlighted ? 'bg-black/5' : 'bg-black/30 group-hover:bg-black/10'}`} />
+        {isHighlighted && (
+          <div className="absolute bottom-1 left-0 right-0 text-center">
+            <span className="text-white text-xs font-bold drop-shadow-lg bg-black/40 px-2 py-0.5 rounded">{employee.name}</span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ========== PhotoColumn ========== */
+function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDelay = 0, onClickEmployee }: {
+  employees: any[]; highlightedId?: number | null; size?: number; fromX?: number; baseDelay?: number; onClickEmployee: (emp: any) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-8 justify-center items-center">
+      {employees.map((emp, idx) => (
+        <HexPhoto key={emp.id} employee={emp} size={size} isHighlighted={highlightedId === emp.id}
+          fromX={fromX} delay={(baseDelay + idx) * 0.1}
+          onClick={(e) => { e.stopPropagation(); onClickEmployee(emp); }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ========== DetailPanel ========== */
+function DetailPanel({ employee, isAutoPlay = false, onClose, onClick }: {
+  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void;
+}) {
+  return (
+    <motion.div
+      key={`detail-${isAutoPlay ? 'auto' : 'manual'}-${employee.id}`}
+      initial={isAutoPlay ? { opacity: 0, scale: 0.95, y: 30 } : { opacity: 0, scale: 0.9, x: -50, rotateZ: -2 }}
+      animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
+      exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.9, x: 50, rotateZ: 2 }}
+      transition={{ duration: isAutoPlay ? 0.7 : 0.5, ease: 'easeInOut' }}
+      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-10 w-full text-white shadow-2xl border border-red-600/60 relative"
+      style={{ maxWidth: '720px' }}
+      onClick={onClick}
+    >
+      {!isAutoPlay && onClose && (
+        <button onClick={(e) => { e.stopPropagation(); onClose(); }}
+          className="absolute top-5 right-5 text-white/60 hover:text-white text-3xl z-10">{"\u2715"}</button>
+      )}
+      {isAutoPlay && (
+        <div className="absolute top-4 right-5 flex items-center gap-2 text-yellow-300/80">
+          <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2, repeat: Infinity }}
+            className="w-2 h-2 rounded-full bg-yellow-400" />
+          <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
+        </div>
+      )}
+      <div className="flex gap-10">
+        <div className="flex-shrink-0">
+          {employee.workPhoto ? (
+            <img src={employee.workPhoto} alt={employee.name} className="w-56 h-56 rounded-xl object-cover shadow-lg" />
+          ) : (
+            <div className="w-56 h-56 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white text-7xl font-bold">{employee.name?.charAt(0)}</span>
+            </div>
+          )}
+        </div>
+        <div className="space-y-5 flex-1">
+          <div>
+            <div className="text-4xl font-bold mb-2">{employee.name}</div>
+            <div className="text-red-200 text-lg">{"\u804c\u7ea7\uff1a"}{employee.level}</div>
+          </div>
+          <div className="space-y-2 text-base">
+            <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
+            <div>{"\u5165\u804c\u65f6\u95f4\uff1a"}{new Date(employee.joinDate || 0).toLocaleDateString()}</div>
+          </div>
+          <div className="border-t border-white/30 pt-4">
+            <div className="font-semibold mb-2 text-base">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
+            <div className="text-sm leading-relaxed">{employee.jobResponsibilities}</div>
+          </div>
+          <div className="border-t border-white/30 pt-4">
+            <div className="font-semibold mb-2 text-base">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
+            <div className="text-sm italic">{employee.motto}</div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ========== Main Showcase ========== */
 export default function Showcase() {
   const [employees, setEmployees] = useState<any[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
@@ -11,7 +127,9 @@ export default function Showcase() {
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [currentDetailIndex, setCurrentDetailIndex] = useState(0);
   const [backgroundUrl, setBackgroundUrl] = useState<string>('');
-  const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  const [currentTime, setCurrentTime] = useState<string>(
+    new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  );
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const batchIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const detailIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -20,61 +138,30 @@ export default function Showcase() {
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
 
-  // 获取员工列表
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
-  
-  // 获取部门列表
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
-  
-  // 获取活跃背景图片
-  const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, {
-    refetchInterval: 5000,
-  });
+  const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
 
-  // 实时时间更新
+  // Real-time clock
   useEffect(() => {
     timeIntervalRef.current = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     }, 1000);
-
-    return () => {
-      if (timeIntervalRef.current) {
-        clearInterval(timeIntervalRef.current);
-      }
-    };
+    return () => { if (timeIntervalRef.current) clearInterval(timeIntervalRef.current); };
   }, []);
 
-  useEffect(() => {
-    if (employeesData) {
-      setEmployees(employeesData);
-      setFilteredEmployees(employeesData);
-    }
-  }, [employeesData]);
+  useEffect(() => { if (employeesData) { setEmployees(employeesData); setFilteredEmployees(employeesData); } }, [employeesData]);
+  useEffect(() => { if (departmentsData) setDepartments(departmentsData); }, [departmentsData]);
+  useEffect(() => { if (backgroundData?.backgroundUrl) setBackgroundUrl(backgroundData.backgroundUrl); }, [backgroundData]);
 
-  useEffect(() => {
-    if (departmentsData) {
-      setDepartments(departmentsData);
-    }
-  }, [departmentsData]);
-
-  useEffect(() => {
-    if (backgroundData?.backgroundUrl) {
-      setBackgroundUrl(backgroundData.backgroundUrl);
-    }
-  }, [backgroundData]);
-
-  // 处理部门分类点击
   const handleDepartmentClick = (deptId: number | string | null) => {
     setSelectedDepartment(deptId);
     setSelectedEmployee(null);
     setIsAutoPlayDetail(false);
-    if (detailIntervalRef.current) {
-      clearInterval(detailIntervalRef.current);
-    }
+    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     resetInactivityTimer();
   };
 
-  // 搜索功能
   const handleSearch = () => {
     if (!searchTerm.trim()) {
       setFilteredEmployees(employees);
@@ -85,83 +172,58 @@ export default function Showcase() {
         emp.position?.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredEmployees(results);
-      // 搜索后显示第一个结果的详情
-      if (results.length > 0) {
-        setSelectedEmployee(results[0]);
-        setCurrentDetailIndex(0);
-      }
+      if (results.length > 0) { setSelectedEmployee(results[0]); setCurrentDetailIndex(0); }
     }
     resetInactivityTimer();
   };
 
-  // 重置无操作计时器
   const resetInactivityTimer = () => {
-    if (inactivityTimeoutRef.current) {
-      clearTimeout(inactivityTimeoutRef.current);
-    }
+    if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     setIsAutoPlayDetail(false);
-    
-    // 停止详情轮播
-    if (detailIntervalRef.current) {
-      clearInterval(detailIntervalRef.current);
-    }
-    
-    // 启动照片墙轮播
+    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     startBatchRotation();
-    
     inactivityTimeoutRef.current = setTimeout(() => {
       setIsAutoPlayDetail(true);
       stopBatchRotation();
       startDetailRotation();
-    }, 30000); // 30秒无操作后启动详情轮播
+    }, 30000);
   };
 
-  // 启动批次轮播（照片墙）
   const startBatchRotation = () => {
-    if (batchIntervalRef.current) {
-      clearInterval(batchIntervalRef.current);
-    }
-    
+    if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
     batchIntervalRef.current = setInterval(() => {
       setCurrentBatchIndex(prev => {
-        const totalBatches = Math.ceil(filteredEmployees.length / 10);
-        return (prev + 1) % totalBatches;
+        const total = Math.ceil(filteredEmployees.length / 10);
+        return total > 0 ? (prev + 1) % total : 0;
       });
-    }, 5000); // 每5秒切换一批
+    }, 5000);
   };
 
-  // 停止批次轮播
   const stopBatchRotation = () => {
-    if (batchIntervalRef.current) {
-      clearInterval(batchIntervalRef.current);
-    }
+    if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
   };
 
-  // 启动详情轮播
   const startDetailRotation = () => {
-    if (detailIntervalRef.current) {
-      clearInterval(detailIntervalRef.current);
-    }
-    
+    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     let index = currentDetailIndex;
+    if (filteredEmployees.length > 0) {
+      setSelectedEmployee(filteredEmployees[index]);
+    }
     detailIntervalRef.current = setInterval(() => {
+      if (filteredEmployees.length === 0) return;
       index = (index + 1) % filteredEmployees.length;
       setCurrentDetailIndex(index);
       setSelectedEmployee(filteredEmployees[index]);
-    }, 5000); // 每5秒切换一位员工
+    }, 5000);
   };
 
-  // 处理员工点击
   const handleEmployeeClick = (employee: any) => {
     setIsAutoPlayDetail(false);
     setSelectedEmployee(employee);
-    if (batchIntervalRef.current) {
-      clearInterval(batchIntervalRef.current);
-    }
+    if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
     resetInactivityTimer();
   };
 
-  // 清理定时器
   useEffect(() => {
     return () => {
       if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
@@ -171,56 +233,32 @@ export default function Showcase() {
     };
   }, []);
 
-  // 初始化无操作计时器
-  useEffect(() => {
-    resetInactivityTimer();
-  }, [filteredEmployees]);
+  useEffect(() => { resetInactivityTimer(); }, [filteredEmployees]);
 
-  // 当进入详情轮播模式时，启动轮播
   useEffect(() => {
     if (isAutoPlayDetail && filteredEmployees.length > 0) {
-      if (!selectedEmployee) {
-        setSelectedEmployee(filteredEmployees[0]);
-        setCurrentDetailIndex(0);
-      }
+      if (!selectedEmployee) { setSelectedEmployee(filteredEmployees[0]); setCurrentDetailIndex(0); }
       startDetailRotation();
     }
-    return () => {
-      if (detailIntervalRef.current) {
-        clearInterval(detailIntervalRef.current);
-      }
-    };
+    return () => { if (detailIntervalRef.current) clearInterval(detailIntervalRef.current); };
   }, [isAutoPlayDetail, filteredEmployees]);
 
-  // 打印调试信息
-  useEffect(() => {
-    console.log('selectedEmployee:', selectedEmployee);
-    console.log('isAutoPlayDetail:', isAutoPlayDetail);
-  }, [selectedEmployee, isAutoPlayDetail]);
-
-  // 处理详情轮播面板点击
-  const handleDetailPanelClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
+  const handleDetailPanelClick = (e: React.MouseEvent) => { e.stopPropagation(); };
 
   if (isLoading) {
-    return <div className="w-full h-screen flex items-center justify-center bg-red-900">加载中...</div>;
+    return <div className="w-full h-screen flex items-center justify-center bg-red-900">{"\u52a0\u8f7d\u4e2d..."}</div>;
   }
 
-  // 获取当前批次的10个员工
   const batchSize = 10;
-  const startIndex = currentBatchIndex * batchSize;
-  const currentBatch = filteredEmployees.slice(startIndex, startIndex + batchSize);
+  const startIdx = currentBatchIndex * batchSize;
+  const currentBatch = filteredEmployees.slice(startIdx, startIdx + batchSize);
 
-  // 分布：左2 - 左中3 - 中间空白 - 右中3 - 右2
-  // 根据部门过滤员工
-  const displayEmployees = selectedDepartment === null 
+  const displayEmployees = selectedDepartment === null
     ? filteredEmployees
     : selectedDepartment === 'honors'
     ? filteredEmployees.filter(emp => emp.honors && emp.honors.length > 0)
     : filteredEmployees.filter(emp => emp.departmentId === selectedDepartment);
 
-  // 从中间排序的员工列表
   const centerSortedEmployees = (() => {
     if (displayEmployees.length === 0) return [];
     const sorted: any[] = [];
@@ -238,6 +276,14 @@ export default function Showcase() {
   const rightMiddleColumn = currentBatch.slice(5, 8);
   const rightColumn = currentBatch.slice(8, 10);
 
+  // Auto-play mode: use all employees for the photo wall (stable, no batch rotation)
+  const allLeft1 = filteredEmployees.slice(0, 2);
+  const allLeft2 = filteredEmployees.slice(2, 5);
+  const allRight1 = filteredEmployees.slice(5, 8);
+  const allRight2 = filteredEmployees.slice(8, 10);
+
+  const highlightedId = selectedEmployee?.id || null;
+
   return (
     <div
       className="w-full h-screen overflow-hidden relative"
@@ -249,440 +295,133 @@ export default function Showcase() {
       onClick={() => {
         setSelectedEmployee(null);
         setIsAutoPlayDetail(false);
-        if (detailIntervalRef.current) {
-          clearInterval(detailIntervalRef.current);
-        }
+        if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
         resetInactivityTimer();
       }}
     >
-      {/* 顶部导航栏 */}
+      {/* Top nav */}
       <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent z-40">
         <div className="h-20 flex items-center justify-between px-8">
-          <div className="flex items-center gap-4">
-            <div className="text-white text-2xl font-bold">深国际靖江港</div>
-          </div>
-          <h1 className="text-4xl font-bold text-white">员工风采展示</h1>
-          <div className="text-2xl font-semibold text-white font-mono tracking-wider">
-            {currentTime}
-          </div>
+          <div className="text-white text-2xl font-bold">{"\u6df1\u56fd\u9645\u9756\u6c5f\u6e2f"}</div>
+          <h1 className="text-4xl font-bold text-white">{"\u5458\u5de5\u98ce\u91c7\u5c55\u793a"}</h1>
+          <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
         </div>
-        
-        {/* 部门分类按钮 */}
         <div className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap">
-          <button
-            onClick={() => handleDepartmentClick(null)}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-              selectedDepartment === null
-                ? 'bg-red-600 text-white shadow-lg'
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-          >
-            全部
+          <button onClick={() => handleDepartmentClick(null)}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+            {"\u5168\u90e8"}
           </button>
           {departments.map((dept) => (
-            <button
-              key={dept.id}
-              onClick={() => handleDepartmentClick(dept.id)}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                selectedDepartment === dept.id
-                  ? 'bg-red-600 text-white shadow-lg'
-                  : 'bg-white/20 text-white hover:bg-white/30'
-              }`}
-            >
+            <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               {dept.name}
             </button>
           ))}
-          <button
-            onClick={() => handleDepartmentClick('honors')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-              selectedDepartment === 'honors'
-                ? 'bg-red-600 text-white shadow-lg'
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-          >
-            ★荣誉榜★
+          <button onClick={() => handleDepartmentClick('honors')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+            {"\u2605\u8363\u8a89\u699c\u2605"}
           </button>
         </div>
       </div>
 
-      {/* 内容区域 */}
+      {/* Content area */}
       <div className="absolute inset-0 pt-40 pb-24 flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          {selectedEmployee && !isAutoPlayDetail ? (
-            // 详情面板（用户操作时）
-            <motion.div
-              key={`detail-${selectedEmployee.id}`}
-              initial={{ opacity: 0, scale: 0.9, x: -50, rotateZ: -2 }}
-              animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: 50, rotateZ: 2 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              className="bg-gradient-to-br from-red-800 via-red-850 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl border border-red-700/50 hover:border-red-600/80 transition-colors"
-              onClick={handleDetailPanelClick}
-            >
-              {/* 关闭按钮 */}
-              <button
-                onClick={() => {
-                  setSelectedEmployee(null);
-                  resetInactivityTimer();
-                }}
-                className="absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
-              >
-                ✕
-              </button>
+        {/* ====== AUTO-PLAY MODE: photo wall + detail overlay ====== */}
+        {isAutoPlayDetail && selectedEmployee && selectedDepartment === null ? (
+          <div className="w-full h-full flex items-center justify-between px-4 relative">
+            {/* Left columns */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={allLeft1} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} />
+              <PhotoColumn employees={allLeft2} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} />
+            </div>
 
-              {/* 详情头部 */}
-              <div className="flex gap-8">
-                {/* 左侧照片 */}
-                <div className="flex-shrink-0">
-                  {selectedEmployee.workPhoto ? (
-                    <img
-                      src={selectedEmployee.workPhoto}
-                      alt={selectedEmployee.name}
-                      className="w-48 h-48 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <div className="w-48 h-48 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white text-6xl font-bold">{selectedEmployee.name?.charAt(0)}</span>
-                    </div>
-                  )}
-                </div>
+            {/* Center detail panel (absolute overlay) */}
+            <div className="flex-1 flex items-center justify-center px-4 z-10">
+              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} />
+            </div>
 
-                {/* 右侧信息 */}
-                <div className="space-y-4 flex-1">
-                  <div>
-                    <div className="text-3xl font-bold mb-1">{selectedEmployee.name}</div>
-                    <div className="text-red-200">职级：{selectedEmployee.level}</div>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div>岗位：{selectedEmployee.position}</div>
-                    <div>入职时间：{new Date(selectedEmployee.joinDate || 0).toLocaleDateString()}</div>
-                  </div>
-
-                  <div className="border-t border-white/30 pt-3">
-                    <div className="font-semibold mb-2 text-sm">工作职责：</div>
-                    <div className="text-xs leading-relaxed">{selectedEmployee.jobResponsibilities}</div>
-                  </div>
-
-                  <div className="border-t border-white/30 pt-3">
-                    <div className="font-semibold mb-2 text-sm">工作信条：</div>
-                    <div className="text-xs italic">{selectedEmployee.motto}</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ) : isAutoPlayDetail && selectedEmployee ? (
-            // 详情轮播面板（无操作时）
-            <motion.div
-              key={`detail-auto-${selectedEmployee.id}`}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              transition={{ duration: 0.7, ease: 'easeInOut' }}
-              className="bg-gradient-to-br from-red-800 via-red-850 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl border border-red-700/50"
-              onClick={handleDetailPanelClick}
-            >
-              {/* 详情头部 */}
-              <div className="flex gap-8">
-                {/* 左侧照片 */}
-                <div className="flex-shrink-0">
-                  {selectedEmployee.workPhoto ? (
-                    <img
-                      src={selectedEmployee.workPhoto}
-                      alt={selectedEmployee.name}
-                      className="w-48 h-48 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <div className="w-48 h-48 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white text-6xl font-bold">{selectedEmployee.name?.charAt(0)}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* 右侧信息 */}
-                <div className="space-y-4 flex-1">
-                  <div>
-                    <div className="text-3xl font-bold mb-1">{selectedEmployee.name}</div>
-                    <div className="text-red-200">职级：{selectedEmployee.level}</div>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div>岗位：{selectedEmployee.position}</div>
-                    <div>入职时间：{new Date(selectedEmployee.joinDate || 0).toLocaleDateString()}</div>
-                  </div>
-
-                  <div className="border-t border-white/30 pt-3">
-                    <div className="font-semibold mb-2 text-sm">工作职责：</div>
-                    <div className="text-xs leading-relaxed">{selectedEmployee.jobResponsibilities}</div>
-                  </div>
-
-                  <div className="border-t border-white/30 pt-3">
-                    <div className="font-semibold mb-2 text-sm">工作信条：</div>
-                    <div className="text-xs italic">{selectedEmployee.motto}</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ) : selectedDepartment !== null ? (
-            // 部门分类模式 - 从中间排序的正方形照片
-            <motion.div
-              className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              {centerSortedEmployees.length > 0 ? (
-                <div className="flex flex-wrap gap-6 justify-center items-center max-w-7xl py-8">
-                  {centerSortedEmployees.map((employee, idx) => (
-                    <motion.div
-                      key={employee.id}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.4, delay: idx * 0.05 }}
-                      whileHover={{ scale: 1.1, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.8))' }}
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEmployeeClick(employee);
-                      }}
-                    >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group rounded-lg shadow-lg"
-                        style={{
-                          width: '160px',
-                          height: '160px',
-                        }}
+            {/* Right columns */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={allRight1} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} />
+              <PhotoColumn employees={allRight2} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} />
+            </div>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            {/* ====== MANUAL DETAIL MODE ====== */}
+            {selectedEmployee && !isAutoPlayDetail ? (
+              <DetailPanel key={`manual-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={false}
+                onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
+                onClick={handleDetailPanelClick}
+              />
+            ) : selectedDepartment !== null ? (
+              /* ====== DEPARTMENT FILTER MODE ====== */
+              <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+                {centerSortedEmployees.length > 0 ? (
+                  <div className="flex flex-wrap gap-6 justify-center items-center max-w-7xl py-8">
+                    {centerSortedEmployees.map((employee, idx) => (
+                      <motion.div key={employee.id}
+                        initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.4, delay: idx * 0.05 }}
+                        whileHover={{ scale: 1.1, filter: 'drop-shadow(0 0 20px rgba(239,68,68,0.8))' }}
+                        className="cursor-pointer"
+                        onClick={(e) => { e.stopPropagation(); handleEmployeeClick(employee); }}
                       >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-4xl font-bold">{employee.name?.charAt(0)}</span>
+                        <div className="relative flex items-center justify-center overflow-hidden group rounded-lg shadow-lg"
+                          style={{ width: '160px', height: '160px' }}>
+                          {employee.workPhoto ? (
+                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                              <span className="text-white text-4xl font-bold">{employee.name?.charAt(0)}</span>
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300" />
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-white text-center">
+                            <div className="font-bold text-sm">{employee.name}</div>
+                            <div className="text-xs text-gray-200">{employee.position}</div>
                           </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-white text-center">
-                          <div className="font-bold text-sm">{employee.name}</div>
-                          <div className="text-xs text-gray-200">{employee.position}</div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-white text-2xl font-bold">{"\u8be5\u90e8\u95e8\u6682\u65e0\u5458\u5de5"}</div>
+                )}
+              </motion.div>
+            ) : (
+              /* ====== DEFAULT PHOTO WALL ====== */
+              <motion.div className="w-full h-full flex items-center justify-between px-4"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+                <div className="flex gap-6 items-center justify-end">
+                  <PhotoColumn employees={leftColumn} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} />
+                  <PhotoColumn employees={leftMiddleColumn} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} />
                 </div>
-              ) : (
-                <div className="text-white text-2xl font-bold">该部门暂无员工</div>
-              )}
-            </motion.div>
-          ) : (
-            // 照片墙（2-3-3-2 六边形布局）
-            <motion.div 
-              className="w-full h-full flex items-center justify-between px-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              {/* 左侧组 (左2 + 左中3) */}
-              <div className="flex gap-6 items-center justify-end">
-                {/* 左2列 */}
-                <div className="flex flex-col gap-8 justify-center items-center">
-                  {leftColumn.map((employee, idx) => (
-                    <motion.div
-                      key={employee.id}
-                      initial={{ opacity: 0, x: -100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
-                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEmployeeClick(employee);
-                      }}
-                    >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group"
-                        style={{
-                          width: '150px',
-                          height: '150px',
-                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                        }}
-                      >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
-                      </div>
-                    </motion.div>
-                  ))}
+                <div className="flex-1 mx-12" />
+                <div className="flex gap-6 items-center justify-start">
+                  <PhotoColumn employees={rightMiddleColumn} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} />
+                  <PhotoColumn employees={rightColumn} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} />
                 </div>
-
-                {/* 左中3列 */}
-                <div className="flex flex-col gap-8 justify-center items-center">
-                  {leftMiddleColumn.map((employee, idx) => (
-                    <motion.div
-                      key={employee.id}
-                      initial={{ opacity: 0, x: -100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ duration: 0.5, delay: (idx + 2) * 0.1 }}
-                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEmployeeClick(employee);
-                      }}
-                    >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group"
-                        style={{
-                          width: '150px',
-                          height: '150px',
-                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                        }}
-                      >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 中间大空白 */}
-              <div className="flex-1 mx-12"></div>
-
-              {/* 右侧组 (右中3 + 右2) */}
-              <div className="flex gap-6 items-center justify-start">
-                {/* 右中3列 */}
-                <div className="flex flex-col gap-8 justify-center items-center">
-                  {rightMiddleColumn.map((employee, idx) => (
-                    <motion.div
-                      key={employee.id}
-                      initial={{ opacity: 0, x: 100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 100 }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
-                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEmployeeClick(employee);
-                      }}
-                    >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group"
-                        style={{
-                          width: '150px',
-                          height: '150px',
-                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                        }}
-                      >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* 右2列 */}
-                <div className="flex flex-col gap-8 justify-center items-center">
-                  {rightColumn.map((employee, idx) => (
-                    <motion.div
-                      key={employee.id}
-                      initial={{ opacity: 0, x: 100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 100 }}
-                      transition={{ duration: 0.5, delay: (idx + 3) * 0.1 }}
-                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEmployeeClick(employee);
-                      }}
-                    >
-                      <div
-                        className="relative flex items-center justify-center overflow-hidden group"
-                        style={{
-                          width: '150px',
-                          height: '150px',
-                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                        }}
-                      >
-                        {employee.workPhoto ? (
-                          <img
-                            src={employee.workPhoto}
-                            alt={employee.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-                            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
-                      </div>
-                    </motion.div>
-                  ))}  
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
       </div>
 
-      {/* 底部搜索框 */}
+      {/* Bottom search */}
       {!isAutoPlayDetail && (
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
           <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
             <Search className="w-5 h-5 text-white" />
-            <input
-              type="text"
-              placeholder="搜索员工..."
-              value={searchTerm}
+            <input type="text" placeholder={"\u641c\u7d22\u5458\u5de5..."} value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               className="bg-transparent text-white placeholder-white/60 outline-none w-64"
             />
-            <button
-              onClick={handleSearch}
-              className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all"
-            >
-              搜索
+            <button onClick={handleSearch}
+              className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all">
+              {"\u641c\u7d22"}
             </button>
           </div>
         </div>
