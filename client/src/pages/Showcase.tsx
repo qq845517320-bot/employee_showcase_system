@@ -70,8 +70,8 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick }: {
       animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
       exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.9, x: 50, rotateZ: 2 }}
       transition={{ duration: isAutoPlay ? 0.7 : 0.5, ease: 'easeInOut' }}
-      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-10 w-full text-white shadow-2xl border border-red-600/60 relative"
-      style={{ maxWidth: '720px' }}
+      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-12 w-full text-white shadow-2xl border border-red-600/60 relative"
+      style={{ maxWidth: '900px' }}
       onClick={onClick}
     >
       {!isAutoPlay && onClose && (
@@ -85,32 +85,32 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick }: {
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
-      <div className="flex gap-10">
+      <div className="flex gap-12">
         <div className="flex-shrink-0">
           {employee.workPhoto ? (
-            <img src={employee.workPhoto} alt={employee.name} className="w-56 h-56 rounded-xl object-cover shadow-lg" />
+            <img src={employee.workPhoto} alt={employee.name} className="w-72 h-96 rounded-xl object-cover shadow-lg" />
           ) : (
-            <div className="w-56 h-56 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white text-7xl font-bold">{employee.name?.charAt(0)}</span>
+            <div className="w-72 h-96 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white text-9xl font-bold">{employee.name?.charAt(0)}</span>
             </div>
           )}
         </div>
-        <div className="space-y-5 flex-1">
+        <div className="space-y-6 flex-1">
           <div>
-            <div className="text-4xl font-bold mb-2">{employee.name}</div>
-            <div className="text-red-200 text-lg">{"\u804c\u7ea7\uff1a"}{employee.level}</div>
+            <div className="text-6xl font-bold mb-3">{employee.name}</div>
+            <div className="text-red-200 text-2xl">{"\u804c\u7ea7\uff1a"}{employee.level}</div>
           </div>
-          <div className="space-y-2 text-base">
+          <div className="space-y-3 text-xl">
             <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
             <div>{"\u5165\u804c\u65f6\u95f4\uff1a"}{new Date(employee.joinDate || 0).toLocaleDateString()}</div>
           </div>
           <div className="border-t border-white/30 pt-4">
-            <div className="font-semibold mb-2 text-base">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
-            <div className="text-sm leading-relaxed">{employee.jobResponsibilities}</div>
+            <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
+            <div className="text-base leading-relaxed">{employee.jobResponsibilities}</div>
           </div>
           <div className="border-t border-white/30 pt-4">
-            <div className="font-semibold mb-2 text-base">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
-            <div className="text-sm italic">{employee.motto}</div>
+            <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
+            <div className="text-base italic">{employee.motto}</div>
           </div>
         </div>
       </div>
