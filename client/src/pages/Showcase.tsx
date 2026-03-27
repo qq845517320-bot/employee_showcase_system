@@ -11,9 +11,11 @@ export default function Showcase() {
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [currentDetailIndex, setCurrentDetailIndex] = useState(0);
   const [backgroundUrl, setBackgroundUrl] = useState<string>('');
+  const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const batchIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const detailIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
 
   // 获取员工列表
@@ -23,6 +25,19 @@ export default function Showcase() {
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, {
     refetchInterval: 5000,
   });
+
+  // 实时时间更新
+  useEffect(() => {
+    timeIntervalRef.current = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    }, 1000);
+
+    return () => {
+      if (timeIntervalRef.current) {
+        clearInterval(timeIntervalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (employeesData) {
@@ -130,6 +145,7 @@ export default function Showcase() {
       if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
       if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
       if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+      if (timeIntervalRef.current) clearInterval(timeIntervalRef.current);
     };
   }, []);
 
@@ -203,8 +219,8 @@ export default function Showcase() {
           <div className="text-white text-2xl font-bold">深国际靖江港</div>
         </div>
         <h1 className="text-4xl font-bold text-white">员工风采展示</h1>
-        <div className="text-2xl font-semibold text-white">
-          {new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+        <div className="text-2xl font-semibold text-white font-mono tracking-wider">
+          {currentTime}
         </div>
       </div>
 
@@ -215,11 +231,11 @@ export default function Showcase() {
             // 详情面板（用户操作时）
             <motion.div
               key={`detail-${selectedEmployee.id}`}
-              initial={{ opacity: 0, scale: 0.9, x: -50 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: 50 }}
-              transition={{ duration: 0.4 }}
-              className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl"
+              initial={{ opacity: 0, scale: 0.9, x: -50, rotateZ: -2 }}
+              animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: 50, rotateZ: 2 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="bg-gradient-to-br from-red-800 via-red-850 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl border border-red-700/50 hover:border-red-600/80 transition-colors"
               onClick={handleDetailPanelClick}
             >
               {/* 关闭按钮 */}
@@ -278,11 +294,11 @@ export default function Showcase() {
             // 详情轮播面板（无操作时）
             <motion.div
               key={`detail-auto-${selectedEmployee.id}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-              className="bg-gradient-to-br from-red-800 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              transition={{ duration: 0.7, ease: 'easeInOut' }}
+              className="bg-gradient-to-br from-red-800 via-red-850 to-red-900 rounded-2xl p-8 max-w-3xl w-full mx-4 text-white shadow-2xl border border-red-700/50"
               onClick={handleDetailPanelClick}
             >
               {/* 详情头部 */}
@@ -328,15 +344,25 @@ export default function Showcase() {
             </motion.div>
           ) : (
             // 照片墙（2-3-3-2 六边形布局）
-            <div className="w-full h-full flex items-center justify-between px-4">
+            <motion.div 
+              className="w-full h-full flex items-center justify-between px-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}
+            >
               {/* 左侧组 (左2 + 左中3) */}
               <div className="flex gap-6 items-center justify-end">
                 {/* 左2列 */}
                 <div className="flex flex-col gap-8 justify-center items-center">
-                  {leftColumn.map((employee) => (
+                  {leftColumn.map((employee, idx) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.15 }}
+                      initial={{ opacity: 0, x: -100 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -100 }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
                       className="cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -362,7 +388,7 @@ export default function Showcase() {
                             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -370,10 +396,14 @@ export default function Showcase() {
 
                 {/* 左中3列 */}
                 <div className="flex flex-col gap-8 justify-center items-center">
-                  {leftMiddleColumn.map((employee) => (
+                  {leftMiddleColumn.map((employee, idx) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.15 }}
+                      initial={{ opacity: 0, x: -100 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -100 }}
+                      transition={{ duration: 0.5, delay: (idx + 2) * 0.1 }}
+                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
                       className="cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -399,7 +429,7 @@ export default function Showcase() {
                             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -413,10 +443,14 @@ export default function Showcase() {
               <div className="flex gap-6 items-center justify-start">
                 {/* 右中3列 */}
                 <div className="flex flex-col gap-8 justify-center items-center">
-                  {rightMiddleColumn.map((employee) => (
+                  {rightMiddleColumn.map((employee, idx) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.15 }}
+                      initial={{ opacity: 0, x: 100 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 100 }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
                       className="cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -442,7 +476,7 @@ export default function Showcase() {
                             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
                       </div>
                     </motion.div>
                   ))}
@@ -450,10 +484,14 @@ export default function Showcase() {
 
                 {/* 右2列 */}
                 <div className="flex flex-col gap-8 justify-center items-center">
-                  {rightColumn.map((employee) => (
+                  {rightColumn.map((employee, idx) => (
                     <motion.div
                       key={employee.id}
-                      whileHover={{ scale: 1.15 }}
+                      initial={{ opacity: 0, x: 100 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 100 }}
+                      transition={{ duration: 0.5, delay: (idx + 3) * 0.1 }}
+                      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.6))' }}
                       className="cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -479,13 +517,13 @@ export default function Showcase() {
                             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all"></div>
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300"></div>
                       </div>
                     </motion.div>
-                  ))}
+                  ))}  
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
