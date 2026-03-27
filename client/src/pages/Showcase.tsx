@@ -27,7 +27,7 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
         }}
       >
         {employee.workPhoto ? (
-          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain" />
+          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover object-center" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
@@ -61,8 +61,8 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
 }
 
 /* ========== DetailPanel ========== */
-function DetailPanel({ employee, isAutoPlay = false, onClose, onClick }: {
-  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void;
+function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName }: {
+  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string;
 }) {
   return (
     <motion.div
@@ -103,7 +103,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick }: {
               <div className="text-6xl font-bold mb-4">{employee.name}</div>
             </div>
             <div className="space-y-3 text-2xl">
-              <div>{"\u90e8\u95e8\uff1a"}{employee.departmentId}</div>
+              <div>{"\u90e8\u95e8\uff1a"}{getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId}</div>
               <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
               <div>{"\u804c\u52a1\uff1a"}{employee.level}</div>
               <div>{"\u5165\u804c\u65f6\u95f4\uff1a"}{new Date(employee.joinDate || 0).toLocaleDateString()}</div>
@@ -159,6 +159,13 @@ export default function Showcase() {
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
+
+  // Get department name by ID
+  const getDepartmentName = (deptId: number | string | null) => {
+    if (!deptId) return 'Unknown Department';
+    const dept = departments.find(d => d.id === deptId);
+    return dept?.name || `Department ${deptId}`;
+  };
 
   // Real-time clock
   useEffect(() => {
@@ -383,7 +390,7 @@ export default function Showcase() {
 
             {/* Center detail panel (absolute overlay) */}
             <div className="flex-1 flex items-center justify-center px-4 z-10">
-              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} />
+              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} />
             </div>
 
             {/* Right columns */}
@@ -399,6 +406,7 @@ export default function Showcase() {
               <DetailPanel key={`manual-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={false}
                 onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
                 onClick={handleDetailPanelClick}
+                getDepartmentName={getDepartmentName}
               />
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
@@ -417,7 +425,7 @@ export default function Showcase() {
                         <div className="relative flex items-center justify-center overflow-hidden group rounded-lg shadow-lg"
                           style={{ width: '160px', height: '160px', backgroundColor: '#dc2626' }}>
                           {employee.workPhoto ? (
-                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain" />
+                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover object-center" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
                               <span className="text-white text-4xl font-bold">{employee.name?.charAt(0)}</span>
