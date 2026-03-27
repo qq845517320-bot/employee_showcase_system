@@ -23,10 +23,11 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
           width: `${size}px`, height: `${size}px`,
           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
           filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(250,204,21,0.8))' : undefined,
+          backgroundColor: '#dc2626',
         }}
       >
         {employee.workPhoto ? (
-          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover object-center" />
+          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
             <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
@@ -414,9 +415,9 @@ export default function Showcase() {
                         onClick={(e) => { e.stopPropagation(); handleEmployeeClick(employee); }}
                       >
                         <div className="relative flex items-center justify-center overflow-hidden group rounded-lg shadow-lg"
-                          style={{ width: '160px', height: '160px' }}>
+                          style={{ width: '160px', height: '160px', backgroundColor: '#dc2626' }}>
                           {employee.workPhoto ? (
-                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover object-center" />
+                            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
                               <span className="text-white text-4xl font-bold">{employee.name?.charAt(0)}</span>
