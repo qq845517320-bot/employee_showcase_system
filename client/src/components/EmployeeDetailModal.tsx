@@ -138,15 +138,15 @@ export function EmployeeDetailModal({
                   </div>
                 )}
 
-                {/* 座右铭 */}
-                {employee.motto && (
+                {/* 工作信条 */}
+                {employee.workTenet && (
                   <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border-l-4 border-blue-600">
                     <div className="flex gap-3">
                       <Quote className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
                       <div>
-                        <p className="text-sm text-muted-foreground mb-1">座右铭</p>
+                        <p className="text-sm text-muted-foreground mb-1">工作信条</p>
                         <p className="text-base font-semibold text-foreground italic">
-                          {employee.motto}
+                          {employee.workTenet}
                         </p>
                       </div>
                     </div>

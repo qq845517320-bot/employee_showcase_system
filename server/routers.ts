@@ -125,7 +125,7 @@ const employeeRouter = router({
       level: z.string().min(1),
       joinDate: z.date(),
       jobResponsibilities: z.string().optional(),
-      motto: z.string().optional(),
+      workTenet: z.string().optional(),
       workPhoto: z.string().optional(),
       isCoreBone: z.boolean().optional(),
     }))
@@ -141,7 +141,7 @@ const employeeRouter = router({
         level: input.level,
         joinDate: input.joinDate,
         jobResponsibilities: input.jobResponsibilities,
-        motto: input.motto,
+        workTenet: input.workTenet,
         workPhoto: input.workPhoto,
         isCoreBone: input.isCoreBone || false,
       });
@@ -157,7 +157,7 @@ const employeeRouter = router({
       level: z.string().optional(),
       joinDate: z.date().optional(),
       jobResponsibilities: z.string().optional(),
-      motto: z.string().optional(),
+      workTenet: z.string().optional(),
       workPhoto: z.string().optional(),
       status: z.enum(['active', 'inactive', 'archived']).optional(),
       isCoreBone: z.boolean().optional(),

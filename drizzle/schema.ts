@@ -45,7 +45,7 @@ export const employees = mysqlTable("employees", {
   joinDate: timestamp("joinDate").notNull(), // 入职时间
   workPhoto: varchar("workPhoto", { length: 500 }), // 工作照 URL（S3）
   jobResponsibilities: text("jobResponsibilities"), // 工作职责
-  motto: text("motto"), // 座右铭
+  workTenet: text("workTenet"), // 工作信条
   status: mysqlEnum("status", ["active", "inactive", "archived"]).default("active").notNull(), // 在职、离职、归档
   isCoreBone: boolean("isCoreBone").default(false).notNull(), // 是否为核心骨干
   createdAt: timestamp("createdAt").defaultNow().notNull(),

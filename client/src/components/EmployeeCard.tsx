@@ -84,10 +84,10 @@ export function EmployeeCard({ employee, onClick, delay = 0 }: EmployeeCardProps
             </div>
           </div>
 
-          {/* 座右铭 */}
-          {employee.motto && (
+          {/* 工作信条 */}
+          {employee.workTenet && (
             <p className="text-xs text-muted-foreground italic line-clamp-2 border-t pt-2">
-              "{employee.motto}"
+              "{employee.workTenet}"
             </p>
           )}
         </div>

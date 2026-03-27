@@ -85,32 +85,49 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick }: {
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
-      <div className="flex gap-12">
-        <div className="flex-shrink-0">
-          {employee.workPhoto ? (
-            <img src={employee.workPhoto} alt={employee.name} className="w-72 h-96 rounded-xl object-cover shadow-lg" />
-          ) : (
-            <div className="w-72 h-96 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white text-9xl font-bold">{employee.name?.charAt(0)}</span>
+      <div className="flex flex-col w-full h-full">
+        {/* 上部分：照片 + 基本信息（3/5 高度） */}
+        <div className="flex-[3] flex gap-12 pb-8 border-b border-white/30">
+          <div className="flex-shrink-0">
+            {employee.workPhoto ? (
+              <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-cover shadow-lg" />
+            ) : (
+              <div className="h-full aspect-square bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-9xl font-bold">{employee.name?.charAt(0)}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 flex flex-col justify-center space-y-4">
+            <div>
+              <div className="text-6xl font-bold mb-4">{employee.name}</div>
             </div>
-          )}
+            <div className="space-y-3 text-2xl">
+              <div>{"\u90e8\u95e8\uff1a"}{employee.departmentId}</div>
+              <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
+              <div>{"\u804c\u52a1\uff1a"}{employee.level}</div>
+              <div>{"\u5165\u804c\u65f6\u95f4\uff1a"}{new Date(employee.joinDate || 0).toLocaleDateString()}</div>
+            </div>
+          </div>
         </div>
-        <div className="space-y-6 flex-1">
-          <div>
-            <div className="text-6xl font-bold mb-3">{employee.name}</div>
-            <div className="text-red-200 text-2xl">{"\u804c\u7ea7\uff1a"}{employee.level}</div>
+        {/* 下部分：工作职责、工作信条、奖励荣誉（2/5 高度） */}
+        <div className="flex-[2] flex gap-12 pt-8 overflow-y-auto">
+          <div className="flex-1 space-y-4 text-lg">
+            {employee.jobResponsibilities && (
+              <div>
+                <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
+                <div className="leading-relaxed">{employee.jobResponsibilities}</div>
+              </div>
+            )}
+            {employee.workTenet && (
+              <div>
+                <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
+                <div className="italic">{employee.workTenet}</div>
+              </div>
+            )}
           </div>
-          <div className="space-y-3 text-xl">
-            <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
-            <div>{"\u5165\u804c\u65f6\u95f4\uff1a"}{new Date(employee.joinDate || 0).toLocaleDateString()}</div>
-          </div>
-          <div className="border-t border-white/30 pt-4">
-            <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
-            <div className="text-base leading-relaxed">{employee.jobResponsibilities}</div>
-          </div>
-          <div className="border-t border-white/30 pt-4">
-            <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
-            <div className="text-base italic">{employee.motto}</div>
+          <div className="flex-1">
+            <div className="font-semibold mb-2 text-xl">{"\u5956\u52b1\u8363\u8a89\uff1a"}</div>
+            <div className="text-base">{"\u6682\u65e0\u6570\u636e"}</div>
           </div>
         </div>
       </div>
@@ -325,10 +342,14 @@ export default function Showcase() {
       {/* Top nav */}
       <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent z-40">
         <div className="h-20 flex items-center justify-between px-8">
-          <div className="text-white text-2xl font-bold">{"\u6df1\u56fd\u9645\u9756\u6c5f\u6e2f"}</div>
+          <div className="flex items-center gap-3">
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/深国际Logo_597125f6.jpg" alt="Logo" className="h-12 w-auto" />
+            <div className="text-white text-lg font-bold">{"\u6df1\u56fd\u9645\u6e2f\u53e3 | \u6c5f\u82cf\u9756\u6c5f\u6e2f"}</div>
+          </div>
           <h1 className="text-4xl font-bold text-white">{"\u5458\u5de5\u98ce\u91c7\u5c55\u793a"}</h1>
           <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
         </div>
+        {!isAutoPlayDetail && (
         <div className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap">
           <button onClick={() => handleDepartmentClick(null)}
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
@@ -345,6 +366,7 @@ export default function Showcase() {
             {"\u2605\u8363\u8a89\u699c\u2605"}
           </button>
         </div>
+        )}
       </div>
 
       {/* Content area */}
@@ -401,10 +423,12 @@ export default function Showcase() {
                             </div>
                           )}
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300" />
+                          {!isAutoPlayDetail && (
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-white text-center">
                             <div className="font-bold text-sm">{employee.name}</div>
                             <div className="text-xs text-gray-200">{employee.position}</div>
                           </div>
+                          )}
                         </div>
                       </motion.div>
                     ))}

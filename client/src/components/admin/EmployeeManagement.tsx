@@ -77,7 +77,7 @@ export default function EmployeeManagement() {
         level: formData.level,
         joinDate: formData.joinDate,
         jobResponsibilities: formData.jobResponsibilities || undefined,
-        motto: formData.motto || undefined,
+        workTenet: formData.workTenet || undefined,
         workPhoto: uploadedPhotoUrl || undefined,
       });
     } else {
@@ -89,7 +89,7 @@ export default function EmployeeManagement() {
         level: formData.level || '',
         joinDate: formData.joinDate || new Date(),
         jobResponsibilities: formData.jobResponsibilities || undefined,
-        motto: formData.motto || undefined,
+        workTenet: formData.workTenet || undefined,
         workPhoto: uploadedPhotoUrl || undefined,
       });
     }
@@ -200,9 +200,9 @@ export default function EmployeeManagement() {
             rows={3}
           />
           <textarea
-            placeholder="座右铭"
-            value={(formData.motto as string) || ''}
-            onChange={(e) => setFormData({ ...formData, motto: e.target.value })}
+            placeholder="工作信条"
+            value={(formData.workTenet as string) || ''}
+            onChange={(e) => setFormData({ ...formData, workTenet: e.target.value })}
             className="w-full px-3 py-2 border rounded-lg"
             rows={2}
           />
