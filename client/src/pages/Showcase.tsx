@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 
 /* ========== HexPhoto ========== */
-function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0 }: {
-  employee: any; size?: number; isHighlighted?: boolean; onClick?: (e: React.MouseEvent) => void; delay?: number; fromX?: number;
+function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0, isAutoPlay = false }: {
+  employee: any; size?: number; isHighlighted?: boolean; onClick?: (e: React.MouseEvent) => void; delay?: number; fromX?: number; isAutoPlay?: boolean;
 }) {
   return (
     <motion.div
@@ -34,7 +34,7 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
           </div>
         )}
         <div className={`absolute inset-0 transition-all duration-500 ${isHighlighted ? 'bg-black/5' : 'bg-black/30 group-hover:bg-black/10'}`} />
-        {isHighlighted && (
+        {isHighlighted && !isAutoPlay && (
           <div className="absolute bottom-1 left-0 right-0 text-center">
             <span className="text-white text-xs font-bold drop-shadow-lg bg-black/40 px-2 py-0.5 rounded">{employee.name}</span>
           </div>
@@ -45,8 +45,8 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
 }
 
 /* ========== PhotoColumn ========== */
-function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDelay = 0, onClickEmployee }: {
-  employees: any[]; highlightedId?: number | null; size?: number; fromX?: number; baseDelay?: number; onClickEmployee: (emp: any) => void;
+function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDelay = 0, onClickEmployee, isAutoPlay = false }: {
+  employees: any[]; highlightedId?: number | null; size?: number; fromX?: number; baseDelay?: number; onClickEmployee: (emp: any) => void; isAutoPlay?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-8 justify-center items-center">
@@ -54,6 +54,7 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
         <HexPhoto key={emp.id} employee={emp} size={size} isHighlighted={highlightedId === emp.id}
           fromX={fromX} delay={(baseDelay + idx) * 0.1}
           onClick={(e) => { e.stopPropagation(); onClickEmployee(emp); }}
+          isAutoPlay={isAutoPlay}
         />
       ))}
     </div>
@@ -91,7 +92,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         <div className="flex-[3] flex gap-12 pb-8 border-b border-white/30">
           <div className="flex-shrink-0">
             {employee.workPhoto ? (
-              <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-cover shadow-lg" />
+              <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-contain shadow-lg" />
             ) : (
               <div className="h-full aspect-square bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white text-9xl font-bold">{employee.name?.charAt(0)}</span>
@@ -384,8 +385,8 @@ export default function Showcase() {
           <div className="w-full h-full flex items-center justify-between px-4 relative">
             {/* Left columns */}
             <div className="flex gap-6 items-center">
-              <PhotoColumn employees={allLeft1} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} />
-              <PhotoColumn employees={allLeft2} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} />
+              <PhotoColumn employees={allLeft1} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={allLeft2} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
 
             {/* Center detail panel (absolute overlay) */}
@@ -395,8 +396,8 @@ export default function Showcase() {
 
             {/* Right columns */}
             <div className="flex gap-6 items-center">
-              <PhotoColumn employees={allRight1} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} />
-              <PhotoColumn employees={allRight2} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} />
+              <PhotoColumn employees={allRight1} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={allRight2} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
           </div>
         ) : (
