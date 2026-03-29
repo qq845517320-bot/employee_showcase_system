@@ -114,18 +114,14 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         {/* 下部分：工作职责、工作信条、奖励荣誉（2/5 高度） */}
         <div className="flex-[2] flex gap-12 pt-8 overflow-y-auto">
           <div className="flex-1 space-y-4 text-lg">
-            {employee.jobResponsibilities && (
-              <div>
-                <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
-                <div className="leading-relaxed">{employee.jobResponsibilities}</div>
-              </div>
-            )}
-            {employee.workTenet && (
-              <div>
-                <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
-                <div className="italic">{employee.workTenet}</div>
-              </div>
-            )}
+            <div>
+              <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
+              <div className="leading-relaxed">{employee.jobResponsibilities || "\u6682\u65e0\u6570\u636e"}</div>
+            </div>
+            <div>
+              <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
+              <div className="italic">{employee.workTenet || "\u6682\u65e0\u6570\u636e"}</div>
+            </div>
           </div>
           <div className="flex-1">
             <div className="font-semibold mb-2 text-xl">{"\u5956\u52b1\u8363\u8a89\uff1a"}</div>
