@@ -2,16 +2,22 @@ import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import type { Employee } from '../../../../drizzle/schema';
+import * as XLSX from 'xlsx';
+import Papa from 'papaparse';
 
 export default function EmployeeManagement() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Partial<Employee>>({});
   const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState<{ current: number; total: number } | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importSuccess, setImportSuccess] = useState<string | null>(null);
 
   const { data: employees = [], refetch } = trpc.employees.list.useQuery({});
   const { data: departments = [] } = trpc.departments.list.useQuery();
@@ -41,6 +47,22 @@ export default function EmployeeManagement() {
   });
 
   const uploadMutation = trpc.upload.uploadPhoto.useMutation();
+  const importMutation = trpc.employees.import.useMutation({
+    onSuccess: (result: any) => {
+      refetch();
+      setIsImporting(false);
+      setImportProgress(null);
+      setImportError(null);
+      setImportSuccess(`成功导入 ${result.successCount} 条员工信息${result.errorCount > 0 ? `，失败 ${result.errorCount} 条` : ''}`);
+      setTimeout(() => setImportSuccess(null), 5000);
+    },
+    onError: (error: any) => {
+      setIsImporting(false);
+      setImportProgress(null);
+      setImportError(error.message || '导入失败，请检查文件格式');
+      setTimeout(() => setImportError(null), 5000);
+    },
+  });
 
   const handleUploadPhoto = async (file: File) => {
     // 读取文件为 base64
@@ -102,23 +124,174 @@ export default function EmployeeManagement() {
     setIsAddingNew(false);
   };
 
+  const handleImportFile = async (file: File) => {
+    setImportError(null);
+    setImportSuccess(null);
+    setIsImporting(true);
+    setImportProgress({ current: 0, total: 0 });
+
+    try {
+      let data: any[] = [];
+
+      if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+        // 处理 Excel 文件
+        const arrayBuffer = await file.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        data = XLSX.utils.sheet_to_json(worksheet);
+      } else if (file.name.endsWith('.csv')) {
+        // 处理 CSV 文件
+        return new Promise<void>((resolve, reject) => {
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: async (results: any) => {
+              try {
+                data = results.data as any[];
+                await processImportData(data);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            },
+            error: (error: any) => reject(new Error(`CSV 解析失败: ${error.message}`)),
+          });
+        });
+      } else {
+        throw new Error('不支持的文件格式，请上传 .xlsx 或 .csv 文件');
+      }
+
+      await processImportData(data);
+    } catch (error) {
+      setImportError(error instanceof Error ? error.message : '导入失败');
+      setIsImporting(false);
+      setImportProgress(null);
+    }
+  };
+
+  const processImportData = async (data: any[]) => {
+    if (data.length === 0) {
+      throw new Error('文件中没有数据');
+    }
+
+    // 验证列名
+    const requiredColumns = ['姓名', '部门', '岗位', '职级', '入职时间'];
+    const headers = Object.keys(data[0] || {});
+    const missingColumns = requiredColumns.filter(col => !headers.some(h => h.includes(col)));
+    
+    if (missingColumns.length > 0) {
+      throw new Error(`缺少必要列: ${missingColumns.join(', ')}`);
+    }
+
+    // 转换数据格式
+    const employees = data.map((row: any) => ({
+      name: row['姓名']?.trim() || '',
+      departmentName: row['部门']?.trim() || '',
+      position: row['岗位']?.trim() || '',
+      level: row['职级']?.trim() || '',
+      joinDate: row['入职时间'] || '',
+      jobResponsibilities: row['工作职责']?.trim() || '',
+      workTenet: row['工作信条']?.trim() || '',
+    }));
+
+    setImportProgress({ current: 0, total: employees.length });
+
+    // 调用后端导入接口
+    try {
+      await importMutation.mutateAsync({ employees });
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
-      {/* 添加按钮 */}
+      {/* 添加按钮和导入按钮 */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">员工列表</h2>
-        <Button
-          onClick={() => {
-            setIsAddingNew(!isAddingNew);
-            setFormData({});
-            setUploadedPhotoUrl(null);
-          }}
-          className="flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          添加员工
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              setIsAddingNew(!isAddingNew);
+              setFormData({});
+              setUploadedPhotoUrl(null);
+            }}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            添加员工
+          </Button>
+          <label>
+            <input
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  handleImportFile(file);
+                }
+              }}
+              disabled={isImporting}
+              className="hidden"
+            />
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 cursor-pointer"
+              disabled={isImporting}
+              onClick={() => {
+                const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+                input?.click();
+              }}
+            >
+              <Upload className="w-4 h-4" />
+              {isImporting ? '导入中...' : '批量导入'}
+            </Button>
+          </label>
+        </div>
       </div>
+
+      {/* 导入进度和消息 */}
+      {importProgress && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-blue-50 border border-blue-200 rounded-lg p-4"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-blue-900">
+              正在导入: {importProgress.current} / {importProgress.total}
+            </span>
+            <div className="w-48 bg-blue-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{
+                  width: `${(importProgress.current / importProgress.total) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {importError && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-900"
+        >
+          {importError}
+        </motion.div>
+      )}
+
+      {importSuccess && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-green-50 border border-green-200 rounded-lg p-4 text-green-900"
+        >
+          {importSuccess}
+        </motion.div>
+      )}
 
       {/* 添加/编辑表单 */}
       {(isAddingNew || editingId) && (

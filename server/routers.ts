@@ -201,6 +201,89 @@ const employeeRouter = router({
       await db.update(employees).set({ workPhoto: url }).where(eq(employees.id, input.employeeId));
       return { url };
     }),
+  
+  import: protectedProcedure
+    .input(z.object({
+      employees: z.array(z.object({
+        name: z.string().min(1),
+        departmentName: z.string().min(1),
+        position: z.string().min(1),
+        level: z.string().min(1),
+        joinDate: z.string(),
+        jobResponsibilities: z.string().optional(),
+        workTenet: z.string().optional(),
+      }))
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'UNAUTHORIZED' });
+      
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'DB unavailable' });
+      
+      let successCount = 0;
+      let errorCount = 0;
+      const errors: string[] = [];
+      
+      const allDepartments = await getAllDepartments();
+      const deptMap = new Map(allDepartments.map(d => [d.name, d.id]));
+      
+      for (const emp of input.employees) {
+        try {
+          const deptId = deptMap.get(emp.departmentName);
+          if (!deptId) {
+            errors.push(`Employee ${emp.name}: Department not found`);
+            errorCount++;
+            continue;
+          }
+          
+          let joinDate = new Date();
+          if (emp.joinDate) {
+            const dateStr = emp.joinDate.toString().trim();
+            joinDate = new Date(dateStr);
+          }
+          
+          const existingEmployee = await db.select().from(employees).where(
+            and(
+              eq(employees.name, emp.name),
+              eq(employees.departmentId, deptId)
+            )
+          ).limit(1);
+          const existing = existingEmployee.length > 0 ? existingEmployee[0] : null;
+          
+          if (existing) {
+            await db.update(employees).set({
+              position: emp.position,
+              level: emp.level,
+              joinDate: joinDate,
+              jobResponsibilities: emp.jobResponsibilities,
+              workTenet: emp.workTenet,
+            }).where(eq(employees.id, existing.id));
+          } else {
+            await db.insert(employees).values({
+              name: emp.name,
+              departmentId: deptId,
+              position: emp.position,
+              level: emp.level,
+              joinDate: joinDate,
+              jobResponsibilities: emp.jobResponsibilities,
+              workTenet: emp.workTenet,
+              status: 'active' as const,
+            });
+          }
+          
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          errors.push(`Employee ${emp.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      }
+      
+      return {
+        successCount,
+        errorCount,
+        errors: errors.slice(0, 10),
+      };
+    }),
 });
 
 // ========== 荣誉路由 ==========

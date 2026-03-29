@@ -1,0 +1,78 @@
+{
+  "query": "SELECT id, name FROM employees WHERE workPhoto IS NULL OR workPhoto = '' ORDER BY id",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3of7Fiw6XCyDJc5.50ff283b5a85 --database dTX999GnT8s8oqjJyp2eQW --execute SELECT id, name FROM employees WHERE workPhoto IS NULL OR workPhoto = '' ORDER BY id",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Test Employee"
+    },
+    {
+      "id": "2",
+      "name": "Test Employee"
+    },
+    {
+      "id": "12",
+      "name": "Test Employee"
+    },
+    {
+      "id": "13",
+      "name": "Test Employee"
+    },
+    {
+      "id": "30002",
+      "name": "Test Employee"
+    },
+    {
+      "id": "60001",
+      "name": "Test Employee"
+    },
+    {
+      "id": "60002",
+      "name": "Test Employee"
+    },
+    {
+      "id": "60003",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90001",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90002",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90003",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90004",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90006",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90007",
+      "name": "Test Employee"
+    },
+    {
+      "id": "90008",
+      "name": "Test Employee"
+    },
+    {
+      "id": "150002",
+      "name": "Test Employee"
+    },
+    {
+      "id": "150003",
+      "name": "Test Employee"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n1\tTest Employee\n2\tTest Employee\n12\tTest Employee\n13\tTest Employee\n30002\tTest Employee\n60001\tTest Employee\n60002\tTest Employee\n60003\tTest Employee\n90001\tTest Employee\n90002\tTest Employee\n90003\tTest Employee\n90004\tTest Employee\n90006\tTest Employee\n90007\tTest Employee\n90008\tTest Employee\n150002\tTest Employee\n150003\tTest Employee\n",
+  "stderr": "",
+  "execution_time_ms": 343
+}

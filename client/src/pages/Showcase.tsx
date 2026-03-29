@@ -62,8 +62,8 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
 }
 
 /* ========== DetailPanel ========== */
-function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail }: {
-  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any;
+function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, onPrevious, onNext, canGoPrevious, canGoNext }: {
+  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean;
 }) {
   return (
     <motion.div
@@ -79,6 +79,16 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       {!isAutoPlay && onClose && (
         <button onClick={(e) => { e.stopPropagation(); onClose(); }}
           className="absolute top-5 right-5 text-white/60 hover:text-white text-3xl z-10">{"\u2715"}</button>
+      )}
+      {!isAutoPlay && onPrevious && onNext && (
+        <>
+          <button onClick={(e) => { e.stopPropagation(); onPrevious(); }}
+            disabled={!canGoPrevious}
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-3xl z-10 transition-colors">{'<'}</button>
+          <button onClick={(e) => { e.stopPropagation(); onNext(); }}
+            disabled={!canGoNext}
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-3xl z-10 transition-colors">{'>'}</button>
+        </>
       )}
       {isAutoPlay && (
         <div className="absolute top-4 right-5 flex items-center gap-2 text-yellow-300/80">
@@ -260,6 +270,28 @@ export default function Showcase() {
     resetInactivityTimer();
   };
 
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (!selectedEmployee || isAutoPlayDetail) return;
+      if (wheelTimeoutRef.current) return;
+      wheelTimeoutRef.current = setTimeout(() => { wheelTimeoutRef.current = null; }, 300);
+      e.preventDefault();
+      const idx = filteredEmployees.findIndex(emp => emp.id === selectedEmployee.id);
+      if (e.deltaY < 0 && idx > 0) {
+        setSelectedEmployee(filteredEmployees[idx - 1]);
+        setCurrentDetailIndex(idx - 1);
+        resetInactivityTimer();
+      } else if (e.deltaY > 0 && idx < filteredEmployees.length - 1) {
+        setSelectedEmployee(filteredEmployees[idx + 1]);
+        setCurrentDetailIndex(idx + 1);
+        resetInactivityTimer();
+      }
+    };
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => { window.removeEventListener('wheel', handleWheel); if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current); };
+  }, [selectedEmployee, isAutoPlayDetail, filteredEmployees]);
+
   useEffect(() => {
     return () => {
       if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
@@ -419,6 +451,24 @@ export default function Showcase() {
                 onClick={handleDetailPanelClick}
                 getDepartmentName={getDepartmentName}
                 selectedEmployeeDetail={selectedEmployeeDetail}
+                onPrevious={() => {
+                  const currentIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
+                  if (currentIndex > 0) {
+                    setSelectedEmployee(filteredEmployees[currentIndex - 1]);
+                    setCurrentDetailIndex(currentIndex - 1);
+                    resetInactivityTimer();
+                  }
+                }}
+                onNext={() => {
+                  const currentIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
+                  if (currentIndex < filteredEmployees.length - 1) {
+                    setSelectedEmployee(filteredEmployees[currentIndex + 1]);
+                    setCurrentDetailIndex(currentIndex + 1);
+                    resetInactivityTimer();
+                  }
+                }}
+                canGoPrevious={filteredEmployees.findIndex(e => e.id === selectedEmployee.id) > 0}
+                canGoNext={filteredEmployees.findIndex(e => e.id === selectedEmployee.id) < filteredEmployees.length - 1}
               />
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
