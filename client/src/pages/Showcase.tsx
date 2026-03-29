@@ -62,8 +62,8 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
 }
 
 /* ========== DetailPanel ========== */
-function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName }: {
-  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string;
+function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail }: {
+  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any;
 }) {
   return (
     <motion.div
@@ -129,7 +129,15 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
           <div className="flex-1">
             <div className="font-semibold mb-2 text-xl">{"\u5956\u52b1\u8363\u8a89\uff1a"}</div>
-            <div className="text-base">{"\u6682\u65e0\u6570\u636e"}</div>
+            <div className="text-base space-y-1">
+              {selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0 ? (
+                selectedEmployeeDetail.honors.map((honor: any, idx: number) => (
+                  <div key={idx} className="text-sm leading-relaxed">• {honor.honorName}</div>
+                ))
+              ) : (
+                <div>{"\u6682\u65e0\u6570\u636e"}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -160,6 +168,12 @@ export default function Showcase() {
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
+  
+  // Get detailed employee info including honors
+  const { data: selectedEmployeeDetail } = trpc.employees.get.useQuery(
+    { id: selectedEmployee?.id || 0 },
+    { enabled: !!selectedEmployee?.id }
+  );
 
   // Get department name by ID
   const getDepartmentName = (deptId: number | string | null) => {
@@ -391,7 +405,7 @@ export default function Showcase() {
 
             {/* Center detail panel (absolute overlay) */}
             <div className="flex-1 flex items-center justify-center px-4 z-10">
-              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} />
+              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} />
             </div>
 
             {/* Right columns */}
@@ -408,6 +422,7 @@ export default function Showcase() {
                 onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
                 onClick={handleDetailPanelClick}
                 getDepartmentName={getDepartmentName}
+                selectedEmployeeDetail={selectedEmployeeDetail}
               />
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
