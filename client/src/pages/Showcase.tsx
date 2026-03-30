@@ -170,6 +170,9 @@ export default function Showcase() {
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
+  const [filterLevel, setFilterLevel] = useState<string | null>(null);
+  const [filterJoinYear, setFilterJoinYear] = useState<string | null>(null);
+  const keyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
@@ -196,7 +199,7 @@ export default function Showcase() {
     return () => { if (timeIntervalRef.current) clearInterval(timeIntervalRef.current); };
   }, []);
 
-  useEffect(() => { if (employeesData) { setEmployees(employeesData); setFilteredEmployees(employeesData); } }, [employeesData]);
+  useEffect(() => { if (employeesData) { setEmployees(employeesData); setFilteredEmployees(employeesData); handleSearch(); } }, [employeesData]);
   useEffect(() => { if (departmentsData) setDepartments(departmentsData); }, [departmentsData]);
   useEffect(() => { if (backgroundData?.backgroundUrl) setBackgroundUrl(backgroundData.backgroundUrl); }, [backgroundData]);
 
@@ -209,19 +212,38 @@ export default function Showcase() {
   };
 
   const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      setFilteredEmployees(employees);
-      setSelectedEmployee(null);
-    } else {
-      const results = employees.filter(emp =>
+    let results = employees;
+    
+    // Apply search term filter
+    if (searchTerm.trim()) {
+      results = results.filter(emp =>
         emp.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.position?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredEmployees(results);
-      if (results.length > 0) { setSelectedEmployee(results[0]); setCurrentDetailIndex(0); }
     }
+    
+    // Apply level filter
+    if (filterLevel) {
+      results = results.filter(emp => emp.level === filterLevel);
+    }
+    
+    // Apply join year filter
+    if (filterJoinYear) {
+      results = results.filter(emp => {
+        const joinYear = new Date(emp.joinDate || 0).getFullYear().toString();
+        return joinYear === filterJoinYear;
+      });
+    }
+    
+    setFilteredEmployees(results);
+    if (results.length > 0) { setSelectedEmployee(results[0]); setCurrentDetailIndex(0); } else { setSelectedEmployee(null); }
     resetInactivityTimer();
   };
+  
+  // Apply filters whenever they change
+  useEffect(() => {
+    handleSearch();
+  }, [filterLevel, filterJoinYear]);
 
   const resetInactivityTimer = () => {
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
@@ -269,8 +291,17 @@ export default function Showcase() {
     if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
     resetInactivityTimer();
   };
+  
+  // Get unique levels and join years for filters
+  const uniqueLevels = Array.from(new Set(employees.map(emp => emp.level).filter(Boolean)));
+  const uniqueJoinYears = Array.from(new Set(employees.map(emp => {
+    const year = new Date(emp.joinDate || 0).getFullYear();
+    return year > 1970 ? year.toString() : null;
+  }).filter((y): y is string => y !== null))).sort().reverse();
 
   const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Handle wheel scroll
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (!selectedEmployee || isAutoPlayDetail) return;
@@ -290,6 +321,32 @@ export default function Showcase() {
     };
     window.addEventListener('wheel', handleWheel, { passive: false });
     return () => { window.removeEventListener('wheel', handleWheel); if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current); };
+  }, [selectedEmployee, isAutoPlayDetail, filteredEmployees]);
+  
+  // Handle keyboard arrow keys
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedEmployee || isAutoPlayDetail) return;
+      if (keyTimeoutRef.current) return;
+      
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        keyTimeoutRef.current = setTimeout(() => { keyTimeoutRef.current = null; }, 300);
+        const idx = filteredEmployees.findIndex(emp => emp.id === selectedEmployee.id);
+        
+        if (e.key === 'ArrowLeft' && idx > 0) {
+          setSelectedEmployee(filteredEmployees[idx - 1]);
+          setCurrentDetailIndex(idx - 1);
+          resetInactivityTimer();
+        } else if (e.key === 'ArrowRight' && idx < filteredEmployees.length - 1) {
+          setSelectedEmployee(filteredEmployees[idx + 1]);
+          setCurrentDetailIndex(idx + 1);
+          resetInactivityTimer();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => { window.removeEventListener('keydown', handleKeyDown); if (keyTimeoutRef.current) clearTimeout(keyTimeoutRef.current); };
   }, [selectedEmployee, isAutoPlayDetail, filteredEmployees]);
 
   useEffect(() => {
@@ -401,21 +458,39 @@ export default function Showcase() {
           <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
         </div>
         {!isAutoPlayDetail && (
-        <div className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap">
-          <button onClick={() => handleDepartmentClick(null)}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-            {"\u5168\u90e8"}
-          </button>
-          {departments.map((dept) => (
-            <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-              {dept.name}
+        <div className="flex flex-col items-center justify-center gap-3 px-8 pb-4">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <button onClick={() => handleDepartmentClick(null)}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              {"\u5168\u90e8"}
             </button>
-          ))}
-          <button onClick={() => handleDepartmentClick('honors')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-            {"\u2605\u8363\u8a89\u699c\u2605"}
-          </button>
+            {departments.map((dept) => (
+              <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+                {dept.name}
+              </button>
+            ))}
+            <button onClick={() => handleDepartmentClick('honors')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              {"\u2605\u8363\u8a89\u699c\u2605"}
+            </button>
+          </div>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <select value={filterLevel || ''} onChange={(e) => setFilterLevel(e.target.value === '' ? null : e.target.value)}
+              className="px-3 py-2 rounded-lg bg-white/20 text-white font-semibold hover:bg-white/30 transition-all cursor-pointer">
+              <option value="">{"\u6240\u6709\u804c\u7ea7"}</option>
+              {uniqueLevels.map((level) => (
+                <option key={level} value={level} className="text-black">{level}</option>
+              ))}
+            </select>
+            <select value={filterJoinYear || ''} onChange={(e) => setFilterJoinYear(e.target.value === '' ? null : e.target.value)}
+              className="px-3 py-2 rounded-lg bg-white/20 text-white font-semibold hover:bg-white/30 transition-all cursor-pointer">
+              <option value="">{"\u6240\u6709\u5e74\u4efd"}</option>
+              {uniqueJoinYears.map((year) => (
+                <option key={year} value={year} className="text-black">{year}\u5e74\u5165\u804c</option>
+              ))}
+            </select>
+          </div>
         </div>
         )}
       </div>
