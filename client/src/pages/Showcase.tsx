@@ -400,8 +400,13 @@ export default function Showcase() {
           <h1 className="text-4xl font-bold text-white">{"\u5458\u5de5\u98ce\u91c7\u5c55\u793a"}</h1>
           <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
         </div>
-        {!isAutoPlayDetail && (
-        <div className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap">
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: selectedEmployee ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+          style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+          className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
+        >
           <button onClick={() => handleDepartmentClick(null)}
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
             {"\u5168\u90e8"}
@@ -416,8 +421,7 @@ export default function Showcase() {
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
             {"\u2605\u8363\u8a89\u699c\u2605"}
           </button>
-        </div>
-        )}
+        </motion.div>
       </div>
 
       {/* Content area */}
@@ -528,22 +532,26 @@ export default function Showcase() {
       </div>
 
       {/* Bottom search */}
-      {!isAutoPlayDetail && (
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
-          <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
-            <Search className="w-5 h-5 text-white" />
-            <input type="text" placeholder={"\u641c\u7d22\u5458\u5de5..."} value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              className="bg-transparent text-white placeholder-white/60 outline-none w-64"
-            />
-            <button onClick={handleSearch}
-              className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all">
-              {"\u641c\u7d22"}
-            </button>
-          </div>
+      <motion.div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+      >
+        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
+          <Search className="w-5 h-5 text-white" />
+          <input type="text" placeholder={"\u641c\u7d22\u5458\u5de5..."} value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            className="bg-transparent text-white placeholder-white/60 outline-none w-64"
+          />
+          <button onClick={handleSearch}
+            className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all">
+            {"\u641c\u7d22"}
+          </button>
         </div>
-      )}
+      </motion.div>
     </div>
   );
 }
