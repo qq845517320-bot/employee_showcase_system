@@ -318,8 +318,20 @@ export default function Showcase() {
   }
 
   const batchSize = 10;
+  const totalBatches = Math.ceil(filteredEmployees.length / batchSize);
   const startIdx = currentBatchIndex * batchSize;
   const currentBatch = filteredEmployees.slice(startIdx, startIdx + batchSize);
+  
+  // 翻页处理函数
+  const handlePreviousBatch = () => {
+    setCurrentBatchIndex((prev) => (prev - 1 + totalBatches) % totalBatches);
+    resetInactivityTimer();
+  };
+  
+  const handleNextBatch = () => {
+    setCurrentBatchIndex((prev) => (prev + 1) % totalBatches);
+    resetInactivityTimer();
+  };
 
   const displayEmployees = selectedDepartment === null
     ? filteredEmployees
@@ -548,6 +560,20 @@ export default function Showcase() {
         )}
       </div>
 
+      {/* Bottom pagination buttons */}
+      <motion.div
+        className="absolute bottom-8 left-8 z-40"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+      >
+        <button onClick={handlePreviousBatch}
+          className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-2xl font-bold transition-all border border-white/30">
+          {"\u2190"}
+        </button>
+      </motion.div>
+
       {/* Bottom search */}
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40"
@@ -567,6 +593,33 @@ export default function Showcase() {
             className="px-4 py-1 bg-white/30 hover:bg-white/40 rounded-full text-white text-sm font-semibold transition-all">
             {"\u641c\u7d22"}
           </button>
+        </div>
+      </motion.div>
+
+      {/* Bottom right pagination button */}
+      <motion.div
+        className="absolute bottom-8 right-8 z-40"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+      >
+        <button onClick={handleNextBatch}
+          className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-2xl font-bold transition-all border border-white/30">
+          {"\u2192"}
+        </button>
+      </motion.div>
+
+      {/* Batch indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center z-30"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        style={{ pointerEvents: 'none' }}
+      >
+        <div className="text-white/60 text-xs font-semibold">
+          {totalBatches > 0 ? `${currentBatchIndex + 1} / ${totalBatches}` : '0 / 0'}
         </div>
       </motion.div>
     </div>
