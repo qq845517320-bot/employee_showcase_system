@@ -73,7 +73,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.9, x: 50, rotateZ: 2 }}
       transition={{ duration: isAutoPlay ? 0.7 : 0.5, ease: 'easeInOut' }}
       className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-12 w-full text-white shadow-2xl border border-red-600/60 relative"
-      style={{ maxWidth: '900px' }}
+      style={{ maxWidth: '1400px' }}
       onClick={onClick}
     >
       {!isAutoPlay && onClose && (
@@ -100,11 +100,11 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       <div className="flex flex-col w-full h-full">
         {/* 上部分：照片 + 基本信息（3/5 高度） */}
         <div className="flex-[3] flex gap-12 pb-8 border-b border-white/30">
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0" style={{ width: '1000px', height: '1000px' }}>
             {employee.workPhoto ? (
-              <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-contain shadow-lg" />
+              <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-cover shadow-lg" />
             ) : (
-              <div className="h-full aspect-square bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white text-9xl font-bold">{employee.name?.charAt(0)}</span>
               </div>
             )}
