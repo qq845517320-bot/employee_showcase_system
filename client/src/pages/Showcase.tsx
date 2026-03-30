@@ -68,12 +68,12 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
   return (
     <motion.div
       key={`detail-${isAutoPlay ? 'auto' : 'manual'}-${employee.id}`}
-      initial={isAutoPlay ? { opacity: 0, scale: 0.95, y: 30 } : { opacity: 0, scale: 0.9, x: -50, rotateZ: -2 }}
+      initial={isAutoPlay ? { opacity: 0, scale: 0.95, y: 30 } : { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 }}
       animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
-      exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.9, x: 50, rotateZ: 2 }}
-      transition={{ duration: isAutoPlay ? 0.7 : 0.5, ease: 'easeInOut' }}
+      exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
+      transition={{ duration: isAutoPlay ? 0.7 : 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
       className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-12 w-full text-white shadow-2xl border border-red-600/60 relative"
-      style={{ maxWidth: '1000px' }}
+      style={{ maxWidth: '850px' }}
       onClick={onClick}
     >
       {!isAutoPlay && onClose && (
@@ -100,7 +100,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       <div className="flex flex-col w-full h-full">
         {/* 上部分：照片 + 基本信息（3/5 高度） */}
         <div className="flex-[3] flex gap-12 pb-8 border-b border-white/30">
-          <div className="flex-shrink-0" style={{ width: '600px', height: '600px' }}>
+          <div className="flex-shrink-0" style={{ width: '480px', height: '480px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-cover shadow-lg" />
             ) : (
