@@ -450,30 +450,47 @@ export default function Showcase() {
           <AnimatePresence mode="wait">
             {/* ====== MANUAL DETAIL MODE ====== */}
             {selectedEmployee && !isAutoPlayDetail ? (
-              <DetailPanel key={`manual-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={false}
-                onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
-                onClick={handleDetailPanelClick}
-                getDepartmentName={getDepartmentName}
-                selectedEmployeeDetail={selectedEmployeeDetail}
-                onPrevious={() => {
-                  const currentIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
-                  if (currentIndex > 0) {
-                    setSelectedEmployee(filteredEmployees[currentIndex - 1]);
-                    setCurrentDetailIndex(currentIndex - 1);
-                    resetInactivityTimer();
-                  }
-                }}
-                onNext={() => {
-                  const currentIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
-                  if (currentIndex < filteredEmployees.length - 1) {
-                    setSelectedEmployee(filteredEmployees[currentIndex + 1]);
-                    setCurrentDetailIndex(currentIndex + 1);
-                    resetInactivityTimer();
-                  }
-                }}
-                canGoPrevious={filteredEmployees.findIndex(e => e.id === selectedEmployee.id) > 0}
-                canGoNext={filteredEmployees.findIndex(e => e.id === selectedEmployee.id) < filteredEmployees.length - 1}
-              />
+              <div className="w-full h-full flex items-center justify-between px-4 relative">
+                {/* Left columns */}
+                <div className="flex gap-6 items-center">
+                  <PhotoColumn employees={allLeft1} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                  <PhotoColumn employees={allLeft2} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                </div>
+
+                {/* Center detail panel */}
+                <div className="flex-1 flex items-center justify-center px-4 z-10">
+                  <DetailPanel key={`manual-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={false}
+                    onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
+                    onClick={handleDetailPanelClick}
+                    getDepartmentName={getDepartmentName}
+                    selectedEmployeeDetail={selectedEmployeeDetail}
+                    onPrevious={() => {
+                      const currentIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
+                      if (currentIndex > 0) {
+                        setSelectedEmployee(filteredEmployees[currentIndex - 1]);
+                        setCurrentDetailIndex(currentIndex - 1);
+                        resetInactivityTimer();
+                      }
+                    }}
+                    onNext={() => {
+                      const currentIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
+                      if (currentIndex < filteredEmployees.length - 1) {
+                        setSelectedEmployee(filteredEmployees[currentIndex + 1]);
+                        setCurrentDetailIndex(currentIndex + 1);
+                        resetInactivityTimer();
+                      }
+                    }}
+                    canGoPrevious={filteredEmployees.findIndex(e => e.id === selectedEmployee.id) > 0}
+                    canGoNext={filteredEmployees.findIndex(e => e.id === selectedEmployee.id) < filteredEmployees.length - 1}
+                  />
+                </div>
+
+                {/* Right columns */}
+                <div className="flex gap-6 items-center">
+                  <PhotoColumn employees={allRight1} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                  <PhotoColumn employees={allRight2} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                </div>
+              </div>
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
               <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
