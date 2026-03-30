@@ -99,7 +99,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       )}
       <div className="flex flex-col w-full h-full">
         {/* 上部分：照片 + 基本信息（3/5 高度） */}
-        <div className="flex-[3] flex gap-12 pb-4 border-b border-white/30">
+        <div className="flex-[2.5] flex gap-12 pb-4 border-b border-white/30">
           <div className="flex-shrink-0" style={{ width: '480px', height: '480px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} className="h-full aspect-square rounded-xl object-cover shadow-lg" />
@@ -122,7 +122,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
         </div>
         {/* 下部分：工作职责、工作信条、奖励荣誉（2/5 高度） */}
-        <div className="flex-[2] flex gap-12 pt-4 overflow-y-auto">
+        <div className="flex-[2.5] flex gap-12 pt-4 overflow-y-auto">
           <div className="flex-1 space-y-4 text-lg">
             <div>
               <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
