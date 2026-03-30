@@ -138,7 +138,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             <div className="text-base space-y-1">
               {selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0 ? (
                 selectedEmployeeDetail.honors.map((honor: any, idx: number) => (
-                  <div key={idx} className="text-sm leading-relaxed">• {honor.honorName}</div>
+                  <div key={idx} className="text-sm leading-relaxed">• {honor.title}</div>
                 ))
               ) : (
                 <div>{"\u6682\u65e0\u6570\u636e"}</div>
