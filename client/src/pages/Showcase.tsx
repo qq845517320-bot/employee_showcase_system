@@ -111,9 +111,9 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
           <div className="flex-1 flex flex-col justify-center space-y-4">
             <div>
-              <div className="text-4xl font-bold mb-4">{employee.name}</div>
+              <div className="text-5xl font-bold mb-4">{employee.name}</div>
             </div>
-            <div className="space-y-3 text-lg">
+            <div className="space-y-3 text-xl">
               <div>{"\u90e8\u95e8\uff1a"}{getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId}</div>
               <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
               <div>{"\u804c\u52a1\uff1a"}{employee.level}</div>
