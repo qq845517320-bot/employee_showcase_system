@@ -398,14 +398,14 @@ export default function Showcase() {
 
 
   // 根据是否选择了部门来决定排序方式
-  // 如果选择了具体部门，使用从左往右的排序（displayEmployees 的原始顺序）
-  // 如果没有选择部门，使用从中心开始的排序（centerSortedEmployees）
+  // 如果选择了具体部门或荣誉榜，使用从左往右的排序（displayEmployees 的原始顺序）
+  // 如果没有选择部门（全员模式），使用从中心开始的排序（centerSortedEmployees）
   const centerSortedEmployees = (() => {
-    if (selectedDepartment !== null && selectedDepartment !== 'honors') {
-      // 部门模式：直接使用 displayEmployees 的顺序（从左往右）
+    if (selectedDepartment !== null) {
+      // 部门模式或荣誉模式：直接使用 displayEmployees 的顺序（从左往右）
       return displayEmployees;
     }
-    // 全员/荣誉模式：从中心开始排序
+    // 全员模式：从中心开始排序
     if (displayEmployees.length === 0) return [];
     const sorted: any[] = [];
     const middle = Math.floor(displayEmployees.length / 2);
