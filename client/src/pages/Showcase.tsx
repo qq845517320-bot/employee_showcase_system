@@ -248,7 +248,7 @@ export default function Showcase() {
     const interval = activeStrategy?.autoPlayInterval || 5000;
     batchIntervalRef.current = setInterval(() => {
       setCurrentBatchIndex(prev => {
-        const total = Math.ceil(filteredEmployees.length / 10);
+        const total = Math.ceil(displayEmployees.length / 10);
         return total > 0 ? (prev + 1) % total : 0;
       });
     }, interval);
@@ -261,15 +261,15 @@ export default function Showcase() {
   const startDetailRotation = () => {
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     let index = currentDetailIndex;
-    if (filteredEmployees.length > 0) {
-      setSelectedEmployee(filteredEmployees[index]);
+    if (displayEmployees.length > 0) {
+      setSelectedEmployee(displayEmployees[index]);
     }
     const interval = activeStrategy?.autoPlayInterval || 5000;
     detailIntervalRef.current = setInterval(() => {
-      if (filteredEmployees.length === 0) return;
-      index = (index + 1) % filteredEmployees.length;
+      if (displayEmployees.length === 0) return;
+      index = (index + 1) % displayEmployees.length;
       setCurrentDetailIndex(index);
-      setSelectedEmployee(filteredEmployees[index]);
+      setSelectedEmployee(displayEmployees[index]);
     }, interval);
   };
 
@@ -467,8 +467,10 @@ export default function Showcase() {
           ))}
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-              {"\u2605\u8363\u8a89\u699c\u2605"}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              <span>\u2605</span>
+              <span>{"\u8363\u8a89\u699c"}</span>
+              <span>\u2605</span>
             </button>
             {selectedDepartment === 'honors' && (
               <motion.div

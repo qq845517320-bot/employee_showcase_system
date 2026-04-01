@@ -77,7 +77,7 @@ export default function Home() {
           {/* 欢迎区域 */}
           <motion.div variants={itemVariants} className="text-center space-y-6 py-12">
             <h2 className="text-5xl font-bold text-foreground">
-              深国际靖江港
+              深国际港口
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               打造对外展示软实力的重要窗口，展现港口人才梯队风貌
@@ -214,7 +214,7 @@ export default function Home() {
       {/* 页脚 */}
       <footer className="border-t border-blue-100/50 bg-white/50 backdrop-blur-sm mt-20">
         <div className="container mx-auto px-6 py-8 text-center text-sm text-muted-foreground">
-          <p>© 2026 深国际靖江港 | 员工风采展示系统</p>
+          <p>© 2026 深国际港口 | 员工风采展示系统</p>
         </div>
       </footer>
     </div>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, Upload, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import type { Employee } from '../../../../drizzle/schema';
@@ -18,9 +18,12 @@ export default function EmployeeManagement() {
   const [importProgress, setImportProgress] = useState<{ current: number; total: number } | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
+  const [selectedHonors, setSelectedHonors] = useState<number[]>([]);
+  const [showHonorSelector, setShowHonorSelector] = useState(false);
 
   const { data: employees = [], refetch } = trpc.employees.list.useQuery({});
   const { data: departments = [] } = trpc.departments.list.useQuery();
+  const { data: honors = [] } = trpc.honors.list.useQuery();
 
   const createMutation = trpc.employees.create.useMutation({
     onSuccess: () => {
@@ -379,6 +382,74 @@ export default function EmployeeManagement() {
             className="w-full px-3 py-2 border rounded-lg"
             rows={2}
           />
+
+          {/* 荣誉选择器 */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-foreground">关联荣誉</label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowHonorSelector(!showHonorSelector)}
+                className="w-full px-3 py-2 border rounded-lg text-left bg-white hover:bg-gray-50 transition-colors"
+              >
+                {selectedHonors.length > 0 ? `已选择 ${selectedHonors.length} 个荣誉` : '选择荣誉...'}
+              </button>
+              {showHonorSelector && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full mt-1 left-0 right-0 bg-white border rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto"
+                >
+                  {honors.map((honor: any) => (
+                    <label
+                      key={honor.id}
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedHonors.includes(honor.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedHonors([...selectedHonors, honor.id]);
+                          } else {
+                            setSelectedHonors(selectedHonors.filter(id => id !== honor.id));
+                          }
+                        }}
+                        className="w-4 h-4 rounded"
+                      />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{honor.title}</div>
+                        <div className="text-xs text-muted-foreground">{honor.category}</div>
+                      </div>
+                    </label>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+            {selectedHonors.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {selectedHonors.map(honorId => {
+                  const honor = honors.find((h: any) => h.id === honorId);
+                  return honor ? (
+                    <div
+                      key={honorId}
+                      className="flex items-center gap-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm"
+                    >
+                      <span>{honor.title}</span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedHonors(selectedHonors.filter(id => id !== honorId))}
+                        className="hover:text-red-900"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            )}
+          </div>
+
           <div className="flex gap-2">
             <Button
               type="submit"
