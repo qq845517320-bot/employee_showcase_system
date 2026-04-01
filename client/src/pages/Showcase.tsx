@@ -490,7 +490,7 @@ export default function Showcase() {
                     setShowHonorDropdown(false);
                   }}
                   className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 ${
-                    selectedHonorCategory === null ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'
+                    selectedHonorCategory === null ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
                   }`}
                 >
                   全部荣誉
@@ -503,7 +503,7 @@ export default function Showcase() {
                       setShowHonorDropdown(false);
                     }}
                     className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 last:border-b-0 rounded ${
-                      selectedHonorCategory === category ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'
+                      selectedHonorCategory === category ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
                     }`}
                   >
                     {category}
