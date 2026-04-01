@@ -489,7 +489,7 @@ export default function Showcase() {
                     setSelectedHonorCategory(null);
                     setShowHonorDropdown(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
+                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded ${
                     selectedHonorCategory === null ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
                   }`}
                 >
