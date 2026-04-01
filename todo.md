@@ -437,3 +437,18 @@
   - [x] 分析左右照片墙的数据源差异：currentBatch与autoPlayBatch的定义不同
   - [x] 修改左右照片墙使用基于 selectedEmployee 的固定批次，而不是基于 currentBatchIndex 的可变批次
   - [x] 测试验证修复效果：左右照片墙现在完全停止轮播，与卡片中的员工保持一致
+
+
+## 照片墙轮播控制修复（2026-04-02 第四十二轮）
+- [x] 修复员工详情卡片显示时照片墙继续轮播的问题
+  - [x] 问题：当显示员工详情卡片时，过几十秒后左右照片墙又开始自动轮播
+  - [x] 根本原因：resetInactivityTimer() 中无条件调用 startBatchRotation()，导致批次轮播被重新启动
+  - [x] 解决方案：
+    - 修改 resetInactivityTimer()，只在没有显示员工详情卡片时才启动批次轮播
+    - 修改 handleEmployeeClick()，在点击员工卡片后立即停止批次轮播
+    - 修改 handleDepartmentClick()，在点击部门时允许批次轮播
+    - 在 useEffect([isAutoPlayDetail]) 中明确调用 stopBatchRotation()
+  - [x] 测试验证：
+    - 显示员工详情卡片时，左右照片墙完全停止轮播
+    - 中心卡片在自动轮播时切换员工，照片墙保持不变
+    - 修复完全成功，照片墙不再继续轮播

@@ -227,6 +227,8 @@ export default function Showcase() {
     setSelectedEmployee(null);
     setIsAutoPlayDetail(false);
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+    // 当点击部门时，允许批次轮播
+    startBatchRotation();
     resetInactivityTimer();
   };
 
@@ -249,7 +251,12 @@ export default function Showcase() {
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     setIsAutoPlayDetail(false);
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-    startBatchRotation();
+    // 只有在没有显示员工详情卡片时才启动批次轮播
+    if (!selectedEmployee) {
+      startBatchRotation();
+    } else {
+      stopBatchRotation();
+    }
     inactivityTimeoutRef.current = setTimeout(() => {
       setIsAutoPlayDetail(true);
       stopBatchRotation();
@@ -296,7 +303,8 @@ export default function Showcase() {
       const batchIdx = Math.floor(empIndex / batchSize);
       setCurrentBatchIndex(batchIdx);
     }
-    if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
+    // 停止批次轮播，因为现在显示的是员工详情卡片
+    stopBatchRotation();
     resetInactivityTimer();
   };
 
@@ -343,6 +351,8 @@ export default function Showcase() {
 
   useEffect(() => {
     if (isAutoPlayDetail && filteredEmployees.length > 0) {
+      // 当进入自动轮播详情模式时，确保停止批次轮播
+      stopBatchRotation();
       if (!selectedEmployee) { setSelectedEmployee(filteredEmployees[0]); setCurrentDetailIndex(0); }
       startDetailRotation();
     }
