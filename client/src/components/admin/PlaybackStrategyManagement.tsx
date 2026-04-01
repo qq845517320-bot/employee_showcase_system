@@ -210,16 +210,16 @@ export default function PlaybackStrategyManagement() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">轮播间隔（毫秒）</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">轮播间隔（秒）</label>
               <Input
                 type="number"
-                placeholder="5000"
-                value={formData.autoPlayInterval}
-                onChange={e => setFormData({ ...formData, autoPlayInterval: parseInt(e.target.value) })}
-                min="1000"
-                step="1000"
+                placeholder="5"
+                value={formData.autoPlayInterval / 1000}
+                onChange={e => setFormData({ ...formData, autoPlayInterval: parseInt(e.target.value) * 1000 })}
+                min="1"
+                step="1"
               />
-              <p className="text-xs text-gray-500 mt-1">建议值：5000ms（5秒）</p>
+              <p className="text-xs text-gray-500 mt-1">建议值：5秒</p>
             </div>
 
             <div className="flex gap-2 pt-2">
@@ -271,7 +271,7 @@ export default function PlaybackStrategyManagement() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{strategy.autoPlayInterval}ms</td>
+                    <td className="px-6 py-4 text-gray-600">{strategy.autoPlayInterval / 1000}s</td>
                     <td className="px-6 py-4">
                       {strategy.isActive ? (
                         <span className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
