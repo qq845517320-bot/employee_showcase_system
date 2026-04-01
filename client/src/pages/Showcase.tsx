@@ -467,10 +467,12 @@ export default function Showcase() {
   };
   
   const autoPlayBatch = getAutoPlayBatch();
-  const allLeft1 = autoPlayBatch.left1;
-  const allLeft2 = autoPlayBatch.left2;
-  const allRight1 = autoPlayBatch.right1;
-  const allRight2 = autoPlayBatch.right2;
+  // 在自动轮播模式下，左右照片墙应该显示 selectedEmployee 所在批次的固定列
+  // 而不是基于 currentBatchIndex 的列
+  const autoPlayLeftColumn = autoPlayBatch.left1;
+  const autoPlayLeftMiddleColumn = autoPlayBatch.left2;
+  const autoPlayRightMiddleColumn = autoPlayBatch.right1;
+  const autoPlayRightColumn = autoPlayBatch.right2;
 
   const highlightedId = selectedEmployee?.id || null;
 
@@ -578,8 +580,8 @@ export default function Showcase() {
 
             {/* Right columns */}
             <div className="flex gap-6 items-center">
-              <PhotoColumn employees={allRight1} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={allRight2} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayRightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
           </div>
         ) : (
@@ -640,8 +642,8 @@ export default function Showcase() {
                 {/* Right columns - hide when department is selected */}
                 {selectedDepartment === null && (
                   <div className="flex gap-6 items-center">
-                    <PhotoColumn employees={allRight1} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
-                    <PhotoColumn employees={allRight2} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={rightMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={rightColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
                   </div>
                 )}
               </div>
