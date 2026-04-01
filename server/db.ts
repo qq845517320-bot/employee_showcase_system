@@ -133,18 +133,36 @@ export async function getEmployeeById(id: number) {
 export async function getActiveEmployees() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(employees).where(eq(employees.status, 'active'));
+  const emps = await db.select().from(employees).where(eq(employees.status, 'active'));
+  
+  // 为每个员工添加 honors 数据
+  const result = await Promise.all(
+    emps.map(async (emp) => {
+      const honors_list = await getHonorsByEmployeeId(emp.id);
+      return { ...emp, honors: honors_list };
+    })
+  );
+  return result;
 }
 
 export async function getCoreEmployees() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(employees).where(
+  const emps = await db.select().from(employees).where(
     and(
       eq(employees.status, 'active'),
       eq(employees.isCoreBone, true)
     )
   );
+  
+  // 为每个员工添加 honors 数据
+  const result = await Promise.all(
+    emps.map(async (emp) => {
+      const honors_list = await getHonorsByEmployeeId(emp.id);
+      return { ...emp, honors: honors_list };
+    })
+  );
+  return result;
 }
 
 // ========== 荣誉相关查询 ==========
@@ -169,12 +187,21 @@ export async function getEmployeesWithNewHonors() {
   if (newHonorsList.length === 0) return [];
   
   const employeeIds = Array.from(new Set(newHonorsList.map(h => h.employeeId)));
-  return db.select().from(employees).where(
+  const emps = await db.select().from(employees).where(
     and(
       inArray(employees.id, employeeIds),
       eq(employees.status, 'active')
     )
   );
+  
+  // 为每个员工添加 honors 数据
+  const result = await Promise.all(
+    emps.map(async (emp) => {
+      const honors_list = await getHonorsByEmployeeId(emp.id);
+      return { ...emp, honors: honors_list };
+    })
+  );
+  return result;
 }
 
 // ========== 轮播策略相关查询 ==========
