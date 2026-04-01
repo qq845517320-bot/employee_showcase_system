@@ -62,8 +62,8 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
 }
 
 /* ========== DetailPanel ========== */
-function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, isLoadingDetail, onPrevious, onNext, canGoPrevious, canGoNext }: {
-  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; isLoadingDetail?: boolean; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean;
+function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, isLoadingDetail, onPrevious, onNext, canGoPrevious, canGoNext, fallbackHonors }: {
+  employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; isLoadingDetail?: boolean; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean; fallbackHonors?: any[];
 }) {
   return (
     <motion.div
@@ -140,13 +140,13 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <div className="flex-1">
             <div className="font-semibold mb-2 text-xl">{"\u5956\u52b1\u8363\u8a89\uff1a"}</div>
             <div className="text-base space-y-1">
-              {isLoadingDetail ? (
+              {isLoadingDetail && !fallbackHonors ? (
                 <div className="space-y-2">
                   <div className="h-4 bg-red-700/40 rounded animate-pulse w-3/4"></div>
                   <div className="h-4 bg-red-700/40 rounded animate-pulse w-2/3"></div>
                 </div>
-              ) : selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0 ? (
-                selectedEmployeeDetail.honors.map((honor: any, idx: number) => (
+              ) : (selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0) ? (
+                (selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
                   <div key={idx} className="text-sm leading-relaxed">• {honor.title}</div>
                 ))
               ) : (
@@ -557,7 +557,7 @@ export default function Showcase() {
 
             {/* Center detail panel (absolute overlay) */}
             <div className="flex-1 flex items-center justify-center px-4 z-10">
-              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} />
+              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} fallbackHonors={selectedEmployee?.honors} />
             </div>
 
             {/* Right columns */}
@@ -587,6 +587,7 @@ export default function Showcase() {
                     getDepartmentName={getDepartmentName}
                     selectedEmployeeDetail={selectedEmployeeDetail}
                     isLoadingDetail={isLoadingDetail}
+                    fallbackHonors={selectedEmployee?.honors}
                     onPrevious={() => {
                       const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
                       const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
