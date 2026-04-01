@@ -397,7 +397,15 @@ export default function Showcase() {
 
 
 
+  // 根据是否选择了部门来决定排序方式
+  // 如果选择了具体部门，使用从左往右的排序（displayEmployees 的原始顺序）
+  // 如果没有选择部门，使用从中心开始的排序（centerSortedEmployees）
   const centerSortedEmployees = (() => {
+    if (selectedDepartment !== null && selectedDepartment !== 'honors') {
+      // 部门模式：直接使用 displayEmployees 的顺序（从左往右）
+      return displayEmployees;
+    }
+    // 全员/荣誉模式：从中心开始排序
     if (displayEmployees.length === 0) return [];
     const sorted: any[] = [];
     const middle = Math.floor(displayEmployees.length / 2);
@@ -416,18 +424,18 @@ export default function Showcase() {
 
   // Auto-play mode: calculate batch based on current playing employee
   const getAutoPlayBatch = () => {
-    if (!selectedEmployee || filteredEmployees.length === 0) {
+    if (!selectedEmployee || displayEmployees.length === 0) {
       return { left1: [], left2: [], right1: [], right2: [] };
     }
     // Find which batch the current employee belongs to
-    const empIndex = filteredEmployees.findIndex(e => e.id === selectedEmployee.id);
+    const empIndex = displayEmployees.findIndex(e => e.id === selectedEmployee.id);
     if (empIndex === -1) {
       return { left1: [], left2: [], right1: [], right2: [] };
     }
     // Calculate batch start index
     const batchStartIdx = Math.floor(empIndex / batchSize) * batchSize;
-    const batchEndIdx = Math.min(batchStartIdx + batchSize, filteredEmployees.length);
-    const batch = filteredEmployees.slice(batchStartIdx, batchEndIdx);
+    const batchEndIdx = Math.min(batchStartIdx + batchSize, displayEmployees.length);
+    const batch = displayEmployees.slice(batchStartIdx, batchEndIdx);
     
     return {
       left1: batch.slice(0, 2),
