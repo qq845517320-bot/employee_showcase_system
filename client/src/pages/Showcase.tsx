@@ -384,6 +384,22 @@ export default function Showcase() {
     return employees;
   };
   
+  // 根据轮播策略获取应该显示的部门列表
+  const getDisplayDepartments = () => {
+    let displayEmps = filteredEmployees;
+    
+    // 根据轮播策略过滤员工
+    if (activeStrategy?.displayMode === 'core_bones') {
+      displayEmps = filteredEmployees.filter(emp => emp.isCoreBone);
+    }
+    
+    // 获取这些员工中存在的部门ID
+    const deptIds = new Set(displayEmps.map(emp => emp.departmentId).filter(id => id));
+    
+    // 返回存在的部门
+    return departments.filter(dept => deptIds.has(dept.id));
+  };
+  
   const displayEmployees = getDisplayEmployees();
   const totalBatches = Math.ceil(displayEmployees.length / batchSize);
   const startIdx = currentBatchIndex * batchSize;
@@ -494,7 +510,7 @@ export default function Showcase() {
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
             {"\u5168\u90e8"}
           </button>
-          {departments.map((dept) => (
+          {getDisplayDepartments().map((dept) => (
             <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
               className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               {dept.name}
