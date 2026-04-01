@@ -591,6 +591,9 @@ export default function Showcase() {
                         const newIndex = (currentIndex - 1 + currentEmployees.length) % currentEmployees.length;
                         setSelectedEmployee(currentEmployees[newIndex]);
                         setCurrentDetailIndex(newIndex);
+                        // 同时更新 currentBatchIndex，使照片墙与员工详情同步
+                        const newBatchIndex = Math.floor(newIndex / batchSize);
+                        setCurrentBatchIndex(newBatchIndex);
                         resetInactivityTimer();
                       }
                     }}
@@ -602,6 +605,9 @@ export default function Showcase() {
                         const newIndex = (currentIndex + 1) % currentEmployees.length;
                         setSelectedEmployee(currentEmployees[newIndex]);
                         setCurrentDetailIndex(newIndex);
+                        // 同时更新 currentBatchIndex，使照片墙与员工详情同步
+                        const newBatchIndex = Math.floor(newIndex / batchSize);
+                        setCurrentBatchIndex(newBatchIndex);
                         resetInactivityTimer();
                       }
                     }}
