@@ -482,14 +482,14 @@ export default function Showcase() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full mt-2 left-0 right-0 bg-white rounded-lg shadow-xl border border-gray-200 z-50 w-full"
+                className="absolute top-full mt-2 left-0 right-0 bg-transparent z-50 w-full"
               >
                 <button
                   onClick={() => {
                     setSelectedHonorCategory(null);
                     setShowHonorDropdown(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 ${
+                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
                     selectedHonorCategory === null ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
                   }`}
                 >
@@ -502,7 +502,7 @@ export default function Showcase() {
                       setSelectedHonorCategory(category);
                       setShowHonorDropdown(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 last:border-b-0 rounded ${
+                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded ${
                       selectedHonorCategory === category ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
                     }`}
                   >
