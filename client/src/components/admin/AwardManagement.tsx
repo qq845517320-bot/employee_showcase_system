@@ -53,6 +53,13 @@ export default function AwardManagement() {
     },
   });
 
+  const deleteCategoryMutation = trpc.honors.deleteCategory.useMutation({
+    onSuccess: () => {
+      utils.honors.listCategories.invalidate();
+      utils.honors.list.invalidate();
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
@@ -248,11 +255,31 @@ export default function AwardManagement() {
       <div className="space-y-8">
         {groupedByCategory.map(({ category, awards }) => (
           <div key={category} className="space-y-4">
-            <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-gray-900">{category}</h3>
-              <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm font-medium">
-                {awards.length}
-              </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg font-semibold text-gray-900">{category}</h3>
+                <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm font-medium">
+                  {awards.length}
+                </span>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => {
+                  if (awards.length > 0) {
+                    alert(`无法删除"${category}"，该分类下还有 ${awards.length} 个奖项`);
+                    return;
+                  }
+                  if (confirm(`确定要删除分类"${category}"吗？此操作无法撤销。`)) {
+                    deleteCategoryMutation.mutate({ category });
+                  }
+                }}
+                disabled={deleteCategoryMutation.isPending}
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                删除
+              </Button>
             </div>
 
             {awards.length > 0 ? (

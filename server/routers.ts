@@ -19,7 +19,8 @@ import {
   getActiveBackground,
   getAllBackgrounds,
   getAllHonorCategories,
-  createHonorCategory
+  createHonorCategory,
+  deleteHonorCategory
 } from "./db";
 import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
@@ -384,6 +385,16 @@ const honorRouter = router({
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
       const result = await createHonorCategory(input.category, input.description);
+      return result;
+    }),
+  
+  deleteCategory: protectedProcedure
+    .input(z.object({
+      category: z.string().min(1),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
+      const result = await deleteHonorCategory(input.category);
       return result;
     }),
 });

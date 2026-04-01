@@ -276,3 +276,17 @@ export async function createHonorCategory(name: string, description?: string) {
   
   return await getHonorCategoryByName(name);
 }
+
+export async function deleteHonorCategory(name: string) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  // Check if there are any honors with this category
+  const honorsWithCategory = await db.select().from(honors).where(eq(honors.category, name));
+  if (honorsWithCategory.length > 0) {
+    throw new Error(`Cannot delete category "${name}" because it has ${honorsWithCategory.length} associated honor(s)`);
+  }
+  
+  await db.delete(honorCategories).where(eq(honorCategories.name, name));
+  return { success: true };
+}
