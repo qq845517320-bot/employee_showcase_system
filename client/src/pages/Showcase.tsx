@@ -174,6 +174,7 @@ export default function Showcase() {
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
+  const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
   
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail } = trpc.employees.get.useQuery(
@@ -237,12 +238,13 @@ export default function Showcase() {
 
   const startBatchRotation = () => {
     if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
+    const interval = activeStrategy?.autoPlayInterval || 5000;
     batchIntervalRef.current = setInterval(() => {
       setCurrentBatchIndex(prev => {
         const total = Math.ceil(filteredEmployees.length / 10);
         return total > 0 ? (prev + 1) % total : 0;
       });
-    }, 5000);
+    }, interval);
   };
 
   const stopBatchRotation = () => {
@@ -255,12 +257,13 @@ export default function Showcase() {
     if (filteredEmployees.length > 0) {
       setSelectedEmployee(filteredEmployees[index]);
     }
+    const interval = activeStrategy?.autoPlayInterval || 5000;
     detailIntervalRef.current = setInterval(() => {
       if (filteredEmployees.length === 0) return;
       index = (index + 1) % filteredEmployees.length;
       setCurrentDetailIndex(index);
       setSelectedEmployee(filteredEmployees[index]);
-    }, 5000);
+    }, interval);
   };
 
   const handleEmployeeClick = (employee: any) => {
@@ -333,11 +336,33 @@ export default function Showcase() {
     resetInactivityTimer();
   };
 
-  const displayEmployees = selectedDepartment === null
-    ? filteredEmployees
-    : selectedDepartment === 'honors'
-    ? filteredEmployees.filter(emp => emp.honors && emp.honors.length > 0)
-    : filteredEmployees.filter(emp => emp.departmentId === selectedDepartment);
+  // 根据轮播策略和选中的部门过滤员工
+  const getDisplayEmployees = () => {
+    let employees = filteredEmployees;
+    
+    // 如果没有选中部门，根据轮播策略过滤
+    if (selectedDepartment === null && activeStrategy) {
+      switch (activeStrategy.displayMode) {
+        case 'core_bones':
+          employees = filteredEmployees.filter(emp => emp.isCoreBone);
+          break;
+        case 'honors':
+          employees = filteredEmployees.filter(emp => emp.honors && emp.honors.length > 0);
+          break;
+        case 'all':
+        default:
+          employees = filteredEmployees;
+      }
+    } else if (selectedDepartment === 'honors') {
+      employees = filteredEmployees.filter(emp => emp.honors && emp.honors.length > 0);
+    } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
+      employees = filteredEmployees.filter(emp => emp.departmentId === selectedDepartment);
+    }
+    
+    return employees;
+  };
+  
+  const displayEmployees = getDisplayEmployees();
 
   const centerSortedEmployees = (() => {
     if (displayEmployees.length === 0) return [];
