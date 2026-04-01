@@ -585,29 +585,27 @@ export default function Showcase() {
                     onPrevious={() => {
                       const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
                       const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
-                      if (currentIndex > 0) {
-                        setSelectedEmployee(currentEmployees[currentIndex - 1]);
-                        setCurrentDetailIndex(currentIndex - 1);
+                      if (currentEmployees.length > 0) {
+                        // 实现循环翻页：第一个人的前一页接到最后一位员工
+                        const newIndex = (currentIndex - 1 + currentEmployees.length) % currentEmployees.length;
+                        setSelectedEmployee(currentEmployees[newIndex]);
+                        setCurrentDetailIndex(newIndex);
                         resetInactivityTimer();
                       }
                     }}
                     onNext={() => {
                       const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
                       const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
-                      if (currentIndex < currentEmployees.length - 1) {
-                        setSelectedEmployee(currentEmployees[currentIndex + 1]);
-                        setCurrentDetailIndex(currentIndex + 1);
+                      if (currentEmployees.length > 0) {
+                        // 实现循环翻页：最后一位员工的下一页接到第一个人
+                        const newIndex = (currentIndex + 1) % currentEmployees.length;
+                        setSelectedEmployee(currentEmployees[newIndex]);
+                        setCurrentDetailIndex(newIndex);
                         resetInactivityTimer();
                       }
                     }}
-                    canGoPrevious={(() => {
-                      const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
-                      return currentEmployees.findIndex(e => e.id === selectedEmployee.id) > 0;
-                    })()}
-                    canGoNext={(() => {
-                      const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
-                      return currentEmployees.findIndex(e => e.id === selectedEmployee.id) < currentEmployees.length - 1;
-                    })()}
+                    canGoPrevious={true}
+                    canGoNext={true}
                   />
                 </div>
 
