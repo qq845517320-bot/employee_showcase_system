@@ -300,3 +300,10 @@
 - [x] Bug 3：部门模式下翻页顺序错误
   - [x] 修改翻页逻辑，使用 displayEmployees 而不是 filteredEmployees
   - [x] 确保部门模式下按部门员工顺序翻页
+
+
+## Bug 修复（2026-04-01 第二十一轮）
+- [x] Bug：部门模式下翻页顺序仍然错误
+  - [x] 检查 displayEmployees 是否正确过滤了部门员工
+  - [x] 检查 handleEmployeeClick 中的 currentBatchIndex 计算
+  - [x] 确保翻页时使用的是部门员工列表而不是全部员工列表

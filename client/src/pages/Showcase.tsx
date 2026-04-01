@@ -282,6 +282,12 @@ export default function Showcase() {
   const handleEmployeeClick = (employee: any) => {
     setIsAutoPlayDetail(false);
     setSelectedEmployee(employee);
+    // 计算正确的 currentBatchIndex
+    const empIndex = displayEmployees.findIndex(emp => emp.id === employee.id);
+    if (empIndex !== -1) {
+      const batchIdx = Math.floor(empIndex / batchSize);
+      setCurrentBatchIndex(batchIdx);
+    }
     if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
     resetInactivityTimer();
   };
@@ -293,14 +299,18 @@ export default function Showcase() {
       if (wheelTimeoutRef.current) return;
       wheelTimeoutRef.current = setTimeout(() => { wheelTimeoutRef.current = null; }, 300);
       e.preventDefault();
-      const idx = filteredEmployees.findIndex(emp => emp.id === selectedEmployee.id);
+      const idx = displayEmployees.findIndex(emp => emp.id === selectedEmployee.id);
       if (e.deltaY < 0 && idx > 0) {
-        setSelectedEmployee(filteredEmployees[idx - 1]);
+        setSelectedEmployee(displayEmployees[idx - 1]);
         setCurrentDetailIndex(idx - 1);
+        const batchIdx = Math.floor((idx - 1) / batchSize);
+        setCurrentBatchIndex(batchIdx);
         resetInactivityTimer();
-      } else if (e.deltaY > 0 && idx < filteredEmployees.length - 1) {
-        setSelectedEmployee(filteredEmployees[idx + 1]);
+      } else if (e.deltaY > 0 && idx < displayEmployees.length - 1) {
+        setSelectedEmployee(displayEmployees[idx + 1]);
         setCurrentDetailIndex(idx + 1);
+        const batchIdx = Math.floor((idx + 1) / batchSize);
+        setCurrentBatchIndex(batchIdx);
         resetInactivityTimer();
       }
     };
