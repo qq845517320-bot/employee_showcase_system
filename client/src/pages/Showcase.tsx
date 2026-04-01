@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { trpc } from '@/lib/trpc';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /* ========== HexPhoto ========== */
 function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0, isAutoPlay = false }: {
@@ -84,10 +84,14 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         <>
           <button onClick={(e) => { e.stopPropagation(); onPrevious(); }}
             disabled={!canGoPrevious}
-            className="absolute left-5 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-3xl z-10 transition-colors">{'<'}</button>
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors">
+            <ChevronLeft size={40} strokeWidth={2.5} />
+          </button>
           <button onClick={(e) => { e.stopPropagation(); onNext(); }}
             disabled={!canGoNext}
-            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed text-3xl z-10 transition-colors">{'>'}</button>
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors">
+            <ChevronRight size={40} strokeWidth={2.5} />
+          </button>
         </>
       )}
       {isAutoPlay && (
