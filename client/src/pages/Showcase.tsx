@@ -567,8 +567,8 @@ export default function Showcase() {
           <div className="w-full h-full flex items-center justify-between px-4 relative">
             {/* Left columns */}
             <div className="flex gap-6 items-center">
-              <PhotoColumn employees={allLeft1} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={allLeft2} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={leftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={leftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
 
             {/* Center detail panel (absolute overlay) */}
