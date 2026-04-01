@@ -182,10 +182,13 @@ export default function Showcase() {
   const [selectedHonorCategory, setSelectedHonorCategory] = useState<string | null>(null);
   const [showHonorDropdown, setShowHonorDropdown] = useState(false);
 
-  const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
+  const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
+  const { data: employeesData, isLoading } = trpc.employees.list.useQuery(
+    { displayMode: activeStrategy?.displayMode === 'core_bones' ? 'core_bones' : 'all' } as any,
+    { refetchInterval: 5000 }
+  );
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
-  const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: honorCategoriesData = [] } = trpc.honors.listCategories.useQuery({} as any);
   const honorCategories = honorCategoriesData.map((cat: any) => cat.name);
   
@@ -358,27 +361,24 @@ export default function Showcase() {
   const getDisplayEmployees = () => {
     let employees = filteredEmployees;
     
-    // 如果没有选中部门，根据轮播策略过滤
-    if (selectedDepartment === null && activeStrategy) {
-      switch (activeStrategy.displayMode) {
-        case 'core_bones':
-          employees = filteredEmployees.filter(emp => emp.isCoreBone);
-          break;
-        case 'all':
-        default:
-          employees = filteredEmployees;
-      }
-    } else if (selectedDepartment === 'honors') {
+    // 首先应用轮播策略的过滤
+    if (activeStrategy?.displayMode === 'core_bones') {
+      employees = employees.filter(emp => emp.isCoreBone);
+    }
+    
+    // 然后应用部门筛选
+    if (selectedDepartment === 'honors') {
       // 按荣誉分类筛选
       if (selectedHonorCategory) {
-        employees = filteredEmployees.filter(emp => 
+        employees = employees.filter(emp => 
           emp.honors && emp.honors.some((h: any) => h.category === selectedHonorCategory)
         );
       } else {
-        employees = filteredEmployees.filter(emp => emp.honors && emp.honors.length > 0);
+        employees = employees.filter(emp => emp.honors && emp.honors.length > 0);
       }
     } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
-      employees = filteredEmployees.filter(emp => emp.departmentId === selectedDepartment);
+      // 选择了具体部门，进一步过滤
+      employees = employees.filter(emp => emp.departmentId === selectedDepartment);
     }
     
     return employees;
