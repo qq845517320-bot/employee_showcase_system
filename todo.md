@@ -355,3 +355,10 @@
   - [x] 修复 db.ts 中 getAllHonorCategories 函数缺少 await
   - [x] 修复 routers.ts 中 listCategories 接口缺少 await
   - [x] 添加前端错误处理和日志
+
+
+## 前端荣誉榜下拉框修复（2026-04-01 第二十九轮）
+- [x] 修复前端荣誉榜下拉框不显示新增分类的问题
+  - [x] 发现荣誉榜下拉框使用硬编码的固定分类列表
+  - [x] 修改为从后端 listCategories 接口动态获取分类
+  - [x] 确保新增分类能够实时显示在下拉框中

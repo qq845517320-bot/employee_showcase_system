@@ -177,12 +177,13 @@ export default function Showcase() {
   const [departments, setDepartments] = useState<any[]>([]);
   const [selectedHonorCategory, setSelectedHonorCategory] = useState<string | null>(null);
   const [showHonorDropdown, setShowHonorDropdown] = useState(false);
-  const honorCategories = ['班组之星', '集团级奖项', '公司级奖项'];
 
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
+  const { data: honorCategoriesData = [] } = trpc.honors.listCategories.useQuery({} as any);
+  const honorCategories = honorCategoriesData.map((cat: any) => cat.name);
   
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
