@@ -502,7 +502,7 @@ export default function Showcase() {
                       setSelectedHonorCategory(category);
                       setShowHonorDropdown(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 last:border-b-0 ${
+                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 last:border-b-0 rounded ${
                       selectedHonorCategory === category ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
