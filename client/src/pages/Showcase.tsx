@@ -584,7 +584,7 @@ export default function Showcase() {
                     selectedEmployeeDetail={selectedEmployeeDetail}
                     isLoadingDetail={isLoadingDetail}
                     onPrevious={() => {
-                      const currentEmployees = selectedDepartment !== null ? displayEmployees : currentBatch;
+                      const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
                       const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
                       if (currentEmployees.length > 0) {
                         // 实现循环翻页：第一个人的前一页接到最后一位员工
@@ -595,7 +595,7 @@ export default function Showcase() {
                       }
                     }}
                     onNext={() => {
-                      const currentEmployees = selectedDepartment !== null ? displayEmployees : currentBatch;
+                      const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
                       const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
                       if (currentEmployees.length > 0) {
                         // 实现循环翻页：最后一位员工的下一页接到第一个人
