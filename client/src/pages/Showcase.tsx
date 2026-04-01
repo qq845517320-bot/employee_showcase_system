@@ -613,8 +613,8 @@ export default function Showcase() {
                 {/* Right columns - hide when department is selected */}
                 {selectedDepartment === null && (
                   <div className="flex gap-6 items-center">
-                    <PhotoColumn employees={rightMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
-                    <PhotoColumn employees={rightColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={allRight1} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={allRight2} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
                   </div>
                 )}
               </div>
