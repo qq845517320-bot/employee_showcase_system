@@ -348,3 +348,10 @@
   - [x] 创建 honor_categories 表来永久化存储分类
   - [x] 修改前端从数据库加载分类列表
   - [x] 确保新分类能够正确保存到数据库并在下拉框中显示
+
+
+## 新增分类 await 遗漏修复（2026-04-01 第二十八轮）
+- [x] 修复新增分类功能中的 await 遗漏问题
+  - [x] 修复 db.ts 中 getAllHonorCategories 函数缺少 await
+  - [x] 修复 routers.ts 中 listCategories 接口缺少 await
+  - [x] 添加前端错误处理和日志

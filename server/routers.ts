@@ -373,7 +373,7 @@ const honorRouter = router({
     }),
   
   listCategories: publicProcedure.query(async () => {
-    return getAllHonorCategories();
+    return await getAllHonorCategories();
   }),
   
   createCategory: protectedProcedure
@@ -382,7 +382,7 @@ const honorRouter = router({
       description: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
-      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN' });
       const result = await createHonorCategory(input.category, input.description);
       return result;
     }),

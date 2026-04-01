@@ -246,7 +246,7 @@ export async function getAllBackgrounds() {
 export async function getAllHonorCategories() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(honorCategories).orderBy(honorCategories.order);
+  return await db.select().from(honorCategories).orderBy(honorCategories.order);
 }
 
 export async function getHonorCategoryByName(name: string) {

@@ -95,7 +95,12 @@ export default function AwardManagement() {
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCategoryName.trim()) return;
-    await createCategoryMutation.mutateAsync({ category: newCategoryName });
+    try {
+      await createCategoryMutation.mutateAsync({ category: newCategoryName });
+      console.log('分类创建成功，新分类名称:', newCategoryName);
+    } catch (error) {
+      console.error('创建分类失败:', error);
+    }
   };
 
   const groupedByCategory = categories.map(category => ({
