@@ -300,16 +300,20 @@ export default function Showcase() {
       wheelTimeoutRef.current = setTimeout(() => { wheelTimeoutRef.current = null; }, 300);
       e.preventDefault();
       const idx = displayEmployees.findIndex(emp => emp.id === selectedEmployee.id);
-      if (e.deltaY < 0 && idx > 0) {
-        setSelectedEmployee(displayEmployees[idx - 1]);
-        setCurrentDetailIndex(idx - 1);
-        const batchIdx = Math.floor((idx - 1) / batchSize);
+      if (e.deltaY < 0) {
+        // 上翻，实现循环
+        const newIdx = (idx - 1 + displayEmployees.length) % displayEmployees.length;
+        setSelectedEmployee(displayEmployees[newIdx]);
+        setCurrentDetailIndex(newIdx);
+        const batchIdx = Math.floor(newIdx / batchSize);
         setCurrentBatchIndex(batchIdx);
         resetInactivityTimer();
-      } else if (e.deltaY > 0 && idx < displayEmployees.length - 1) {
-        setSelectedEmployee(displayEmployees[idx + 1]);
-        setCurrentDetailIndex(idx + 1);
-        const batchIdx = Math.floor((idx + 1) / batchSize);
+      } else if (e.deltaY > 0) {
+        // 下翻，实现循环
+        const newIdx = (idx + 1) % displayEmployees.length;
+        setSelectedEmployee(displayEmployees[newIdx]);
+        setCurrentDetailIndex(newIdx);
+        const batchIdx = Math.floor(newIdx / batchSize);
         setCurrentBatchIndex(batchIdx);
         resetInactivityTimer();
       }
