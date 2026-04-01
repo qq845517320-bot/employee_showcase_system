@@ -1,6 +1,6 @@
 import { eq, and, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds } from "../drizzle/schema";
+import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -239,4 +239,40 @@ export async function getAllBackgrounds() {
   if (!db) return [];
 
   return await db.select().from(showcaseBackgrounds).orderBy(showcaseBackgrounds.createdAt);
+}
+
+// ========== 奖项分类相关查询 ==========
+
+export async function getAllHonorCategories() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(honorCategories).orderBy(honorCategories.order);
+}
+
+export async function getHonorCategoryByName(name: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(honorCategories).where(eq(honorCategories.name, name)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createHonorCategory(name: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  const existing = await getHonorCategoryByName(name);
+  if (existing) {
+    return existing;
+  }
+  
+  const categories = await getAllHonorCategories();
+  const maxOrder = categories.length > 0 ? Math.max(...categories.map(c => c.order)) : -1;
+  
+  const result = await db.insert(honorCategories).values({
+    name,
+    description,
+    order: maxOrder + 1,
+  });
+  
+  return await getHonorCategoryByName(name);
 }

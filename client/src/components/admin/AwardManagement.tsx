@@ -7,17 +7,16 @@ import { Input } from '@/components/ui/input';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const DEFAULT_CATEGORIES = ['班组之星', '集团级奖项', '公司级奖项'];
-
 export default function AwardManagement() {
   const { data: honors = [] } = trpc.honors.list.useQuery();
+  const { data: categoriesData = [] } = trpc.honors.listCategories.useQuery();
   const utils = trpc.useUtils();
   
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+  const categories = categoriesData.map(cat => cat.name);
   const [formData, setFormData] = useState({
     title: '',
     category: '班组之星' as string,
@@ -47,8 +46,8 @@ export default function AwardManagement() {
   });
 
   const createCategoryMutation = trpc.honors.createCategory.useMutation({
-    onSuccess: (data) => {
-      setCategories([...categories, data.category]);
+    onSuccess: () => {
+      utils.honors.listCategories.invalidate();
       setNewCategoryName('');
       setIsAddingCategory(false);
     },
@@ -62,14 +61,14 @@ export default function AwardManagement() {
       await updateMutation.mutateAsync({
         id: editingId,
         title: formData.title,
-        category: formData.category as '班组之星' | '集团级奖项' | '公司级奖项',
+        category: formData.category,
         description: formData.description,
       });
     } else {
       await createMutation.mutateAsync({
         employeeId: 0,
         title: formData.title,
-        category: formData.category as '班组之星' | '集团级奖项' | '公司级奖项',
+        category: formData.category,
         description: formData.description,
         awardDate: new Date(),
         icon: 'trophy',

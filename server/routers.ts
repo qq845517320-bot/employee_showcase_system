@@ -17,9 +17,11 @@ import {
   getAllPlaybackStrategies,
   getDepartmentById,
   getActiveBackground,
-  getAllBackgrounds
+  getAllBackgrounds,
+  getAllHonorCategories,
+  createHonorCategory
 } from "./db";
-import { departments, employees, honors, playbackStrategies, showcaseBackgrounds } from "../drizzle/schema";
+import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
@@ -370,13 +372,19 @@ const honorRouter = router({
       return result;
     }),
   
+  listCategories: publicProcedure.query(async () => {
+    return getAllHonorCategories();
+  }),
+  
   createCategory: protectedProcedure
     .input(z.object({
       category: z.string().min(1),
+      description: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
-      return { category: input.category };
+      const result = await createHonorCategory(input.category, input.description);
+      return result;
     }),
 });
 

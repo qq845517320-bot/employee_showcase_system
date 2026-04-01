@@ -107,3 +107,18 @@ export const showcaseBackgrounds = mysqlTable("showcase_backgrounds", {
 
 export type ShowcaseBackground = typeof showcaseBackgrounds.$inferSelect;
 export type InsertShowcaseBackground = typeof showcaseBackgrounds.$inferInsert;
+
+/**
+ * 奖项分类表
+ */
+export const honorCategories = mysqlTable("honor_categories", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(), // 分类名称
+  description: text("description"), // 分类描述
+  order: int("order").default(0).notNull(), // 排序顺序
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type HonorCategory = typeof honorCategories.$inferSelect;
+export type InsertHonorCategory = typeof honorCategories.$inferInsert;
