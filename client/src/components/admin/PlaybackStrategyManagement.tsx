@@ -9,7 +9,7 @@ export default function PlaybackStrategyManagement() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    displayMode: 'all' as 'all' | 'core_bones' | 'honors',
+    displayMode: 'all' as 'all' | 'core_bones',
     description: '',
     autoPlayInterval: 5000,
   });
@@ -52,29 +52,25 @@ export default function PlaybackStrategyManagement() {
   const displayModeLabel = {
     all: '全部员工',
     core_bones: '核心骨干',
-    honors: '荣誉榜',
   };
 
   const displayModeIcon = {
     all: Users,
     core_bones: Zap,
-    honors: Trophy,
   };
 
   const displayModeColor = {
     all: 'from-blue-500 to-blue-600',
     core_bones: 'from-yellow-500 to-yellow-600',
-    honors: 'from-purple-500 to-purple-600',
   };
 
   // 快速切换预设策略
   const quickSwitchModes = [
     { mode: 'all' as const, label: '普通工作日', description: '展示全部员工' },
     { mode: 'core_bones' as const, label: '参观接待-核心骨干', description: '仅展示核心骨干' },
-    { mode: 'honors' as const, label: '参观接待-荣誉墙', description: '仅展示荣誉员工' },
   ];
 
-  const handleQuickSwitch = async (mode: 'all' | 'core_bones' | 'honors') => {
+  const handleQuickSwitch = async (mode: 'all' | 'core_bones') => {
     let strategy = strategies.find(s => s.displayMode === mode);
     
     if (!strategy) {
@@ -189,12 +185,11 @@ export default function PlaybackStrategyManagement() {
               <label className="block text-sm font-medium text-gray-700 mb-2">展示模式</label>
               <select
                 value={formData.displayMode}
-                onChange={e => setFormData({ ...formData, displayMode: e.target.value as 'all' | 'core_bones' | 'honors' })}
+                onChange={e => setFormData({ ...formData, displayMode: e.target.value as 'all' | 'core_bones' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">全部员工</option>
                 <option value="core_bones">核心骨干</option>
-                <option value="honors">荣誉榜</option>
               </select>
             </div>
 

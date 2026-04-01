@@ -29,6 +29,13 @@
       "when": 1774598476375,
       "tag": "0003_even_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1775013563961,
+      "tag": "0004_sad_scalphunter",
+      "breakpoints": true
     }
   ]
 }

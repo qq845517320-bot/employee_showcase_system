@@ -90,13 +90,11 @@ const employeeRouter = router({
   list: publicProcedure
     .input(z.object({
       departmentId: z.number().optional(),
-      displayMode: z.enum(['all', 'core_bones', 'honors']).optional(),
+      displayMode: z.enum(['all', 'core_bones']).optional(),
     }))
     .query(async ({ input }) => {
       if (input.displayMode === 'core_bones') {
         return getCoreEmployees();
-      } else if (input.displayMode === 'honors') {
-        return getEmployeesWithNewHonors();
       } else if (input.departmentId) {
         return getEmployeesByDepartment(input.departmentId);
       } else {
@@ -294,6 +292,12 @@ const honorRouter = router({
       return getHonorsByEmployeeId(input.employeeId);
     }),
   
+  list: publicProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) throw new Error('Database not available');
+    return db.select().from(honors);
+  }),
+  
   listNew: publicProcedure.query(async () => {
     return getNewHonors();
   }),
@@ -305,6 +309,7 @@ const honorRouter = router({
       description: z.string().optional(),
       awardDate: z.date(),
       icon: z.string().optional(),
+      category: z.enum(['班组之星', '集团级奖项', '公司级奖项']).optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
@@ -317,6 +322,7 @@ const honorRouter = router({
         description: input.description,
         awardDate: input.awardDate,
         icon: input.icon || 'trophy',
+        category: input.category || '班组之星',
         isNew: true,
       });
       return result;
@@ -330,6 +336,7 @@ const honorRouter = router({
       awardDate: z.date().optional(),
       isNew: z.boolean().optional(),
       icon: z.string().optional(),
+      category: z.enum(['班组之星', '集团级奖项', '公司级奖项']).optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
@@ -377,7 +384,7 @@ const playbackRouter = router({
   create: protectedProcedure
     .input(z.object({
       name: z.string().min(1),
-      displayMode: z.enum(['all', 'core_bones', 'honors']),
+      displayMode: z.enum(['all', 'core_bones']),
       description: z.string().optional(),
       autoPlayInterval: z.number().optional(),
     }))
@@ -440,7 +447,7 @@ const backgroundRouter = router({
       name: z.string().min(1),
       backgroundUrl: z.string().url(),
       description: z.string().optional(),
-      displayMode: z.enum(['all', 'core_bones', 'honors']).optional(),
+      displayMode: z.enum(['all', 'core_bones']).optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');

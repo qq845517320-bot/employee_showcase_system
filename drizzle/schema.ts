@@ -66,6 +66,7 @@ export const honors = mysqlTable("honors", {
   awardDate: timestamp("awardDate").notNull(), // 获奖时间
   isNew: boolean("isNew").default(true).notNull(), // 是否为新荣誉（用于显示 New 标签）
   icon: varchar("icon", { length: 50 }).default("trophy").notNull(), // 图标类型（trophy、star 等）
+  category: mysqlEnum("category", ["班组之星", "集团级奖项", "公司级奖项"]).default("班组之星").notNull(), // 奖项分类
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -79,7 +80,7 @@ export type InsertHonor = typeof honors.$inferInsert;
 export const playbackStrategies = mysqlTable("playback_strategies", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(), // 策略名称（如：普通工作日、参观接待）
-  displayMode: mysqlEnum("displayMode", ["all", "core_bones", "honors"]).notNull(), // 展示模式
+  displayMode: mysqlEnum("displayMode", ["all", "core_bones"]).notNull(), // 展示模式
   description: text("description"), // 策略描述
   isActive: boolean("isActive").default(false).notNull(), // 是否为当前活跃策略
   autoPlayInterval: int("autoPlayInterval").default(5000).notNull(), // 自动轮播间隔（毫秒）
@@ -99,7 +100,7 @@ export const showcaseBackgrounds = mysqlTable("showcase_backgrounds", {
   backgroundUrl: varchar("backgroundUrl", { length: 500 }).notNull(), // 背景图片 URL（S3）
   description: text("description"), // 背景描述
   isActive: boolean("isActive").default(false).notNull(), // 是否为当前活跃背景
-  displayMode: mysqlEnum("displayMode", ["all", "core_bones", "honors"]).default("all").notNull(), // 适用的展示模式
+  displayMode: mysqlEnum("displayMode", ["all", "core_bones"]).default("all").notNull(), // 适用的展示模式
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
