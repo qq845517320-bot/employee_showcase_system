@@ -392,7 +392,10 @@ const playbackRouter = router({
         description: input.description,
         autoPlayInterval: input.autoPlayInterval || 5000,
       });
-      return result;
+      
+      // 获取新创建的策略
+      const strategies = await getAllPlaybackStrategies();
+      return strategies[strategies.length - 1];
     }),
   
   setActive: protectedProcedure

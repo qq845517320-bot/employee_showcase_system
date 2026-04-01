@@ -182,3 +182,14 @@
   - [x] 修改前端代码：从 trpc.employees.get.useQuery 提取 isLoading 状态
   - [x] 更新 DetailPanel 组件：添加 isLoadingDetail 参数和骨架屏 UI
   - [x] 传递参数：在两处 DetailPanel 调用处添加 isLoadingDetail 参数
+
+
+## 新功能实现（2026-04-01 第十三轮）
+- [x] 优化轮播策略管理界面排版
+  - [x] 添加快速切换模式区域（三个大卡片按钮）
+  - [x] 支持一键切换"普通工作日"、"参观接待-核心骨干"、"参观接待-荣誉墙"三种模式
+  - [x] 修复快速切换后不立即显示的问题
+    - [x] 添加 utils.playback.getActive.invalidate() 立即刷新活跃策略查询
+    - [x] 在创建新策略后调用 refetch() 更新策略列表
+  - [x] 优化 UI 设计：卡片高亮显示、图标区分、颜色编码
+  - [x] 改进策略列表的表格样式和交互
