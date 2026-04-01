@@ -176,6 +176,7 @@ export default function Showcase() {
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
   const [selectedHonorCategory, setSelectedHonorCategory] = useState<string | null>(null);
+  const [showHonorDropdown, setShowHonorDropdown] = useState(false);
   const honorCategories = ['班组之星', '集团级奖项', '公司级奖项'];
 
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery({} as any);
@@ -210,6 +211,11 @@ export default function Showcase() {
 
   const handleDepartmentClick = (deptId: number | string | null) => {
     setSelectedDepartment(deptId);
+    if (deptId === 'honors') {
+      setShowHonorDropdown(!showHonorDropdown);
+    } else {
+      setShowHonorDropdown(false);
+    }
     setSelectedEmployee(null);
     setIsAutoPlayDetail(false);
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
@@ -468,30 +474,36 @@ export default function Showcase() {
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-              <span>\u2605</span>
-              <span>{"\u8363\u8a89\u699c"}</span>
-              <span>\u2605</span>
+              <span>☆</span>
+              <span>荣誉榜</span>
+              <span>☆</span>
             </button>
-            {selectedDepartment === 'honors' && (
+            {showHonorDropdown && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="absolute top-full mt-2 left-0 bg-white rounded-lg shadow-xl border border-gray-200 z-50 min-w-max"
               >
                 <button
-                  onClick={() => setSelectedHonorCategory(null)}
-                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
-                    selectedHonorCategory === null ? 'bg-red-100 text-red-700' : 'text-gray-700 hover:bg-gray-100'
+                  onClick={() => {
+                    setSelectedHonorCategory(null);
+                    setShowHonorDropdown(false);
+                  }}
+                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 ${
+                    selectedHonorCategory === null ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  {"\u5168\u90e8\u8363\u8a89"}
+                  全部荣誉
                 </button>
                 {honorCategories.map((category) => (
                   <button
                     key={category}
-                    onClick={() => setSelectedHonorCategory(category)}
-                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-t border-gray-200 ${
-                      selectedHonorCategory === category ? 'bg-red-100 text-red-700' : 'text-gray-700 hover:bg-gray-100'
+                    onClick={() => {
+                      setSelectedHonorCategory(category);
+                      setShowHonorDropdown(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors border-b border-gray-200 last:border-b-0 ${
+                      selectedHonorCategory === category ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
                     {category}
