@@ -369,6 +369,15 @@ const honorRouter = router({
       const result = await db.update(honors).set({ isNew: false }).where(eq(honors.id, input.id));
       return result;
     }),
+  
+  createCategory: protectedProcedure
+    .input(z.object({
+      category: z.string().min(1),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      return { category: input.category };
+    }),
 });
 
 // ========== 轮播策略路由 ==========

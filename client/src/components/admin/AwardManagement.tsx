@@ -7,14 +7,17 @@ import { Input } from '@/components/ui/input';
 import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const AWARD_CATEGORIES = ['班组之星', '集团级奖项', '公司级奖项'];
+const DEFAULT_CATEGORIES = ['班组之星', '集团级奖项', '公司级奖项'];
 
 export default function AwardManagement() {
   const { data: honors = [] } = trpc.honors.list.useQuery();
   const utils = trpc.useUtils();
   
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [formData, setFormData] = useState({
     title: '',
     category: '班组之星' as string,
@@ -43,6 +46,14 @@ export default function AwardManagement() {
     },
   });
 
+  const createCategoryMutation = trpc.honors.createCategory.useMutation({
+    onSuccess: (data) => {
+      setCategories([...categories, data.category]);
+      setNewCategoryName('');
+      setIsAddingCategory(false);
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
@@ -56,7 +67,7 @@ export default function AwardManagement() {
       });
     } else {
       await createMutation.mutateAsync({
-        employeeId: 0, // 这是一个占位符，实际应该在编辑员工时关联
+        employeeId: 0,
         title: formData.title,
         category: formData.category as '班组之星' | '集团级奖项' | '公司级奖项',
         description: formData.description,
@@ -82,7 +93,13 @@ export default function AwardManagement() {
     setFormData({ title: '', category: '班组之星', description: '' });
   };
 
-  const groupedByCategory = AWARD_CATEGORIES.map(category => ({
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+    await createCategoryMutation.mutateAsync({ category: newCategoryName });
+  };
+
+  const groupedByCategory = categories.map(category => ({
     category,
     awards: honors.filter((h: any) => h.category === category),
   }));
@@ -94,16 +111,69 @@ export default function AwardManagement() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">奖项管理</h2>
           <p className="text-gray-600">管理系统中的所有奖项，支持按分类组织</p>
         </div>
-        {!isAddingNew && (
-          <Button
-            onClick={() => setIsAddingNew(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            新增奖项
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {!isAddingNew && !isAddingCategory && (
+            <>
+              <Button
+                onClick={() => setIsAddingNew(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                新增奖项
+              </Button>
+              <Button
+                onClick={() => setIsAddingCategory(true)}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                新增分类
+              </Button>
+            </>
+          )}
+        </div>
       </div>
+
+      {/* 新增分类表单 */}
+      {isAddingCategory && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-green-50 border border-green-200 rounded-lg p-6"
+        >
+          <form onSubmit={handleAddCategory} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">分类名称</label>
+              <Input
+                type="text"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                placeholder="例如：部门级奖项、个人奖励"
+                className="w-full"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                type="submit"
+                disabled={createCategoryMutation.isPending}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                创建分类
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  setIsAddingCategory(false);
+                  setNewCategoryName('');
+                }}
+                variant="outline"
+              >
+                取消
+              </Button>
+            </div>
+          </form>
+        </motion.div>
+      )}
 
       {/* 新增/编辑表单 */}
       {isAddingNew && (
@@ -131,7 +201,7 @@ export default function AwardManagement() {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                {AWARD_CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>
