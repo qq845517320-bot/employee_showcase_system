@@ -66,7 +66,7 @@ export const honors = mysqlTable("honors", {
   awardDate: timestamp("awardDate").notNull(), // 获奖时间
   isNew: boolean("isNew").default(true).notNull(), // 是否为新荣誉（用于显示 New 标签）
   icon: varchar("icon", { length: 50 }).default("trophy").notNull(), // 图标类型（trophy、star 等）
-  category: mysqlEnum("category", ["班组之星", "集团级奖项", "公司级奖项"]).default("班组之星").notNull(), // 奖项分类
+  category: varchar("category", { length: 100 }).default("班组之星").notNull(), // 奖项分类
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

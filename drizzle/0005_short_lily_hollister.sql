@@ -1,0 +1,1 @@
+ALTER TABLE `honors` MODIFY COLUMN `category` varchar(100) NOT NULL DEFAULT '班组之星';

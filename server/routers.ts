@@ -305,11 +305,11 @@ const honorRouter = router({
   create: protectedProcedure
     .input(z.object({
       employeeId: z.number(),
-      title: z.string().min(1),
+      title: z.string(),
       description: z.string().optional(),
       awardDate: z.date(),
       icon: z.string().optional(),
-      category: z.enum(['班组之星', '集团级奖项', '公司级奖项']).optional(),
+      category: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
@@ -336,7 +336,7 @@ const honorRouter = router({
       awardDate: z.date().optional(),
       isNew: z.boolean().optional(),
       icon: z.string().optional(),
-      category: z.enum(['班组之星', '集团级奖项', '公司级奖项']).optional(),
+      category: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
