@@ -334,21 +334,7 @@ export default function Showcase() {
   }
 
   const batchSize = 10;
-  const totalBatches = Math.ceil(filteredEmployees.length / batchSize);
-  const startIdx = currentBatchIndex * batchSize;
-  const currentBatch = filteredEmployees.slice(startIdx, startIdx + batchSize);
   
-  // 翻页处理函数
-  const handlePreviousBatch = () => {
-    setCurrentBatchIndex((prev) => (prev - 1 + totalBatches) % totalBatches);
-    resetInactivityTimer();
-  };
-  
-  const handleNextBatch = () => {
-    setCurrentBatchIndex((prev) => (prev + 1) % totalBatches);
-    resetInactivityTimer();
-  };
-
   // 根据轮播策略和选中的部门过滤员工
   const getDisplayEmployees = () => {
     let employees = filteredEmployees;
@@ -380,6 +366,22 @@ export default function Showcase() {
   };
   
   const displayEmployees = getDisplayEmployees();
+  const totalBatches = Math.ceil(displayEmployees.length / batchSize);
+  const startIdx = currentBatchIndex * batchSize;
+  const currentBatch = displayEmployees.slice(startIdx, startIdx + batchSize);
+  
+  // 翻页处理函数
+  const handlePreviousBatch = () => {
+    setCurrentBatchIndex((prev) => (prev - 1 + totalBatches) % totalBatches);
+    resetInactivityTimer();
+  };
+  
+  const handleNextBatch = () => {
+    setCurrentBatchIndex((prev) => (prev + 1) % totalBatches);
+    resetInactivityTimer();
+  };
+
+
 
   const centerSortedEmployees = (() => {
     if (displayEmployees.length === 0) return [];
@@ -545,8 +547,8 @@ export default function Showcase() {
                 {/* Left columns - hide when department is selected */}
                 {selectedDepartment === null && (
                   <div className="flex gap-6 items-center">
-                    <PhotoColumn employees={leftColumn} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
-                    <PhotoColumn employees={leftMiddleColumn} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={leftColumn} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={leftMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
                   </div>
                 )}
 

@@ -288,3 +288,15 @@
 - [x] 优化六边形框显示逻辑：部门模式下隐藏
   - [x] 当选择了具体部门时，隐藏两边的六边照片框
   - [x] 只在全部员工或轮播模式下显示六边框边形框
+
+
+## Bug 修复（2026-04-01 第二十轮）
+- [x] Bug 1：左列六边形照片墙缺少点亮动画效果
+  - [x] 检查 leftColumn 和 leftMiddleColumn 是否传递了 highlightedId
+  - [x] 修复 PhotoColumn 组件的高亮显示逻辑
+- [x] Bug 2：翻页时两边小照片的同步问题
+  - [x] 检查 currentBatch 的计算逻辑
+  - [x] 修复批次翻页时的数据同步
+- [x] Bug 3：部门模式下翻页顺序错误
+  - [x] 修改翻页逻辑，使用 displayEmployees 而不是 filteredEmployees
+  - [x] 确保部门模式下按部门员工顺序翻页
