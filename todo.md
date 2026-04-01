@@ -172,3 +172,13 @@
   - [ ] 实现 Excel/CSV 文件解析
   - [ ] 实现批量创建或更新员工数据
   - [ ] 添加导入结果提示和错误处理
+
+
+## 新问题修复（2026-04-01 第十二轮）
+- [x] 修复轮播员工卡片时荣誉显示闪烁问题
+  - [x] 问题：荣誉数据先显示"暂无数据"，然后切换到具体荣誉内容
+  - [x] 原因：selectedEmployeeDetail 查询加载时间较长，在数据返回前显示默认文本
+  - [x] 解决方案：添加加载状态，在数据加载中时显示骨架屏动画而不是"暂无数据"
+  - [x] 修改前端代码：从 trpc.employees.get.useQuery 提取 isLoading 状态
+  - [x] 更新 DetailPanel 组件：添加 isLoadingDetail 参数和骨架屏 UI
+  - [x] 传递参数：在两处 DetailPanel 调用处添加 isLoadingDetail 参数
