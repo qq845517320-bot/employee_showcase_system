@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 
 export default function CoreBoneManagement() {
   const { data: employees = [] } = trpc.employees.list.useQuery({});
+  const { data: departments = [] } = trpc.departments.list.useQuery();
   const utils = trpc.useUtils();
   
   const updateMutation = trpc.employees.update.useMutation({
@@ -18,6 +19,13 @@ export default function CoreBoneManagement() {
 
   const coreEmployees = employees.filter(emp => emp.isCoreBone);
   const nonCoreEmployees = employees.filter(emp => !emp.isCoreBone);
+  
+  // 根据部门ID获取部门名称
+  const getDepartmentName = (departmentId: number | null) => {
+    if (!departmentId) return '未分配';
+    const dept = departments.find(d => d.id === departmentId);
+    return dept ? dept.name : `部门 ${departmentId}`;
+  };
 
   const handleToggleCoreBone = async (employeeId: number, isCoreBone: boolean) => {
     await updateMutation.mutateAsync({
@@ -61,7 +69,7 @@ export default function CoreBoneManagement() {
                     核心
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mb-3">部门: {employee.departmentId}</p>
+                <p className="text-xs text-gray-500 mb-3">部门: {getDepartmentName(employee.departmentId)}</p>
                 <Button
                   variant="outline"
                   size="sm"
@@ -103,7 +111,7 @@ export default function CoreBoneManagement() {
                     <p className="text-sm text-gray-600">{employee.position}</p>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mb-3">部门: {employee.departmentId}</p>
+                <p className="text-xs text-gray-500 mb-3">部门: {getDepartmentName(employee.departmentId)}</p>
                 <Button
                   variant="default"
                   size="sm"
