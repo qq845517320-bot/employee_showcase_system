@@ -640,10 +640,10 @@ export default function Showcase() {
         {/* ====== AUTO-PLAY MODE: photo wall + detail overlay ====== */}
         {isAutoPlayDetail && selectedEmployee && selectedDepartment === null ? (
           <div className="w-full h-full flex items-center justify-between px-4 relative">
-            {/* Left columns */}
+            {/* Left columns - use autoPlay batch to match center card */}
             <div className="flex gap-6 items-center">
-              <PhotoColumn employees={leftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={leftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayLeftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
 
             {/* Center detail panel (absolute overlay) */}
