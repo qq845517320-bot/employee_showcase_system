@@ -383,12 +383,11 @@ export default function Showcase() {
         employees = employees.filter(emp => emp.honors && emp.honors.length > 0);
       }
     } else if (selectedDepartment === 'management') {
-      // 筛选管理层员工（岗位或职级包含管理相关关键词）
+      // 筛选管理层员工（仅检查岗位字段中是否包含管理相关关键词）
       employees = employees.filter(emp => {
         const position = emp.position?.toLowerCase() || '';
-        const level = emp.level?.toLowerCase() || '';
         const managementKeywords = ['主管', '经理', '总监', '主任', '负责人', 'manager', 'director', 'supervisor', 'chief'];
-        return managementKeywords.some(keyword => position.includes(keyword) || level.includes(keyword));
+        return managementKeywords.some(keyword => position.includes(keyword));
       });
     } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
       // 选择了具体部门，进一步过滤
@@ -512,7 +511,7 @@ export default function Showcase() {
             <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/深国际Logo_597125f6.jpg" alt="Logo" className="h-12 w-auto" />
             <div className="text-white text-lg font-bold">{"\u6df1\u56fd\u9645\u6e2f\u53e3 | \u6c5f\u82cf\u9756\u6c5f\u6e2f"}</div>
           </div>
-          <h1 className="text-4xl font-bold text-white">{"\u5458\u5de5\u98ce\u91c7\u5c55\u793a"}</h1>
+          <h1 className="text-4xl font-bold text-white">{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
         </div>
         <motion.div
