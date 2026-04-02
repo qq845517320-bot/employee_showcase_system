@@ -105,7 +105,7 @@ export function PhotoUpload({
           animate={{ opacity: 1, scale: 1 }}
           className="relative"
         >
-          <div className="w-full aspect-square rounded-lg overflow-hidden bg-muted">
+          <div className="w-40 h-40 rounded-lg overflow-hidden bg-muted">
             <img
               src={preview}
               alt="Preview"
@@ -132,7 +132,7 @@ export function PhotoUpload({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`w-full aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${
+          className={`w-40 h-40 rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors ${
             dragOverRef.current
               ? 'border-blue-500 bg-blue-50'
               : 'border-muted-foreground/25 hover:border-muted-foreground/50'
