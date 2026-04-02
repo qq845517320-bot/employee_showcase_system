@@ -78,7 +78,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
     >
       {!isAutoPlay && onClose && (
         <button onClick={(e) => { e.stopPropagation(); onClose(); }}
-          className="absolute top-5 right-5 text-white/60 hover:text-white text-3xl z-10">{"\u2715"}</button>
+          className="absolute top-5 right-5 text-white/60 hover:text-white text-3xl z-50 pointer-events-auto">{"\u2715"}</button>
       )}
       {!isAutoPlay && onPrevious && onNext && (
         <>
@@ -675,7 +675,7 @@ export default function Showcase() {
                 )}
 
                 {/* Center detail panel */}
-                <div className="flex-1 flex items-center justify-center px-4 z-10">
+                <div className="flex-1 flex items-center justify-center px-4 z-50">
                   <AnimatePresence mode="wait">
                     {isAutoPlayDetail ? (
                       <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true}
