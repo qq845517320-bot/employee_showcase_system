@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Upload, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Upload, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import type { Employee } from '../../../../drizzle/schema';
@@ -44,6 +44,12 @@ export default function EmployeeManagement() {
   });
 
   const deleteMutation = trpc.employees.delete.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const reorderMutation = trpc.employees.reorder.useMutation({
     onSuccess: () => {
       refetch();
     },
@@ -512,6 +518,20 @@ export default function EmployeeManagement() {
                   {new Date(emp.joinDate).toLocaleDateString('zh-CN')}
                 </td>
                 <td className="px-4 py-2 flex gap-2">
+                  <button
+                    onClick={() => reorderMutation.mutate({ employeeId: emp.id, direction: 'up' })}
+                    className="p-1 hover:bg-green-100 rounded"
+                    title="上移"
+                  >
+                    <ChevronUp className="w-4 h-4 text-green-600" />
+                  </button>
+                  <button
+                    onClick={() => reorderMutation.mutate({ employeeId: emp.id, direction: 'down' })}
+                    className="p-1 hover:bg-green-100 rounded"
+                    title="下移"
+                  >
+                    <ChevronDown className="w-4 h-4 text-green-600" />
+                  </button>
                   <button
                     onClick={() => handleEdit(emp)}
                     className="p-1 hover:bg-blue-100 rounded"

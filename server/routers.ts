@@ -20,7 +20,8 @@ import {
   getAllBackgrounds,
   getAllHonorCategories,
   createHonorCategory,
-  deleteHonorCategory
+  deleteHonorCategory,
+  reorderEmployee
 } from "./db";
 import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
@@ -284,6 +285,17 @@ const employeeRouter = router({
         errorCount,
         errors: errors.slice(0, 10),
       };
+    }),
+  
+  reorder: protectedProcedure
+    .input(z.object({
+      employeeId: z.number(),
+      direction: z.enum(['up', 'down']),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'UNAUTHORIZED' });
+      await reorderEmployee(input.employeeId, input.direction);
+      return { success: true };
     }),
 });
 

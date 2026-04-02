@@ -290,3 +290,34 @@ export async function deleteHonorCategory(name: string) {
   await db.delete(honorCategories).where(eq(honorCategories.name, name));
   return { success: true };
 }
+
+// ========== 员工排序相关操作 ==========
+
+export async function reorderEmployee(employeeId: number, direction: 'up' | 'down') {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  const employee = await getEmployeeById(employeeId);
+  if (!employee) throw new Error('Employee not found');
+  
+  // 获取所有同部门的员工，按顺序排列
+  const deptEmployees = await db
+    .select()
+    .from(employees)
+    .where(eq(employees.departmentId, employee.departmentId))
+    .orderBy(employees.order);
+  
+  const currentIndex = deptEmployees.findIndex(e => e.id === employeeId);
+  
+  if (direction === 'up' && currentIndex > 0) {
+    // 与上一个员工交换顺序
+    const prevEmployee = deptEmployees[currentIndex - 1];
+    await db.update(employees).set({ order: prevEmployee.order }).where(eq(employees.id, employeeId));
+    await db.update(employees).set({ order: employee.order }).where(eq(employees.id, prevEmployee.id));
+  } else if (direction === 'down' && currentIndex < deptEmployees.length - 1) {
+    // 与下一个员工交换顺序
+    const nextEmployee = deptEmployees[currentIndex + 1];
+    await db.update(employees).set({ order: nextEmployee.order }).where(eq(employees.id, employeeId));
+    await db.update(employees).set({ order: employee.order }).where(eq(employees.id, nextEmployee.id));
+  }
+}

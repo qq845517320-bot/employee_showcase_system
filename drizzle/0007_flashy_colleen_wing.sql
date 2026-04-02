@@ -1,0 +1,1 @@
+ALTER TABLE `employees` ADD `order` int DEFAULT 0 NOT NULL;

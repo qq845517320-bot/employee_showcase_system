@@ -50,6 +50,13 @@
       "when": 1775028071974,
       "tag": "0006_even_lilandra",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1775093349244,
+      "tag": "0007_flashy_colleen_wing",
+      "breakpoints": true
     }
   ]
 }
