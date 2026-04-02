@@ -177,11 +177,17 @@ export default function Showcase() {
   const detailIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const displayEmployeesRef = useRef<any[]>([]);
+  const filteredEmployeesRef = useRef<any[]>([]);
+  const isAutoPlayDetailRef = useRef(false);
+  const currentDetailIndexRef = useRef(0);
+  const activeStrategyRef = useRef<any>(null);
+  const initialLoadDoneRef = useRef(false);
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
   const [selectedHonorCategory, setSelectedHonorCategory] = useState<string | null>(null);
   const [showHonorDropdown, setShowHonorDropdown] = useState(false);
+  const batchSize = 10;
 
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery(
@@ -214,7 +220,18 @@ export default function Showcase() {
     return () => { if (timeIntervalRef.current) clearInterval(timeIntervalRef.current); };
   }, []);
 
-  useEffect(() => { if (employeesData) { setEmployees(employeesData); setFilteredEmployees(employeesData); } }, [employeesData]);
+  useEffect(() => {
+    if (employeesData) {
+      setEmployees(employeesData);
+      setFilteredEmployees(employeesData);
+      // 只在首次加载时启动不活动计时器
+      if (!initialLoadDoneRef.current) {
+        initialLoadDoneRef.current = true;
+        // 延迟启动，确保 displayEmployeesRef 已更新
+        setTimeout(() => resetInactivityTimer(), 100);
+      }
+    }
+  }, [employeesData]);
   useEffect(() => { if (departmentsData) setDepartments(departmentsData); }, [departmentsData]);
   useEffect(() => { if (backgroundData?.backgroundUrl) setBackgroundUrl(backgroundData.backgroundUrl); }, [backgroundData]);
 
@@ -251,25 +268,27 @@ export default function Showcase() {
   const resetInactivityTimer = () => {
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     setIsAutoPlayDetail(false);
+    isAutoPlayDetailRef.current = false;
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-    // 总是启动批次轮播，除非已经在自动轮播详情模式
+    // 总是启动批次轮播
     startBatchRotation();
     inactivityTimeoutRef.current = setTimeout(() => {
-      // 使用 ref 获取最新的 displayEmployees，而不是闭包中的旧值
+      // 使用 ref 获取最新的 displayEmployees
       if (displayEmployeesRef.current.length > 0) {
         setIsAutoPlayDetail(true);
+        isAutoPlayDetailRef.current = true;
         stopBatchRotation();
-        startDetailRotation();
+        startDetailRotationFromRef();
       }
     }, 30000);
   };
 
   const startBatchRotation = () => {
     if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
-    const interval = activeStrategy?.autoPlayInterval || 5000;
+    const interval = activeStrategyRef.current?.autoPlayInterval || 5000;
     batchIntervalRef.current = setInterval(() => {
       setCurrentBatchIndex(prev => {
-        const total = Math.ceil(displayEmployees.length / 10);
+        const total = Math.ceil(displayEmployeesRef.current.length / 10);
         return total > 0 ? (prev + 1) % total : 0;
       });
     }, interval);
@@ -279,38 +298,53 @@ export default function Showcase() {
     if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
   };
 
-  const startDetailRotation = () => {
+  // 使用 ref 的版本，避免闭包问题
+  const startDetailRotationFromRef = () => {
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-    // 如果 displayEmployees 为空，不启动轮播
-    if (displayEmployees.length === 0) {
+    const emps = displayEmployeesRef.current;
+    if (emps.length === 0) {
       setSelectedEmployee(null);
       return;
     }
-    let index = currentDetailIndex;
-    if (displayEmployees.length > 0) {
-      setSelectedEmployee(displayEmployees[index]);
-    }
-    const interval = activeStrategy?.autoPlayInterval || 5000;
+    let index = currentDetailIndexRef.current;
+    if (index >= emps.length) index = 0;
+    setSelectedEmployee(emps[index]);
+    setCurrentDetailIndex(index);
+    currentDetailIndexRef.current = index;
+    const interval = activeStrategyRef.current?.autoPlayInterval || 5000;
     detailIntervalRef.current = setInterval(() => {
-      if (displayEmployees.length === 0) return;
-      index = (index + 1) % displayEmployees.length;
-      setCurrentDetailIndex(index);
-      setSelectedEmployee(displayEmployees[index]);
+      const currentEmps = displayEmployeesRef.current;
+      if (currentEmps.length === 0) return;
+      const nextIndex = (currentDetailIndexRef.current + 1) % currentEmps.length;
+      currentDetailIndexRef.current = nextIndex;
+      setCurrentDetailIndex(nextIndex);
+      setSelectedEmployee(currentEmps[nextIndex]);
     }, interval);
   };
 
   const handleEmployeeClick = (employee: any) => {
     setIsAutoPlayDetail(false);
+    isAutoPlayDetailRef.current = false;
     setSelectedEmployee(employee);
     // 计算正确的 currentBatchIndex
-    const empIndex = displayEmployees.findIndex(emp => emp.id === employee.id);
+    const empIndex = displayEmployeesRef.current.findIndex(emp => emp.id === employee.id);
     if (empIndex !== -1) {
       const batchIdx = Math.floor(empIndex / batchSize);
       setCurrentBatchIndex(batchIdx);
+      currentDetailIndexRef.current = empIndex;
+      setCurrentDetailIndex(empIndex);
     }
-    // 停止批次轮播，因为现在显示的是员工详情卡片
+    // 重置不活动计时器，但不启动批次轮播（因为正在显示员工详情卡片）
+    if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
+    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     stopBatchRotation();
-    resetInactivityTimer();
+    inactivityTimeoutRef.current = setTimeout(() => {
+      if (displayEmployeesRef.current.length > 0) {
+        setIsAutoPlayDetail(true);
+        isAutoPlayDetailRef.current = true;
+        startDetailRotationFromRef();
+      }
+    }, 30000);
   };
 
   const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -352,17 +386,27 @@ export default function Showcase() {
     };
   }, []);
 
-  useEffect(() => { resetInactivityTimer(); }, [filteredEmployees]);
+  // 同步 ref 值
+  useEffect(() => {
+    filteredEmployeesRef.current = filteredEmployees;
+  }, [filteredEmployees]);
 
   useEffect(() => {
-    if (isAutoPlayDetail && filteredEmployees.length > 0) {
-      // 当进入自动轮播详情模式时，确保停止批次轮播
+    currentDetailIndexRef.current = currentDetailIndex;
+  }, [currentDetailIndex]);
+
+  useEffect(() => {
+    activeStrategyRef.current = activeStrategy;
+  }, [activeStrategy]);
+
+  // 当 isAutoPlayDetail 变化时的处理
+  useEffect(() => {
+    if (isAutoPlayDetail && displayEmployeesRef.current.length > 0) {
       stopBatchRotation();
-      if (!selectedEmployee) { setSelectedEmployee(filteredEmployees[0]); setCurrentDetailIndex(0); }
-      startDetailRotation();
+      startDetailRotationFromRef();
     }
     return () => { if (detailIntervalRef.current) clearInterval(detailIntervalRef.current); };
-  }, [isAutoPlayDetail, filteredEmployees]);
+  }, [isAutoPlayDetail]);
 
   const handleDetailPanelClick = (e: React.MouseEvent) => { e.stopPropagation(); };
 
@@ -370,8 +414,6 @@ export default function Showcase() {
     return <div className="w-full h-screen flex items-center justify-center bg-red-900">{"\u52a0\u8f7d\u4e2d..."}</div>;
   }
 
-  const batchSize = 10;
-  
   // 根据轮播策略和选中的部门过滤员工
   const getDisplayEmployees = () => {
     let employees = filteredEmployees;
