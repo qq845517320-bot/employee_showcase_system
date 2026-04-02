@@ -383,12 +383,15 @@ export default function Showcase() {
         employees = employees.filter(emp => emp.honors && emp.honors.length > 0);
       }
     } else if (selectedDepartment === 'management') {
-      // 筛选管理层员工（仅检查岗位字段中是否包含管理相关关键词）
-      employees = employees.filter(emp => {
-        const position = emp.position?.toLowerCase() || '';
-        const managementKeywords = ['主管', '经理', '总监', '主任', '负责人', 'manager', 'director', 'supervisor', 'chief'];
-        return managementKeywords.some(keyword => position.includes(keyword));
-      });
+      // 筛选管理层员工（基于部门ID）
+      const managementDept = departments.find(d => d.name === '管理层');
+      if (managementDept) {
+        employees = employees.filter(emp => emp.departmentId === managementDept.id);
+      } else {
+        // 如果找不到管理层部门，显示空列表
+        employees = [];
+      }
+    
     } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
       // 选择了具体部门，进一步过滤
       employees = employees.filter(emp => emp.departmentId === selectedDepartment);
