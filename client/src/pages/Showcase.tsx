@@ -383,11 +383,12 @@ export default function Showcase() {
         employees = employees.filter(emp => emp.honors && emp.honors.length > 0);
       }
     } else if (selectedDepartment === 'management') {
-      // 筛选管理层员工（职级包含管理相关关键词）
+      // 筛选管理层员工（岗位或职级包含管理相关关键词）
       employees = employees.filter(emp => {
+        const position = emp.position?.toLowerCase() || '';
         const level = emp.level?.toLowerCase() || '';
         const managementKeywords = ['主管', '经理', '总监', '主任', '负责人', 'manager', 'director', 'supervisor', 'chief'];
-        return managementKeywords.some(keyword => level.includes(keyword));
+        return managementKeywords.some(keyword => position.includes(keyword) || level.includes(keyword));
       });
     } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
       // 选择了具体部门，进一步过滤
