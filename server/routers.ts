@@ -285,6 +285,55 @@ const employeeRouter = router({
         errors: errors.slice(0, 10),
       };
     }),
+
+  reorder: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      direction: z.enum(['up', 'down']),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+
+      // 获取所有在职员工，按当前顺序排列
+      const { asc: ascFn } = await import('drizzle-orm');
+      const allEmps = await db.select()
+        .from(employees)
+        .where(eq(employees.status, 'active'))
+        .orderBy(ascFn(employees.sortOrder), ascFn(employees.id));
+
+      const currentIdx = allEmps.findIndex(e => e.id === input.id);
+      if (currentIdx === -1) throw new Error('Employee not found');
+
+      const swapIdx = input.direction === 'up' ? currentIdx - 1 : currentIdx + 1;
+      if (swapIdx < 0 || swapIdx >= allEmps.length) return { success: true }; // 已在边界
+
+      const current = allEmps[currentIdx];
+      const swap = allEmps[swapIdx];
+
+      // 交换 sortOrder
+      const currentOrder = current.sortOrder;
+      const swapOrder = swap.sortOrder;
+
+      // 如果两个 sortOrder 相同，就用索引作为新的 sortOrder
+      if (currentOrder === swapOrder) {
+        // 重新设置所有员工的 sortOrder
+        for (let i = 0; i < allEmps.length; i++) {
+          await db.update(employees).set({ sortOrder: i }).where(eq(employees.id, allEmps[i].id));
+        }
+        // 再次交换
+        const newCurrentOrder = currentIdx;
+        const newSwapOrder = swapIdx;
+        await db.update(employees).set({ sortOrder: newSwapOrder }).where(eq(employees.id, current.id));
+        await db.update(employees).set({ sortOrder: newCurrentOrder }).where(eq(employees.id, swap.id));
+      } else {
+        await db.update(employees).set({ sortOrder: swapOrder }).where(eq(employees.id, current.id));
+        await db.update(employees).set({ sortOrder: currentOrder }).where(eq(employees.id, swap.id));
+      }
+
+      return { success: true };
+    }),
 });
 
 // ========== 荣誉路由 ==========

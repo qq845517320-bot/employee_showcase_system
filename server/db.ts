@@ -1,4 +1,4 @@
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -112,7 +112,7 @@ export async function getEmployeesByDepartment(departmentId: number | null) {
   
   if (departmentId === null) {
     // 获取所有在职员工
-    return db.select().from(employees).where(eq(employees.status, 'active'));
+    return db.select().from(employees).where(eq(employees.status, 'active')).orderBy(asc(employees.sortOrder), asc(employees.id));
   }
   
   return db.select().from(employees).where(
@@ -120,7 +120,7 @@ export async function getEmployeesByDepartment(departmentId: number | null) {
       eq(employees.departmentId, departmentId),
       eq(employees.status, 'active')
     )
-  );
+  ).orderBy(asc(employees.sortOrder), asc(employees.id));
 }
 
 export async function getEmployeeById(id: number) {
@@ -133,7 +133,7 @@ export async function getEmployeeById(id: number) {
 export async function getActiveEmployees() {
   const db = await getDb();
   if (!db) return [];
-  const emps = await db.select().from(employees).where(eq(employees.status, 'active'));
+  const emps = await db.select().from(employees).where(eq(employees.status, 'active')).orderBy(asc(employees.sortOrder), asc(employees.id));
   
   // 为每个员工添加 honors 数据
   const result = await Promise.all(
@@ -153,7 +153,7 @@ export async function getCoreEmployees() {
       eq(employees.status, 'active'),
       eq(employees.isCoreBone, true)
     )
-  );
+  ).orderBy(asc(employees.sortOrder), asc(employees.id));
   
   // 为每个员工添加 honors 数据
   const result = await Promise.all(

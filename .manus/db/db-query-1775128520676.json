@@ -1,0 +1,30 @@
+{
+  "query": "SELECT id, name FROM departments LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3of7Fiw6XCyDJc5.50ff283b5a85 --database dTX999GnT8s8oqjJyp2eQW --execute SELECT id, name FROM departments LIMIT 5;",
+  "rows": [
+    {
+      "id": "2",
+      "name": "商务部"
+    },
+    {
+      "id": "4",
+      "name": "安环部"
+    },
+    {
+      "id": "3",
+      "name": "工程部"
+    },
+    {
+      "id": "1",
+      "name": "管理层"
+    },
+    {
+      "id": "6",
+      "name": "综合部"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\n2\t商务部\n4\t安环部\n3\t工程部\n1\t管理层\n6\t综合部\n",
+  "stderr": "",
+  "execution_time_ms": 364
+}
