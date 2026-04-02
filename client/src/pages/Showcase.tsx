@@ -176,6 +176,7 @@ export default function Showcase() {
   const batchIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const detailIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const displayEmployeesRef = useRef<any[]>([]);
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
@@ -254,8 +255,8 @@ export default function Showcase() {
     // 总是启动批次轮播，除非已经在自动轮播详情模式
     startBatchRotation();
     inactivityTimeoutRef.current = setTimeout(() => {
-      // 只有当 displayEmployees 不为空时才进入自动轮播详情模式
-      if (displayEmployees.length > 0) {
+      // 使用 ref 获取最新的 displayEmployees，而不是闭包中的旧值
+      if (displayEmployeesRef.current.length > 0) {
         setIsAutoPlayDetail(true);
         stopBatchRotation();
         startDetailRotation();
@@ -425,6 +426,8 @@ export default function Showcase() {
   };
   
   const displayEmployees = getDisplayEmployees();
+  // 更新 ref，保证 setTimeout 回调中能获取最新的 displayEmployees
+  displayEmployeesRef.current = displayEmployees;
   const totalBatches = Math.ceil(displayEmployees.length / batchSize);
   const startIdx = currentBatchIndex * batchSize;
   const currentBatch = displayEmployees.slice(startIdx, startIdx + batchSize);
