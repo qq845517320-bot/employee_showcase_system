@@ -382,6 +382,13 @@ export default function Showcase() {
       } else {
         employees = employees.filter(emp => emp.honors && emp.honors.length > 0);
       }
+    } else if (selectedDepartment === 'management') {
+      // 筛选管理层员工（职级包含管理相关关键词）
+      employees = employees.filter(emp => {
+        const level = emp.level?.toLowerCase() || '';
+        const managementKeywords = ['主管', '经理', '总监', '主任', '负责人', 'manager', 'director', 'supervisor', 'chief'];
+        return managementKeywords.some(keyword => level.includes(keyword));
+      });
     } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
       // 选择了具体部门，进一步过滤
       employees = employees.filter(emp => emp.departmentId === selectedDepartment);
@@ -517,6 +524,10 @@ export default function Showcase() {
           <button onClick={() => handleDepartmentClick(null)}
             className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
             {"\u5168\u90e8"}
+          </button>
+          <button onClick={() => handleDepartmentClick('management')}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'management' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+            {"\u7ba1\u7406\u5c42"}
           </button>
           {getDisplayDepartments().map((dept) => (
             <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
