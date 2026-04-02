@@ -605,44 +605,61 @@ export default function Showcase() {
 
                 {/* Center detail panel */}
                 <div className="flex-1 flex items-center justify-center px-4 z-10">
-                  <DetailPanel key={`manual-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={false}
-                    onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
-                    onClick={handleDetailPanelClick}
-                    getDepartmentName={getDepartmentName}
-                    selectedEmployeeDetail={selectedEmployeeDetail}
-                    isLoadingDetail={isLoadingDetail}
-                    fallbackHonors={selectedEmployee?.honors}
-                    onPrevious={() => {
-                      const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
-                      const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
-                      if (currentEmployees.length > 0) {
-                        // 实现循环翻页：第一个人的前一页接到最后一位员工
-                        const newIndex = (currentIndex - 1 + currentEmployees.length) % currentEmployees.length;
-                        setSelectedEmployee(currentEmployees[newIndex]);
-                        setCurrentDetailIndex(newIndex);
-                        // 同时更新 currentBatchIndex，使照片墙与员工详情同步
-                        const newBatchIndex = Math.floor(newIndex / batchSize);
-                        setCurrentBatchIndex(newBatchIndex);
-                        resetInactivityTimer();
-                      }
-                    }}
-                    onNext={() => {
-                      const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
-                      const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
-                      if (currentEmployees.length > 0) {
-                        // 实现循环翻页：最后一位员工的下一页接到第一个人
-                        const newIndex = (currentIndex + 1) % currentEmployees.length;
-                        setSelectedEmployee(currentEmployees[newIndex]);
-                        setCurrentDetailIndex(newIndex);
-                        // 同时更新 currentBatchIndex，使照片墙与员工详情同步
-                        const newBatchIndex = Math.floor(newIndex / batchSize);
-                        setCurrentBatchIndex(newBatchIndex);
-                        resetInactivityTimer();
-                      }
-                    }}
-                    canGoPrevious={true}
-                    canGoNext={true}
-                  />
+                  <AnimatePresence mode="wait">
+                    {isAutoPlayDetail ? (
+                      <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true}
+                        onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
+                        onClick={handleDetailPanelClick}
+                        getDepartmentName={getDepartmentName}
+                        selectedEmployeeDetail={selectedEmployeeDetail}
+                        isLoadingDetail={isLoadingDetail}
+                        fallbackHonors={selectedEmployee?.honors}
+                        onPrevious={() => {}}
+                        onNext={() => {}}
+                        canGoPrevious={false}
+                        canGoNext={false}
+                      />
+                    ) : (
+                      <DetailPanel key={`manual-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={false}
+                        onClose={() => { setSelectedEmployee(null); resetInactivityTimer(); }}
+                        onClick={handleDetailPanelClick}
+                        getDepartmentName={getDepartmentName}
+                        selectedEmployeeDetail={selectedEmployeeDetail}
+                        isLoadingDetail={isLoadingDetail}
+                        fallbackHonors={selectedEmployee?.honors}
+                        onPrevious={() => {
+                          const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
+                          const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
+                          if (currentEmployees.length > 0) {
+                            // 实现循环翻页：第一个人的前一页接到最后一位员工
+                            const newIndex = (currentIndex - 1 + currentEmployees.length) % currentEmployees.length;
+                            setSelectedEmployee(currentEmployees[newIndex]);
+                            setCurrentDetailIndex(newIndex);
+                            // 同时更新 currentBatchIndex，使照片墙与员工详情同步
+                            const newBatchIndex = Math.floor(newIndex / batchSize);
+                            setCurrentBatchIndex(newBatchIndex);
+                            resetInactivityTimer();
+                          }
+                        }}
+                        onNext={() => {
+                          const currentEmployees = selectedDepartment !== null ? displayEmployees : filteredEmployees;
+                          const currentIndex = currentEmployees.findIndex(e => e.id === selectedEmployee.id);
+                          if (currentEmployees.length > 0) {
+                            // 实现循环翻页：最后一位员工的下一页接到第一个人
+                            const newIndex = (currentIndex + 1) % currentEmployees.length;
+                            setSelectedEmployee(currentEmployees[newIndex]);
+                            setCurrentDetailIndex(newIndex);
+                            // 同时更新 currentBatchIndex，使照片墙与员工详情同步
+                            const newBatchIndex = Math.floor(newIndex / batchSize);
+                            setCurrentBatchIndex(newBatchIndex);
+                            resetInactivityTimer();
+                          }
+                        }}
+                        canGoPrevious={true}
+                        canGoNext={true}
+                      />
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Right columns - hide when department is selected */}
