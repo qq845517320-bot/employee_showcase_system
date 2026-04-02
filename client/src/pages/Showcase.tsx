@@ -251,12 +251,8 @@ export default function Showcase() {
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     setIsAutoPlayDetail(false);
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-    // 只有在没有显示员工详情卡片时才启动批次轮播
-    if (!selectedEmployee) {
-      startBatchRotation();
-    } else {
-      stopBatchRotation();
-    }
+    // 总是启动批次轮播，除非已经在自动轮播详情模式
+    startBatchRotation();
     inactivityTimeoutRef.current = setTimeout(() => {
       setIsAutoPlayDetail(true);
       stopBatchRotation();
