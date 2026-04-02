@@ -48,7 +48,6 @@ export const employees = mysqlTable("employees", {
   workTenet: text("workTenet"), // 工作信条
   status: mysqlEnum("status", ["active", "inactive", "archived"]).default("active").notNull(), // 在职、离职、归档
   isCoreBone: boolean("isCoreBone").default(false).notNull(), // 是否为核心骨干
-  order: int("order").default(0).notNull(), // 显示顺序
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
