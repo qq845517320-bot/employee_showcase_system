@@ -51,7 +51,7 @@ export default function CoreBoneManagement() {
         </div>
 
         {coreEmployees.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {coreEmployees.map((employee) => (
               <motion.div
                 key={employee.id}
@@ -97,7 +97,7 @@ export default function CoreBoneManagement() {
         </h3>
 
         {nonCoreEmployees.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {nonCoreEmployees.map((employee) => (
               <motion.div
                 key={employee.id}
