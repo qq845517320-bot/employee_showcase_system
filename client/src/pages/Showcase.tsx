@@ -254,9 +254,12 @@ export default function Showcase() {
     // 总是启动批次轮播，除非已经在自动轮播详情模式
     startBatchRotation();
     inactivityTimeoutRef.current = setTimeout(() => {
-      setIsAutoPlayDetail(true);
-      stopBatchRotation();
-      startDetailRotation();
+      // 只有当 displayEmployees 不为空时才进入自动轮播详情模式
+      if (displayEmployees.length > 0) {
+        setIsAutoPlayDetail(true);
+        stopBatchRotation();
+        startDetailRotation();
+      }
     }, 30000);
   };
 
@@ -277,6 +280,11 @@ export default function Showcase() {
 
   const startDetailRotation = () => {
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+    // 如果 displayEmployees 为空，不启动轮播
+    if (displayEmployees.length === 0) {
+      setSelectedEmployee(null);
+      return;
+    }
     let index = currentDetailIndex;
     if (displayEmployees.length > 0) {
       setSelectedEmployee(displayEmployees[index]);
