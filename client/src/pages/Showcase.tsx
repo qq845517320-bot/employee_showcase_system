@@ -334,7 +334,8 @@ export default function Showcase() {
       currentDetailIndexRef.current = empIndex;
       setCurrentDetailIndex(empIndex);
     }
-    // 重置不活动计时器，但不启动批次轮播（因为正在显示员工详情卡片）
+    // 停止批次轮播和详情轮播，设置 30 秒后进入自动轮播模式
+    // 注意：不调用 resetInactivityTimer()，因为那会重新启动批次轮播
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
     stopBatchRotation();
@@ -553,7 +554,9 @@ export default function Showcase() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
-      onClick={() => {
+      onClick={(e) => {
+        // 只有点击背景（非子元素）时才关闭详情
+        if (e.target !== e.currentTarget) return;
         setSelectedEmployee(null);
         setIsAutoPlayDetail(false);
         if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
@@ -663,10 +666,11 @@ export default function Showcase() {
             {selectedEmployee && !isAutoPlayDetail ? (
               <div className="w-full h-full flex items-center justify-between px-4 relative">
                 {/* Left columns - hide when department is selected */}
+                {/* Use autoPlay batch so photos match the center card, not the rotating batch */}
                 {selectedDepartment === null && (
                   <div className="flex gap-6 items-center">
-                    <PhotoColumn employees={leftColumn} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
-                    <PhotoColumn employees={leftMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={autoPlayLeftColumn} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
                   </div>
                 )}
 
@@ -730,10 +734,11 @@ export default function Showcase() {
                 </div>
 
                 {/* Right columns - hide when department is selected */}
+                {/* Use autoPlay batch so photos match the center card, not the rotating batch */}
                 {selectedDepartment === null && (
                   <div className="flex gap-6 items-center">
-                    <PhotoColumn employees={rightMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
-                    <PhotoColumn employees={rightColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                    <PhotoColumn employees={autoPlayRightColumn} highlightedId={selectedEmployee.id} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
                   </div>
                 )}
               </div>
