@@ -185,7 +185,7 @@ export default function Home() {
           </motion.div>
 
           {/* 快速开始 */}
-          <motion.div variants={itemVariants} className="text-center space-y-6 py-12">
+          <motion.div variants={itemVariants} className="text-center space-y-6 py-12 hidden">
             <h3 className="text-2xl font-bold text-foreground">🚀 快速开始</h3>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
