@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Upload, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, Upload, X, ChevronUp, ChevronDown, HelpCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import type { Employee } from '../../../../drizzle/schema';
@@ -20,6 +20,7 @@ export default function EmployeeManagement() {
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [selectedHonors, setSelectedHonors] = useState<number[]>([]);
   const [showHonorSelector, setShowHonorSelector] = useState(false);
+  const [showImportHelp, setShowImportHelp] = useState(false);
 
   const { data: employees = [], refetch } = trpc.employees.list.useQuery({});
   const { data: departments = [] } = trpc.departments.list.useQuery();
@@ -230,7 +231,7 @@ export default function EmployeeManagement() {
             <Plus className="w-4 h-4" />
             添加员工
           </Button>
-          <label>
+          <label className="flex items-center gap-2">
             <input
               type="file"
               accept=".xlsx,.xls,.csv"
@@ -254,6 +255,15 @@ export default function EmployeeManagement() {
             >
               <Upload className="w-4 h-4" />
               {isImporting ? '导入中...' : '批量导入'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowImportHelp(true)}
+              className="p-0 h-auto"
+              title="查看批量导入帮助"
+            >
+              <HelpCircle className="w-4 h-4 text-gray-500 hover:text-gray-700" />
             </Button>
           </label>
         </div>
@@ -559,6 +569,93 @@ export default function EmployeeManagement() {
         <div className="text-center py-8 text-muted-foreground">
           暂无员工信息
         </div>
+      )}
+
+      {/* 导入帮助弹窗 */}
+      {showImportHelp && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowImportHelp(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.95 }}
+            className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold">批量导入使用说明</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowImportHelp(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <h4 className="font-semibold mb-2">支持的文件格式</h4>
+                <p className="text-gray-600">Excel (.xlsx, .xls) 或 CSV 格式</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">必要列（必须包含）</h4>
+                <ul className="list-disc list-inside space-y-1 text-gray-600">
+                  <li>姓名 - 员工姓名</li>
+                  <li>部门 - 员工所属部门（必须与系统中的部门名称完全一致）</li>
+                  <li>岗位 - 员工职位</li>
+                  <li>职级 - 员工职级</li>
+                  <li>入职时间 - 入职日期 (YYYY-MM-DD 或 YYYY/MM/DD)</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">可选列（可选包含）</h4>
+                <ul className="list-disc list-inside space-y-1 text-gray-600">
+                  <li>工作职责 - 员工的主要工作职责</li>
+                  <li>工作信条 - 员工的工作理念或座右铭</li>
+                  <li>照片URL - 员工照片的网络链接 (HTTP/HTTPS)</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">使用步骤</h4>
+                <ol className="list-decimal list-inside space-y-1 text-gray-600">
+                  <li>准备 Excel 或 CSV 文件，包含必要列</li>
+                  <li>点击"批量导入"按钮</li>
+                  <li>选择您的文件</li>
+                  <li>等待导入完成，查看导入结果</li>
+                </ol>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">常见错误</h4>
+                <ul className="list-disc list-inside space-y-1 text-gray-600">
+                  <li>部门不存在 - 检查部门名称拼写是否与系统一致</li>
+                  <li>日期格式错误 - 使用 YYYY-MM-DD 或 YYYY/MM/DD 格式</li>
+                  <li>缺少必要列 - 确保包含：姓名、部门、岗位、职级、入职时间</li>
+                </ul>
+              </div>
+
+              <div className="pt-4 border-t">
+                <p className="text-gray-600 mb-2">需要示例文件？</p>
+                <a
+                  href="/employees_sample.csv"
+                  download
+                  className="text-blue-600 hover:underline"
+                >
+                  下载 CSV 示例文件
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

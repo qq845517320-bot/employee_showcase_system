@@ -213,6 +213,7 @@ const employeeRouter = router({
         joinDate: z.string(),
         jobResponsibilities: z.string().optional(),
         workTenet: z.string().optional(),
+        photoUrl: z.string().optional(),
       }))
     }))
     .mutation(async ({ input, ctx }) => {
@@ -230,9 +231,20 @@ const employeeRouter = router({
       
       for (const emp of input.employees) {
         try {
+          if (!emp.name?.trim()) {
+            errors.push('缺少姓名字段');
+            errorCount++;
+            continue;
+          }
+          if (!emp.departmentName?.trim()) {
+            errors.push(`${emp.name}: 缺少部门字段`);
+            errorCount++;
+            continue;
+          }
+          
           const deptId = deptMap.get(emp.departmentName);
           if (!deptId) {
-            errors.push(`Employee ${emp.name}: Department not found`);
+            errors.push(`${emp.name}: 部门\"${emp.departmentName}\"不存在`);
             errorCount++;
             continue;
           }
@@ -240,7 +252,14 @@ const employeeRouter = router({
           let joinDate = new Date();
           if (emp.joinDate) {
             const dateStr = emp.joinDate.toString().trim();
-            joinDate = new Date(dateStr);
+            const parsed = new Date(dateStr);
+            if (!isNaN(parsed.getTime())) {
+              joinDate = parsed;
+            } else {
+              errors.push(`${emp.name}: 入职时间格式错误\"${dateStr}\"，应为 YYYY-MM-DD 或 YYYY/MM/DD`);
+              errorCount++;
+              continue;
+            }
           }
           
           const existingEmployee = await db.select().from(employees).where(
@@ -251,23 +270,25 @@ const employeeRouter = router({
           ).limit(1);
           const existing = existingEmployee.length > 0 ? existingEmployee[0] : null;
           
+          const updateData: any = {
+            position: emp.position?.trim() || '',
+            level: emp.level?.trim() || '',
+            joinDate: joinDate,
+            jobResponsibilities: emp.jobResponsibilities?.trim() || '',
+            workTenet: emp.workTenet?.trim() || '',
+          };
+          
+          if (emp.photoUrl?.trim()) {
+            updateData.workPhoto = emp.photoUrl.trim();
+          }
+          
           if (existing) {
-            await db.update(employees).set({
-              position: emp.position,
-              level: emp.level,
-              joinDate: joinDate,
-              jobResponsibilities: emp.jobResponsibilities,
-              workTenet: emp.workTenet,
-            }).where(eq(employees.id, existing.id));
+            await db.update(employees).set(updateData).where(eq(employees.id, existing.id));
           } else {
             await db.insert(employees).values({
-              name: emp.name,
+              name: emp.name.trim(),
               departmentId: deptId,
-              position: emp.position,
-              level: emp.level,
-              joinDate: joinDate,
-              jobResponsibilities: emp.jobResponsibilities,
-              workTenet: emp.workTenet,
+              ...updateData,
               status: 'active' as const,
             });
           }
