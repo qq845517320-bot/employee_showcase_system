@@ -495,6 +495,7 @@ export default function EmployeeManagement() {
         <table className="w-full text-sm">
           <thead className="bg-muted">
             <tr>
+              <th className="px-4 py-2 text-left w-16">序号</th>
               <th className="px-4 py-2 text-left">照片</th>
               <th className="px-4 py-2 text-left">姓名</th>
               <th className="px-4 py-2 text-left">部门</th>
@@ -505,8 +506,9 @@ export default function EmployeeManagement() {
             </tr>
           </thead>
           <tbody>
-            {employees.map((emp) => (
+            {employees.map((emp, index) => (
               <tr key={emp.id} className="border-b hover:bg-muted/50">
+                <td className="px-4 py-2 font-medium text-gray-600">{index + 1}</td>
                 <td className="px-4 py-2">
                   {emp.workPhoto ? (
                     <img
