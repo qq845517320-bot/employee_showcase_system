@@ -675,7 +675,7 @@ export default function Showcase() {
                 )}
 
                 {/* Center detail panel */}
-                <div className="flex-1 flex items-center justify-center px-4 z-50">
+                <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-50">
                   <AnimatePresence mode="wait">
                     {isAutoPlayDetail ? (
                       <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true}
