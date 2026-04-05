@@ -570,7 +570,7 @@ export default function Showcase() {
             <img src="/company-logo.jpg" alt="Logo" className="h-20 w-auto rounded-lg" />
             <div className="text-white text-lg font-bold">{"\u6df1\u56fd\u9645\u6e2f\u53e3 | \u6c5f\u82cf\u9756\u6c5f\u6e2f"}</div>
           </div>
-          <h1 className="text-4xl font-bold text-white">{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
+          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-4xl font-bold text-white">{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
         </div>
         <motion.div
