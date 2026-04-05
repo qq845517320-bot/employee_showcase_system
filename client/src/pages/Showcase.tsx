@@ -650,7 +650,7 @@ export default function Showcase() {
             </div>
 
             {/* Center detail panel (absolute overlay) */}
-            <div className="flex-1 flex items-center justify-center px-4 z-10">
+            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
               <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} fallbackHonors={selectedEmployee?.honors} />
             </div>
 
