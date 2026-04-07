@@ -101,7 +101,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col w-full h-full items-center justify-center">
         {/* 上部分：照片 + 基本信息（3/5 高度） */}
         <div className="flex-[3] flex gap-12 pb-4 border-b border-white/30 items-center justify-center" style={{ minWidth: '1000px' }}>
           <div className="flex-shrink-0" style={{ width: '350px', height: '490px' }}>
