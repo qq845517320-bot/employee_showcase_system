@@ -569,7 +569,7 @@ export default function Showcase() {
           <div className="flex items-center gap-3 mt-5">
             <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Logo_022bef7c.webp" alt="Logo" className="h-16 w-auto" />
           </div>
-          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold text-white px-8 py-4 rounded-lg" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)', backgroundColor: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
+          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)', color: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(8px)', textShadow: '0 8px 32px rgba(31, 38, 135, 0.37)' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)' }}>{currentTime}</div>
         </div>
         <motion.div
