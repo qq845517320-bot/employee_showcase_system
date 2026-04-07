@@ -567,8 +567,7 @@ export default function Showcase() {
       <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent z-40">
         <div className="h-20 flex items-center justify-between px-3">
           <div className="flex items-center gap-3 mt-5">
-            <img src="/company-logo.jpg" alt="Logo" className="h-20 w-auto rounded-lg" />
-            <div className="text-white text-lg font-bold">{"\u6df1\u56fd\u9645\u6e2f\u53e3 | \u6c5f\u82cf\u9756\u6c5f\u6e2f"}</div>
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Logo_022bef7c.webp" alt="Logo" className="h-20 w-auto rounded-lg" />
           </div>
           <h1 className="absolute left-1/2 transform -translate-x-1/2 text-4xl font-bold text-white">{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
