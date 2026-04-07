@@ -569,8 +569,8 @@ export default function Showcase() {
           <div className="flex items-center gap-3 mt-5">
             <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Logo_022bef7c.webp" alt="Logo" className="h-16 w-auto" />
           </div>
-          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-4xl font-bold text-white">{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
-          <div className="text-2xl font-semibold text-white font-mono tracking-wider">{currentTime}</div>
+          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-4xl font-bold text-white" style={{ fontFamily: 'Orbitron, sans-serif', textShadow: '0 0 1px currentColor, 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(239, 68, 68, 0.6)', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
+          <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Orbitron, sans-serif', textShadow: '0 0 1px currentColor, 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(239, 68, 68, 0.6)', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)' }}>{currentTime}</div>
         </div>
         <motion.div
           initial={{ opacity: 1 }}
