@@ -103,7 +103,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       )}
       <div className="flex flex-col w-full h-full">
         {/* 上部分：照片 + 基本信息（3/5 高度） */}
-        <div className="flex-[3] flex gap-12 pb-4 border-b border-white/30">
+        <div className="flex-[3] flex gap-12 pb-4 border-b border-white/30" style={{ minWidth: '1000px' }}>
           <div className="flex-shrink-0" style={{ width: '350px', height: '490px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} className="h-full w-full rounded-xl object-cover shadow-lg" />
