@@ -72,7 +72,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
       exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
       transition={{ duration: isAutoPlay ? 0.7 : 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
-      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-12 w-full text-white shadow-2xl border border-red-600/60 relative"
+      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-12 max-w-5xl text-white shadow-2xl border border-red-600/60 relative"
       style={{ maxWidth: '1200px' }}
       onClick={onClick}
     >
@@ -103,7 +103,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       )}
       <div className="flex flex-col w-full h-full items-center justify-center">
         {/* 上部分：照片 + 基本信息（3/5 高度） */}
-        <div className="flex-[3] flex gap-12 pb-4 border-b border-white/30 items-center justify-center" style={{ minWidth: '1000px' }}>
+        <div className="flex-[3] flex gap-12 pb-4 border-b border-white/30 items-center justify-center w-full">
           <div className="flex-shrink-0" style={{ width: '350px', height: '490px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} className="h-full w-full rounded-xl object-cover shadow-lg" />
@@ -126,7 +126,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
         </div>
         {/* 下部分：工作职责、工作信条、奖励荣誉（2/5 高度） */}
-        <div className="flex-[2] flex gap-12 pt-4 overflow-y-auto">
+        <div className="flex-[2] flex gap-12 pt-4 overflow-y-auto justify-between">
           <div className="flex-1 space-y-4 text-lg">
             <div>
               <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
