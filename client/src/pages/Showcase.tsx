@@ -134,7 +134,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             </div>
             <div>
               <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
-              <div className="italic">{employee.workTenet || "\u6682\u65e0\u6570\u636e"}</div>
+              <div className="italic text-left">{employee.workTenet || "\u6682\u65e0\u6570\u636e"}</div>
             </div>
           </div>
           <div className="flex-1">
