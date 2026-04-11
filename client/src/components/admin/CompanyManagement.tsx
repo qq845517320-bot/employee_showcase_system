@@ -297,9 +297,20 @@ export default function CompanyManagement() {
                     {companyPhotos.length > 0 ? (
                       <div className="space-y-2">
                         {companyPhotos.map((photo: any) => (
-                          <div key={photo.id} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs text-gray-600 truncate">{photo.photoUrl.split('/').pop()}</p>
+                          <div key={photo.id} className="flex items-center justify-between bg-gray-50 p-3 rounded">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              {/* 照片缩略图预览 */}
+                              <div className="w-12 h-12 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
+                                <img
+                                  src={photo.photoUrl}
+                                  alt="照片预览"
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22%3E%3Crect fill=%22%23e5e7eb%22 width=%2248%22 height=%2248%22/%3E%3C/svg%3E';
+                                  }}
+                                />
+                              </div>
+                              <p className="text-xs text-gray-600 truncate flex-1">{photo.photoUrl.split('/').pop()}</p>
                             </div>
                             <Button
                               size="sm"
@@ -310,7 +321,7 @@ export default function CompanyManagement() {
                                 }
                               }}
                               disabled={deletePhotoMutation.isPending}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 ml-2"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 ml-2 flex-shrink-0"
                             >
                               <Trash2 className="w-3 h-3" />
                             </Button>
