@@ -570,8 +570,7 @@ export default function Showcase() {
             <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Logo_022bef7c.webp" alt="Logo" className="h-16 w-auto" />
           </div>
           <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
-            <h1 className="showcase-title">{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
-            <p className="showcase-title-accent">EMPLOYEE SHOWCASE</p>
+            <h1 className="showcase-title" style={{ fontFamily: 'Microsoft YaHei, 微软雅黑, sans-serif' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           </div>
           <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)' }}>{currentTime}</div>
         </div>
