@@ -673,9 +673,7 @@ export default function Showcase() {
                     setSelectedHonorCategory(null);
                     setShowHonorDropdown(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded ${
-                    selectedHonorCategory === null ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
-                  }`}
+                  className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
                 >
                   全部荣誉
                 </button>
@@ -686,9 +684,7 @@ export default function Showcase() {
                       setSelectedHonorCategory(category);
                       setShowHonorDropdown(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded ${
-                      selectedHonorCategory === category ? 'bg-transparent text-white' : 'bg-transparent text-white hover:bg-white/10'
-                    }`}
+                    className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
                   >
                     {category}
                   </button>
