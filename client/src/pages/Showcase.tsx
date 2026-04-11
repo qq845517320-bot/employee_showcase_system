@@ -73,7 +73,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
       transition={{ duration: isAutoPlay ? 0.7 : 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
       className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl p-12 text-white shadow-2xl border border-red-600/60 relative"
-      style={{ width: '1200px', height: '700px' }}
+      style={{ width: '900px', height: '900px' }}
       onClick={onClick}
     >
       {!isAutoPlay && onClose && (
