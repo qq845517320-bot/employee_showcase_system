@@ -633,7 +633,7 @@ export default function Showcase() {
                 >
                   全部
                 </button>
-                {getDisplayDepartments().map((dept) => (
+                {departments.map((dept) => (
                   <button
                     key={dept.id}
                     onClick={() => {
