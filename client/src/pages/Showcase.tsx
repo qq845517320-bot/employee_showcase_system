@@ -569,10 +569,7 @@ export default function Showcase() {
           <div className="flex items-center gap-3 mt-5">
             <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Logo_022bef7c.webp" alt="Logo" className="h-16 w-auto" />
           </div>
-          <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
-            <h1 className="text-6xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif', color: '#d4af37', textShadow: '0 2px 10px rgba(212, 175, 55, 0.3)' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
-            <p className="text-sm tracking-widest mt-2" style={{ color: '#d4af37', fontFamily: 'Orbitron, sans-serif' }}>EMPLOYEE SHOWCASE</p>
-          </div>
+          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(160, 160, 160, 0.5)', color: 'rgba(160, 160, 160, 0.95)', backdropFilter: 'blur(8px)', textShadow: '0 8px 32px rgba(31, 38, 135, 0.37)' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)' }}>{currentTime}</div>
         </div>
         <motion.div
@@ -583,25 +580,25 @@ export default function Showcase() {
           className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
         >
           <button onClick={() => handleDepartmentClick(null)}
-            className={`px-5 py-2 rounded-full font-semibold transition-all text-sm ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-red-600/60 text-white hover:bg-red-600'}`}>
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
             {"\u5168\u90e8"}
           </button>
           <button onClick={() => handleDepartmentClick('management')}
-            className={`px-5 py-2 rounded-full font-semibold transition-all text-sm ${selectedDepartment === 'management' ? 'bg-red-600 text-white shadow-lg' : 'bg-red-600/60 text-white hover:bg-red-600'}`}>
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'management' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
             {"\u7ba1\u7406\u5c42"}
           </button>
           {getDisplayDepartments().filter(dept => dept.name !== '管理层').map((dept) => (
             <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
-              className={`px-5 py-2 rounded-full font-semibold transition-all text-sm ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-red-600/60 text-white hover:bg-red-600'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               {dept.name}
             </button>
           ))}
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
-              className={`px-5 py-2 rounded-full font-semibold transition-all flex items-center gap-2 text-sm ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-red-600/60 text-white hover:bg-red-600'}`}>
-              <span>?</span>
-              <span>荣誉</span>
-              <span>?</span>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              <span>☆</span>
+              <span>荣誉榜</span>
+              <span>☆</span>
             </button>
             {showHonorDropdown && (
               <motion.div
