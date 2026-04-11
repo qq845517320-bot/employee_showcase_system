@@ -71,6 +71,13 @@
       "when": 1775128348973,
       "tag": "0009_neat_wasp",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1775915067919,
+      "tag": "0010_harsh_exodus",
+      "breakpoints": true
     }
   ]
 }

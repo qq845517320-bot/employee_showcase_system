@@ -129,6 +129,7 @@ const employeeRouter = router({
       workTenet: z.string().optional(),
       workPhoto: z.string().optional(),
       isCoreBone: z.boolean().optional(),
+      isPartyMember: z.boolean().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
@@ -145,6 +146,7 @@ const employeeRouter = router({
         workTenet: input.workTenet,
         workPhoto: input.workPhoto,
         isCoreBone: input.isCoreBone || false,
+        isPartyMember: input.isPartyMember || false,
       });
       return result;
     }),
@@ -162,6 +164,7 @@ const employeeRouter = router({
       workPhoto: z.string().optional(),
       status: z.enum(['active', 'inactive', 'archived']).optional(),
       isCoreBone: z.boolean().optional(),
+      isPartyMember: z.boolean().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');

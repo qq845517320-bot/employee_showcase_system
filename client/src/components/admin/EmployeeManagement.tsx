@@ -111,6 +111,8 @@ export default function EmployeeManagement() {
         jobResponsibilities: formData.jobResponsibilities || undefined,
         workTenet: formData.workTenet || undefined,
         workPhoto: uploadedPhotoUrl || undefined,
+        isCoreBone: formData.isCoreBone,
+        isPartyMember: formData.isPartyMember,
       });
     } else {
       // 新增模式 - 包含照片
@@ -123,6 +125,8 @@ export default function EmployeeManagement() {
         jobResponsibilities: formData.jobResponsibilities || undefined,
         workTenet: formData.workTenet || undefined,
         workPhoto: uploadedPhotoUrl || undefined,
+        isCoreBone: formData.isCoreBone,
+        isPartyMember: formData.isPartyMember,
       });
     }
   };
@@ -464,6 +468,28 @@ export default function EmployeeManagement() {
                 })}
               </div>
             )}
+          </div>
+
+          {/* 复选框选项 */}
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.isCoreBone || false}
+                onChange={(e) => setFormData({ ...formData, isCoreBone: e.target.checked })}
+                className="w-4 h-4 rounded"
+              />
+              <span className="text-sm">核心骨干</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.isPartyMember || false}
+                onChange={(e) => setFormData({ ...formData, isPartyMember: e.target.checked })}
+                className="w-4 h-4 rounded"
+              />
+              <span className="text-sm">党员</span>
+            </label>
           </div>
 
           <div className="flex gap-2">

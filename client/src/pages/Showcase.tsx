@@ -114,10 +114,18 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             )}
           </div>
           <div className="flex-1 flex flex-col justify-center space-y-4" style={{ marginLeft: '90px' }}>
-            <div>
-              <div className="text-5xl font-bold mb-4">{employee.name}</div>
+            <div className="flex items-start gap-3">
+              <div className="text-5xl font-bold">{employee.name}</div>
+              {employee.isPartyMember && (
+                <img 
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Partyemblem_a1be73e2.png" 
+                  alt="党员" 
+                  className="w-16 h-16 mt-1"
+                  title="党员"
+                />
+              )}
             </div>
-            <div className="space-y-3 text-xl">
+            <div className="space-y-3 text-xl mt-2">
               <div>{"\u90e8\u95e8\uff1a"}{getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId}</div>
               <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
               <div>{"\u804c\u52a1\uff1a"}{employee.level}</div>
