@@ -113,7 +113,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               </div>
             )}
           </div>
-          <div className="flex-1 flex flex-col justify-center space-y-4" style={{ marginLeft: '100px' }}>
+          <div className="flex-1 flex flex-col justify-center space-y-4" style={{ marginLeft: '160px' }}>
             <div>
               <div className="text-5xl font-bold mb-4">{employee.name}</div>
             </div>
