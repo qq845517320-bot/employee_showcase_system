@@ -609,7 +609,7 @@ export default function Showcase() {
           {/* 部门下拉框 */}
           <div className="relative">
             <button onClick={() => handleDepartmentClick('department')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment !== 'honors' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               <span>部门</span>
               <span className={`transition-transform ${showDepartmentDropdown ? 'rotate-180' : ''}`}>▼</span>
             </button>
@@ -617,7 +617,7 @@ export default function Showcase() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-48"
+                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-32"
               >
                 <button
                   onClick={() => {
@@ -657,7 +657,7 @@ export default function Showcase() {
           {/* 荣誉榜按钮 */}
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               <span>☆</span>
               <span>荣誉榜</span>
               <span>☆</span>
