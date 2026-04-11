@@ -166,7 +166,7 @@ export default function CompanyManagement() {
       {/* 公司列表 */}
       <div className="space-y-4">
         {companies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {companies.map((company: any) => (
               <motion.div
                 key={company.id}
