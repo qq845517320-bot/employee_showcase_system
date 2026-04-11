@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
-import { Check, X } from 'lucide-react';
+import { Check, X, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function CoreBoneManagement() {
@@ -31,6 +31,13 @@ export default function CoreBoneManagement() {
     await updateMutation.mutateAsync({
       id: employeeId,
       isCoreBone: !isCoreBone,
+    });
+  };
+
+  const handleTogglePartyMember = async (employeeId: number, isPartyMember: boolean) => {
+    await updateMutation.mutateAsync({
+      id: employeeId,
+      isPartyMember: !isPartyMember,
     });
   };
 
@@ -70,16 +77,28 @@ export default function CoreBoneManagement() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mb-3">部门: {getDepartmentName(employee.departmentId)}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleToggleCoreBone(employee.id, true)}
-                  disabled={updateMutation.isPending}
-                  className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  取消核心骨干
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleTogglePartyMember(employee.id, employee.isPartyMember)}
+                    disabled={updateMutation.isPending}
+                    className={employee.isPartyMember ? "w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" : "w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"}
+                  >
+                    <Users className="w-3 h-3 mr-1" />
+                    {employee.isPartyMember ? '取消党员' : '设为党员'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleToggleCoreBone(employee.id, true)}
+                    disabled={updateMutation.isPending}
+                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    取消核心骨干
+                  </Button>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -112,16 +131,28 @@ export default function CoreBoneManagement() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-500 mb-3">部门: {getDepartmentName(employee.departmentId)}</p>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => handleToggleCoreBone(employee.id, false)}
-                  disabled={updateMutation.isPending}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                >
-                  <Check className="w-3 h-3 mr-1" />
-                  设为核心骨干
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleTogglePartyMember(employee.id, employee.isPartyMember)}
+                    disabled={updateMutation.isPending}
+                    className={employee.isPartyMember ? "w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200" : "w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"}
+                  >
+                    <Users className="w-3 h-3 mr-1" />
+                    {employee.isPartyMember ? '取消党员' : '设为党员'}
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => handleToggleCoreBone(employee.id, false)}
+                    disabled={updateMutation.isPending}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    <Check className="w-3 h-3 mr-1" />
+                    设为核心骨干
+                  </Button>
+                </div>
               </motion.div>
             ))}
           </div>
