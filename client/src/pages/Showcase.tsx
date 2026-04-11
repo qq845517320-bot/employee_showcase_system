@@ -68,10 +68,10 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
   return (
     <motion.div
       key={`detail-${isAutoPlay ? 'auto' : 'manual'}-${employee.id}`}
-      initial={isAutoPlay ? { opacity: 0, scale: 0.95, y: 30 } : { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 }}
-      animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
-      exit={isAutoPlay ? { opacity: 0, scale: 0.95, y: -30 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
-      transition={{ duration: isAutoPlay ? 0.7 : 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
+      initial={isAutoPlay ? { opacity: 0, scale: 0.9, y: 40, filter: 'blur(10px)' } : { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 }}
+      animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
+      exit={isAutoPlay ? { opacity: 0, scale: 0.9, y: -40, filter: 'blur(10px)' } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
+      transition={isAutoPlay ? { duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 } : { duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
       className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative"
       style={{
         width: '950px',
