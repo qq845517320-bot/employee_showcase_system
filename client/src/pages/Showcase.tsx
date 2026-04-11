@@ -572,7 +572,7 @@ export default function Showcase() {
           <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
             <h1 className="showcase-title" style={{ fontFamily: 'Microsoft YaHei, 微软雅黑, sans-serif' }}>{activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : '员工风采展示'}</h1>
           </div>
-          <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Orbitron, sans-serif', WebkitTextStroke: '0.5px rgba(255, 255, 255, 0.3)' }}>{currentTime}</div>
+          <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Playfair Display, serif' }}>{currentTime}</div>
         </div>
         <motion.div
           initial={{ opacity: 1 }}
