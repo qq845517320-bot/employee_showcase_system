@@ -210,6 +210,7 @@ export default function Showcase() {
   const [showHonorDropdown, setShowHonorDropdown] = useState(false);
   const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
   const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
+  const [selectedCompanyPhoto, setSelectedCompanyPhoto] = useState<any>(null);
   const batchSize = 10;
 
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
@@ -883,23 +884,86 @@ export default function Showcase() {
               </div>
             ) : showPhotos ? (
               /* ====== COMPANY PHOTOS MODE ====== */
-              <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center items-center max-w-7xl py-8">
-                  {displayPhotos.map((photo: any, idx: number) => (
-                    <motion.div key={photo.id}
-                      initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.4, delay: idx * 0.05 }}
-                      whileHover={{ scale: 1.05 }}
-                      className="cursor-pointer"
+              selectedCompanyPhoto ? (
+                /* 单张大卡片模式 */
+                <div className="w-full h-full flex items-center justify-between px-4 relative">
+                  {/* 中央大卡片 */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-50">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.4 }}
+                      className="relative"
                     >
-                      <div style={{ width: '280px', height: '200px' }}>
-                        <CompanyPhotoCard photoUrl={photo.photoUrl} alt="公司风采照片" />
+                      <div className="bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
+                        style={{ width: '600px', height: '450px' }}>
+                        <img
+                          src={selectedCompanyPhoto.photoUrl}
+                          alt="公司风采照片"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      {/* 关闭按钮 */}
+                      <button
+                        onClick={() => setSelectedCompanyPhoto(null)}
+                        className="absolute -top-12 right-0 text-white hover:text-red-400 transition-colors text-2xl font-bold"
+                      >
+                        ✕
+                      </button>
+                      {/* 左右翻页按钮 */}
+                      <button
+                        onClick={() => {
+                          const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
+                          if (displayPhotos.length > 0) {
+                            const newIndex = (currentIndex - 1 + displayPhotos.length) % displayPhotos.length;
+                            setSelectedCompanyPhoto(displayPhotos[newIndex]);
+                          }
+                        }}
+                        className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-16 text-white hover:text-red-400 transition-colors text-4xl font-bold"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        onClick={() => {
+                          const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
+                          if (displayPhotos.length > 0) {
+                            const newIndex = (currentIndex + 1) % displayPhotos.length;
+                            setSelectedCompanyPhoto(displayPhotos[newIndex]);
+                          }
+                        }}
+                        className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-16 text-white hover:text-red-400 transition-colors text-4xl font-bold"
+                      >
+                        ›
+                      </button>
+                      {/* 计数器 */}
+                      <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold">
+                        {displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id) + 1} / {displayPhotos.length}
                       </div>
                     </motion.div>
-                  ))}
+                  </div>
                 </div>
-              </motion.div>
+              ) : (
+                /* 网格缩略图模式 */
+                <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center items-center max-w-7xl py-8">
+                    {displayPhotos.map((photo: any, idx: number) => (
+                      <motion.div key={photo.id}
+                        initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.4, delay: idx * 0.05 }}
+                        whileHover={{ scale: 1.05 }}
+                        className="cursor-pointer"
+                        onClick={() => setSelectedCompanyPhoto(photo)}
+                      >
+                        <div style={{ width: '280px', height: '200px' }}>
+                          <CompanyPhotoCard photoUrl={photo.photoUrl} alt="公司风采照片" />
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
               <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
