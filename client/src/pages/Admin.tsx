@@ -5,13 +5,14 @@ import { Users, Settings, LogOut } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import EmployeeManagement from '@/components/admin/EmployeeManagement';
 import DepartmentManagement from '@/components/admin/DepartmentManagement';
+import CompanyManagement from '@/components/admin/CompanyManagement';
 import HonorManagement from '@/components/admin/HonorManagement';
 import PlaybackStrategyManagement from '@/components/admin/PlaybackStrategyManagement';
 import BackgroundManagement from '@/components/admin/BackgroundManagement';
 import CoreBoneManagement from '@/components/admin/CoreBoneManagement';
 import AwardManagement from '@/components/admin/AwardManagement';
 
-type AdminTab = 'employees' | 'departments' | 'honors' | 'playback' | 'background' | 'coreBone' | 'awards';
+type AdminTab = 'employees' | 'departments' | 'companies' | 'honors' | 'playback' | 'background' | 'coreBone' | 'awards';
 
 export default function Admin() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -44,6 +45,7 @@ export default function Admin() {
   const navItems = [
     { id: 'employees' as AdminTab, label: '员工管理', icon: Users },
     { id: 'departments' as AdminTab, label: '部门管理', icon: Settings },
+    { id: 'companies' as AdminTab, label: '公司管理', icon: Settings },
     { id: 'coreBone' as AdminTab, label: '骨干管理', icon: Settings },
     { id: 'honors' as AdminTab, label: '荣誉管理', icon: Settings },
     { id: 'awards' as AdminTab, label: '奖项管理', icon: Settings },
@@ -98,6 +100,7 @@ export default function Admin() {
             <div className="bg-card rounded-lg border border-border/50 shadow-lg">
               {activeTab === 'employees' && <EmployeeManagement />}
               {activeTab === 'departments' && <DepartmentManagement />}
+              {activeTab === 'companies' && <CompanyManagement />}
               {activeTab === 'coreBone' && <CoreBoneManagement />}
               {activeTab === 'honors' && <HonorManagement />}
               {activeTab === 'awards' && <AwardManagement />}

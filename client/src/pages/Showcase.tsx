@@ -203,9 +203,12 @@ export default function Showcase() {
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<number | string | null>(null);
+  const [companies, setCompanies] = useState<any[]>([]);
   const [selectedHonorCategory, setSelectedHonorCategory] = useState<string | null>(null);
   const [showHonorDropdown, setShowHonorDropdown] = useState(false);
   const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
+  const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
   const batchSize = 10;
 
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
@@ -214,6 +217,7 @@ export default function Showcase() {
     { refetchInterval: 5000 }
   );
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
+  const { data: companiesData } = trpc.companies.list.useQuery({} as any);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: honorCategoriesData = [] } = trpc.honors.listCategories.useQuery({} as any);
   const honorCategories = honorCategoriesData.map((cat: any) => cat.name);
@@ -252,6 +256,7 @@ export default function Showcase() {
     }
   }, [employeesData]);
   useEffect(() => { if (departmentsData) setDepartments(departmentsData); }, [departmentsData]);
+  useEffect(() => { if (companiesData) setCompanies(companiesData); }, [companiesData]);
   useEffect(() => { if (backgroundData?.backgroundUrl) setBackgroundUrl(backgroundData.backgroundUrl); }, [backgroundData]);
 
   const handleDepartmentClick = (deptId: number | string | null) => {
@@ -259,12 +264,19 @@ export default function Showcase() {
     if (deptId === 'honors') {
       setShowHonorDropdown(!showHonorDropdown);
       setShowDepartmentDropdown(false);
+      setShowCompanyDropdown(false);
     } else if (deptId === 'department') {
       setShowDepartmentDropdown(!showDepartmentDropdown);
+      setShowHonorDropdown(false);
+      setShowCompanyDropdown(false);
+    } else if (deptId === 'company') {
+      setShowCompanyDropdown(!showCompanyDropdown);
+      setShowDepartmentDropdown(false);
       setShowHonorDropdown(false);
     } else {
       setShowHonorDropdown(false);
       setShowDepartmentDropdown(false);
+      setShowCompanyDropdown(false);
       setSelectedDepartment(deptId);
     }
     setSelectedEmployee(null);
@@ -609,7 +621,7 @@ export default function Showcase() {
           {/* 部门下拉框 */}
           <div className="relative">
             <button onClick={() => handleDepartmentClick('department')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== 'company' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               <span>部门</span>
               <span className={`transition-transform ${showDepartmentDropdown ? 'rotate-180' : ''}`}>▼</span>
             </button>
@@ -648,6 +660,54 @@ export default function Showcase() {
                     className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
                   >
                     {dept.name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </div>
+
+          {/* 公司下拉框 */}
+          <div className="relative">
+            <button onClick={() => handleDepartmentClick('company')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment === 'company' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              <span>公司</span>
+              <span className={`transition-transform ${showCompanyDropdown ? 'rotate-180' : ''}`}>▼</span>
+            </button>
+            {showCompanyDropdown && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-32"
+              >
+                <button
+                  onClick={() => {
+                    setSelectedCompany(null);
+                    setShowCompanyDropdown(false);
+                    setSelectedEmployee(null);
+                    setIsAutoPlayDetail(false);
+                    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+                    startBatchRotation();
+                    resetInactivityTimer();
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
+                >
+                  全部
+                </button>
+                {companies.map((company) => (
+                  <button
+                    key={company.id}
+                    onClick={() => {
+                      setSelectedCompany(company.id);
+                      setShowCompanyDropdown(false);
+                      setSelectedEmployee(null);
+                      setIsAutoPlayDetail(false);
+                      if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+                      startBatchRotation();
+                      resetInactivityTimer();
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
+                  >
+                    {company.name}
                   </button>
                 ))}
               </motion.div>

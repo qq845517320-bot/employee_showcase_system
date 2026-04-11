@@ -1,6 +1,6 @@
 import { eq, and, inArray, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
+import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -288,5 +288,70 @@ export async function deleteHonorCategory(name: string) {
   }
   
   await db.delete(honorCategories).where(eq(honorCategories.name, name));
+  return { success: true };
+}
+
+// ========== 公司相关查询 ==========
+
+export async function getAllCompanies() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(companies).orderBy(companies.order);
+}
+
+export async function getCompanyById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(companies).where(eq(companies.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getCompanyByName(name: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(companies).where(eq(companies.name, name)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createCompany(name: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  const existing = await getCompanyByName(name);
+  if (existing) {
+    throw new Error(`Company "${name}" already exists`);
+  }
+  
+  const companiesList = await getAllCompanies();
+  const maxOrder = companiesList.length > 0 ? Math.max(...companiesList.map(c => c.order)) : -1;
+  
+  const result = await db.insert(companies).values({
+    name,
+    description,
+    order: maxOrder + 1,
+  });
+  
+  return await getCompanyByName(name);
+}
+
+export async function updateCompany(id: number, name: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  // Check if another company with the same name exists
+  const existing = await getCompanyByName(name);
+  if (existing && existing.id !== id) {
+    throw new Error(`Company "${name}" already exists`);
+  }
+  
+  await db.update(companies).set({ name, description }).where(eq(companies.id, id));
+  return await getCompanyById(id);
+}
+
+export async function deleteCompany(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  await db.delete(companies).where(eq(companies.id, id));
   return { success: true };
 }

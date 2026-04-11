@@ -20,13 +20,63 @@ import {
   getAllBackgrounds,
   getAllHonorCategories,
   createHonorCategory,
-  deleteHonorCategory
+  deleteHonorCategory,
+  getAllCompanies,
+  getCompanyById,
+  createCompany,
+  updateCompany,
+  deleteCompany
 } from "./db";
-import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories } from "../drizzle/schema";
+import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
 import { TRPCError } from "@trpc/server";
+
+// ========== 公司路由 ==========
+const companyRouter = router({
+  list: publicProcedure.query(async () => {
+    return getAllCompanies();
+  }),
+  
+  get: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      return getCompanyById(input.id);
+    }),
+  
+  create: protectedProcedure
+    .input(z.object({
+      name: z.string().min(1),
+      description: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const result = await createCompany(input.name, input.description);
+      return result;
+    }),
+  
+  update: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      name: z.string(),
+      description: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const { id, name, description } = input;
+      const result = await updateCompany(id, name, description);
+      return result;
+    }),
+  
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const result = await deleteCompany(input.id);
+      return result;
+    }),
+});
 
 // ========== 部门路由 ==========
 const departmentRouter = router({
@@ -636,6 +686,7 @@ export const appRouter = router({
     }),
   }),
   
+  companies: companyRouter,
   departments: departmentRouter,
   employees: employeeRouter,
   honors: honorRouter,

@@ -124,3 +124,18 @@ export const honorCategories = mysqlTable("honor_categories", {
 
 export type HonorCategory = typeof honorCategories.$inferSelect;
 export type InsertHonorCategory = typeof honorCategories.$inferInsert;
+
+/**
+ * 公司表
+ */
+export const companies = mysqlTable("companies", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(), // 公司名称
+  description: text("description"), // 公司描述
+  order: int("order").default(0).notNull(), // 排序顺序
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Company = typeof companies.$inferSelect;
+export type InsertCompany = typeof companies.$inferInsert;
