@@ -719,6 +719,7 @@ export default function Showcase() {
                     key={company.id}
                     onClick={() => {
                       setSelectedCompany(company.id);
+                      setSelectedDepartment('company');
                       setShowCompanyDropdown(false);
                       setSelectedEmployee(null);
                       setIsAutoPlayDetail(false);
