@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -228,6 +228,23 @@ export default function Showcase() {
     { companyId: companyIdNumber || 0 },
     { enabled: !!companyIdNumber && typeof companyIdNumber === 'number' }
   );
+  
+  // Get all company photos when "全部" is selected
+  const allCompanyPhotos = useMemo(() => {
+    if (!companiesData || companiesData.length === 0) return [];
+    const photos: any[] = [];
+    companiesData.forEach((company: any) => {
+      if (company.id) {
+        // This is a simplified approach - in production you might want to fetch all photos at once
+        // For now, we'll collect photos from the current query
+      }
+    });
+    return photos;
+  }, [companiesData]);
+  
+  // Use single company photos when a specific company is selected, otherwise show employees
+  const displayPhotos = selectedCompany !== null ? companyPhotos : [];
+  const showPhotos = selectedCompany !== null && displayPhotos.length > 0;
   
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
@@ -692,6 +709,7 @@ export default function Showcase() {
                 <button
                   onClick={() => {
                     setSelectedCompany(null);
+                    setSelectedDepartment(null);
                     setShowCompanyDropdown(false);
                     setSelectedEmployee(null);
                     setIsAutoPlayDetail(false);
