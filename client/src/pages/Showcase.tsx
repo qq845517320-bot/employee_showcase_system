@@ -222,6 +222,13 @@ export default function Showcase() {
   const { data: honorCategoriesData = [] } = trpc.honors.listCategories.useQuery({} as any);
   const honorCategories = honorCategoriesData.map((cat: any) => cat.name);
   
+  // Get company photos
+  const companyIdNumber = typeof selectedCompany === 'number' ? selectedCompany : (typeof selectedCompany === 'string' ? parseInt(selectedCompany, 10) : null);
+  const { data: companyPhotos = [] } = trpc.companies.getPhotos.useQuery(
+    { companyId: companyIdNumber || 0 },
+    { enabled: !!companyIdNumber && typeof companyIdNumber === 'number' }
+  );
+  
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
     { id: selectedEmployee?.id || 0 },
@@ -481,6 +488,9 @@ export default function Showcase() {
         employees = [];
       }
     
+    } else if (selectedDepartment === 'company') {
+      // 公司模式：不显示员工，显示照片
+      employees = [];
     } else if (selectedDepartment !== null && selectedDepartment !== 'honors') {
       // 选择了具体部门，进一步过滤
       employees = employees.filter(emp => emp.departmentId === selectedDepartment);
@@ -859,6 +869,26 @@ export default function Showcase() {
                   </div>
                 )}
               </div>
+            ) : selectedDepartment === 'company' && companyPhotos.length > 0 ? (
+              /* ====== COMPANY PHOTOS MODE ====== */
+              <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+                <div className="flex flex-wrap gap-6 justify-center items-center max-w-7xl py-8">
+                  {companyPhotos.map((photo: any, idx: number) => (
+                    <motion.div key={photo.id}
+                      initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.4, delay: idx * 0.05 }}
+                      whileHover={{ scale: 1.05 }}
+                      className="cursor-pointer"
+                    >
+                      <div className="relative flex items-center justify-center overflow-hidden rounded-lg shadow-lg"
+                        style={{ width: '300px', height: '300px', backgroundColor: '#f3f4f6' }}>
+                        <img src={photo.photoUrl} alt="公司照片" className="w-full h-full object-cover" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
               <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
