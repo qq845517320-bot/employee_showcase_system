@@ -120,7 +120,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Partyemblem_a1be73e2.png" 
                   alt="党员" 
-                  className="w-16 h-16 mt-1"
+                  className="w-12 h-12 -mt-2"
                   title="党员"
                 />
               )}
