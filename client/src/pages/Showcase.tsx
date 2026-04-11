@@ -137,7 +137,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               <div className="italic text-left">{employee.workTenet || "\u6682\u65e0\u6570\u636e"}</div>
             </div>
           </div>
-          <div className="flex-1">
+          <div className="flex-1" style={{ marginLeft: '10px' }}>
             <div className="font-semibold mb-2 text-xl">{"\u5956\u52b1\u8363\u8a89\uff1a"}</div>
             <div className="text-base space-y-1 text-left">
               {isLoadingDetail && !fallbackHonors ? (
