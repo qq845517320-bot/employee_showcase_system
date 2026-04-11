@@ -230,21 +230,14 @@ export default function Showcase() {
   );
   
   // Get all company photos when "全部" is selected
-  const allCompanyPhotos = useMemo(() => {
-    if (!companiesData || companiesData.length === 0) return [];
-    const photos: any[] = [];
-    companiesData.forEach((company: any) => {
-      if (company.id) {
-        // This is a simplified approach - in production you might want to fetch all photos at once
-        // For now, we'll collect photos from the current query
-      }
-    });
-    return photos;
-  }, [companiesData]);
+  const { data: allCompanyPhotos = [] } = trpc.companies.getAllPhotos.useQuery(
+    undefined,
+    { enabled: selectedCompany === null && selectedDepartment === 'company' }
+  );
   
-  // Use single company photos when a specific company is selected, otherwise show employees
-  const displayPhotos = selectedCompany !== null ? companyPhotos : [];
-  const showPhotos = selectedCompany !== null && displayPhotos.length > 0;
+  // Use single company photos when a specific company is selected, all photos when "全部" is selected
+  const displayPhotos = selectedCompany === null ? allCompanyPhotos : companyPhotos;
+  const showPhotos = selectedDepartment === 'company' && displayPhotos.length > 0;
   
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
@@ -709,12 +702,11 @@ export default function Showcase() {
                 <button
                   onClick={() => {
                     setSelectedCompany(null);
-                    setSelectedDepartment(null);
+                    setSelectedDepartment('company');
                     setShowCompanyDropdown(false);
                     setSelectedEmployee(null);
                     setIsAutoPlayDetail(false);
                     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-                    startBatchRotation();
                     resetInactivityTimer();
                   }}
                   className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
@@ -887,12 +879,12 @@ export default function Showcase() {
                   </div>
                 )}
               </div>
-            ) : selectedDepartment === 'company' && companyPhotos.length > 0 ? (
+            ) : showPhotos ? (
               /* ====== COMPANY PHOTOS MODE ====== */
               <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
                 <div className="flex flex-wrap gap-6 justify-center items-center max-w-7xl py-8">
-                  {companyPhotos.map((photo: any, idx: number) => (
+                  {displayPhotos.map((photo: any, idx: number) => (
                     <motion.div key={photo.id}
                       initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.4, delay: idx * 0.05 }}

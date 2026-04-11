@@ -389,3 +389,10 @@ export async function deleteCompanyPhoto(photoId: number) {
   await db.delete(companyPhotos).where(eq(companyPhotos.id, photoId));
   return { success: true };
 }
+
+export async function getAllCompanyPhotos() {
+  const db = await getDb();
+  if (!db) return [];
+  const result = await db.select().from(companyPhotos).orderBy(companyPhotos.order);
+  return result;
+}

@@ -28,7 +28,8 @@ import {
   deleteCompany,
   getCompanyPhotos,
   createCompanyPhoto,
-  deleteCompanyPhoto
+  deleteCompanyPhoto,
+  getAllCompanyPhotos
 } from "./db";
 import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
@@ -84,6 +85,11 @@ const companyRouter = router({
     .input(z.object({ companyId: z.number() }))
     .query(async ({ input }) => {
       return getCompanyPhotos(input.companyId);
+    }),
+  
+  getAllPhotos: publicProcedure
+    .query(async () => {
+      return getAllCompanyPhotos();
     }),
   
   uploadPhoto: protectedProcedure
