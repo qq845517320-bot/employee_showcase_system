@@ -85,6 +85,13 @@
       "when": 1775921842913,
       "tag": "0011_gifted_gertrude_yorkes",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1775925331943,
+      "tag": "0012_chief_alice",
+      "breakpoints": true
     }
   ]
 }

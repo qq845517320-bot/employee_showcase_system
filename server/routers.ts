@@ -25,7 +25,10 @@ import {
   getCompanyById,
   createCompany,
   updateCompany,
-  deleteCompany
+  deleteCompany,
+  getCompanyPhotos,
+  createCompanyPhoto,
+  deleteCompanyPhoto
 } from "./db";
 import { departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies } from "../drizzle/schema";
 import { eq, and } from "drizzle-orm";
@@ -75,6 +78,46 @@ const companyRouter = router({
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
       const result = await deleteCompany(input.id);
       return result;
+    }),
+  
+  getPhotos: publicProcedure
+    .input(z.object({ companyId: z.number() }))
+    .query(async ({ input }) => {
+      return getCompanyPhotos(input.companyId);
+    }),
+  
+  uploadPhoto: protectedProcedure
+    .input(z.object({
+      companyId: z.number(),
+      fileData: z.string(),
+      fileName: z.string(),
+      description: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      
+      try {
+        const buffer = Buffer.from(input.fileData, 'base64');
+        const ext = input.fileName.split('.').pop() || 'jpg';
+        const fileKey = `company-photos/${input.companyId}/${nanoid()}.${ext}`;
+        
+        const { url } = await storagePut(fileKey, buffer, `image/${ext}`);
+        
+        await createCompanyPhoto(input.companyId, url, input.description);
+        return { success: true, photoUrl: url };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `Failed to upload photo: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        });
+      }
+    }),
+  
+  deletePhoto: protectedProcedure
+    .input(z.object({ photoId: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      return deleteCompanyPhoto(input.photoId);
     }),
 });
 

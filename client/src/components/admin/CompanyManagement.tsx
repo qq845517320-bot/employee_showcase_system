@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function CompanyManagement() {
@@ -18,6 +18,7 @@ export default function CompanyManagement() {
     description: '',
   });
   const [error, setError] = useState<string | null>(null);
+  const [expandedCompanyId, setExpandedCompanyId] = useState<number | null>(null);
 
   const createMutation = trpc.companies.create.useMutation({
     onSuccess: () => {
@@ -56,6 +57,49 @@ export default function CompanyManagement() {
       console.error('Delete company error:', err);
     },
   });
+
+  const { data: companyPhotos = [] } = trpc.companies.getPhotos.useQuery(
+    { companyId: expandedCompanyId || 0 },
+    { enabled: expandedCompanyId !== null }
+  );
+
+  const uploadPhotoMutation = trpc.companies.uploadPhoto.useMutation({
+    onSuccess: () => {
+      if (expandedCompanyId) {
+        utils.companies.getPhotos.invalidate({ companyId: expandedCompanyId });
+      }
+    },
+    onError: (err) => {
+      console.error('Upload photo error:', err);
+      alert('上传照片失败');
+    },
+  });
+
+  const deletePhotoMutation = trpc.companies.deletePhoto.useMutation({
+    onSuccess: () => {
+      if (expandedCompanyId) {
+        utils.companies.getPhotos.invalidate({ companyId: expandedCompanyId });
+      }
+    },
+    onError: (err) => {
+      console.error('Delete photo error:', err);
+    },
+  });
+
+  const handlePhotoUpload = async (companyId: number, file: File) => {
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64 = (e.target?.result as string).split(',')[1];
+      await uploadPhotoMutation.mutateAsync({
+        companyId,
+        fileData: base64,
+        fileName: file.name,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +152,12 @@ export default function CompanyManagement() {
         )}
       </div>
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          {error}
+        </div>
+      )}
+
       {/* 新增/编辑表单 */}
       {isAddingNew && (
         <motion.div
@@ -115,29 +165,24 @@ export default function CompanyManagement() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-blue-50 border border-blue-200 rounded-lg p-6"
         >
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">公司名称</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">名称</label>
               <Input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="例如：深圳国际港口、江苏靖江港"
+                placeholder="例如：深国际集团旗下港口风采展示"
                 className="w-full"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">公司描述</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">描述</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="可选：描述该公司的相关信息"
+                placeholder="可选：描述相关信息"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={3}
               />
@@ -149,7 +194,7 @@ export default function CompanyManagement() {
                 disabled={createMutation.isPending || updateMutation.isPending}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
-                {editingId ? '更新公司' : '创建公司'}
+                {editingId ? '更新公司' : '创建'}
               </Button>
               <Button
                 type="button"
@@ -182,7 +227,7 @@ export default function CompanyManagement() {
                 {company.description && (
                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">{company.description}</p>
                 )}
-                <div className="flex gap-2">
+                <div className="flex gap-2 mb-3">
                   <Button
                     size="sm"
                     variant="outline"
@@ -207,6 +252,76 @@ export default function CompanyManagement() {
                     删除
                   </Button>
                 </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setExpandedCompanyId(expandedCompanyId === company.id ? null : company.id)}
+                  className="w-full"
+                >
+                  <ImageIcon className="w-3 h-3 mr-1" />
+                  {expandedCompanyId === company.id ? '隐藏照片' : '管理照片'}
+                </Button>
+
+                {/* 照片管理区域 */}
+                {expandedCompanyId === company.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 pt-4 border-t border-gray-200 space-y-3"
+                  >
+                    {/* 上传区域 */}
+                    <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handlePhotoUpload(company.id, e.target.files[0]);
+                            e.target.value = '';
+                          }
+                        }}
+                        disabled={uploadPhotoMutation.isPending}
+                        className="hidden"
+                        id={`photo-upload-${company.id}`}
+                      />
+                      <label
+                        htmlFor={`photo-upload-${company.id}`}
+                        className="cursor-pointer text-blue-600 hover:text-blue-700 text-sm font-medium"
+                      >
+                        {uploadPhotoMutation.isPending ? '上传中...' : '点击上传照片'}
+                      </label>
+                    </div>
+
+                    {/* 照片列表 */}
+                    {companyPhotos.length > 0 ? (
+                      <div className="space-y-2">
+                        {companyPhotos.map((photo: any) => (
+                          <div key={photo.id} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-gray-600 truncate">{photo.photoUrl.split('/').pop()}</p>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                if (confirm('确定要删除这张照片吗？')) {
+                                  deletePhotoMutation.mutate({ photoId: photo.id });
+                                }
+                              }}
+                              disabled={deletePhotoMutation.isPending}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 ml-2"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-500 text-center py-2">暂无照片</p>
+                    )}
+                  </motion.div>
+                )}
               </motion.div>
             ))}
           </div>

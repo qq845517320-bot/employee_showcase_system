@@ -139,3 +139,19 @@ export const companies = mysqlTable("companies", {
 
 export type Company = typeof companies.$inferSelect;
 export type InsertCompany = typeof companies.$inferInsert;
+
+/**
+ * 公司照片表
+ */
+export const companyPhotos = mysqlTable("company_photos", {
+  id: int("id").autoincrement().primaryKey(),
+  companyId: int("companyId").notNull(), // 外键关联公司
+  photoUrl: varchar("photoUrl", { length: 500 }).notNull(), // 照片 URL（S3）
+  description: text("description"), // 照片描述
+  order: int("order").default(0).notNull(), // 排序顺序
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CompanyPhoto = typeof companyPhotos.$inferSelect;
+export type InsertCompanyPhoto = typeof companyPhotos.$inferInsert;

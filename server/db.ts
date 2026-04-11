@@ -1,6 +1,6 @@
 import { eq, and, inArray, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies } from "../drizzle/schema";
+import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies, companyPhotos } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -353,5 +353,39 @@ export async function deleteCompany(id: number) {
   if (!db) throw new Error('Database not available');
   
   await db.delete(companies).where(eq(companies.id, id));
+  return { success: true };
+}
+
+// ============ Company Photos ============
+
+export async function getCompanyPhotos(companyId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const result = await db.select().from(companyPhotos).where(eq(companyPhotos.companyId, companyId)).orderBy(companyPhotos.order);
+  return result;
+}
+
+export async function createCompanyPhoto(companyId: number, photoUrl: string, description?: string) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  const photosList = await getCompanyPhotos(companyId);
+  const maxOrder = photosList.length > 0 ? Math.max(...photosList.map(p => p.order)) : -1;
+  
+  const result = await db.insert(companyPhotos).values({
+    companyId,
+    photoUrl,
+    description,
+    order: maxOrder + 1,
+  });
+  
+  return result;
+}
+
+export async function deleteCompanyPhoto(photoId: number) {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  await db.delete(companyPhotos).where(eq(companyPhotos.id, photoId));
   return { success: true };
 }
