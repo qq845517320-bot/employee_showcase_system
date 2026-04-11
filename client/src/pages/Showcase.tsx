@@ -72,7 +72,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
       exit={isAutoPlay ? { opacity: 0, scale: 0.9, y: -40, filter: 'blur(10px)' } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
       transition={isAutoPlay ? { duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 } : { duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
-      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative"
+      className={`bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative ${isAutoPlay ? 'card-glow-pulse' : ''}`}
       style={{
         width: '950px',
         height: '750px',
