@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CompanyPhotoCard } from '@/components/CompanyPhotoCard';
 
 /* ========== HexPhoto ========== */
 function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0, isAutoPlay = false }: {
@@ -883,7 +884,7 @@ export default function Showcase() {
               /* ====== COMPANY PHOTOS MODE ====== */
               <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
-                <div className="flex flex-wrap gap-6 justify-center items-center max-w-7xl py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center items-center max-w-7xl py-8">
                   {displayPhotos.map((photo: any, idx: number) => (
                     <motion.div key={photo.id}
                       initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
@@ -891,9 +892,8 @@ export default function Showcase() {
                       whileHover={{ scale: 1.05 }}
                       className="cursor-pointer"
                     >
-                      <div className="relative flex items-center justify-center overflow-hidden rounded-lg shadow-lg"
-                        style={{ width: '300px', height: '300px', backgroundColor: '#f3f4f6' }}>
-                        <img src={photo.photoUrl} alt="公司照片" className="w-full h-full object-cover" />
+                      <div style={{ width: '280px', height: '200px' }}>
+                        <CompanyPhotoCard photoUrl={photo.photoUrl} alt="公司风采照片" />
                       </div>
                     </motion.div>
                   ))}
