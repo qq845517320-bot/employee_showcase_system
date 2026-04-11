@@ -205,6 +205,7 @@ export default function Showcase() {
   const [departments, setDepartments] = useState<any[]>([]);
   const [selectedHonorCategory, setSelectedHonorCategory] = useState<string | null>(null);
   const [showHonorDropdown, setShowHonorDropdown] = useState(false);
+  const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
   const batchSize = 10;
 
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
@@ -257,8 +258,14 @@ export default function Showcase() {
     setSelectedDepartment(deptId);
     if (deptId === 'honors') {
       setShowHonorDropdown(!showHonorDropdown);
+      setShowDepartmentDropdown(false);
+    } else if (deptId === 'department') {
+      setShowDepartmentDropdown(!showDepartmentDropdown);
+      setShowHonorDropdown(false);
     } else {
       setShowHonorDropdown(false);
+      setShowDepartmentDropdown(false);
+      setSelectedDepartment(deptId);
     }
     setSelectedEmployee(null);
     setIsAutoPlayDetail(false);
@@ -599,20 +606,55 @@ export default function Showcase() {
           style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
           className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
         >
-          <button onClick={() => handleDepartmentClick(null)}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-            {"\u5168\u90e8"}
-          </button>
-          <button onClick={() => handleDepartmentClick('management')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === 'management' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-            {"\u7ba1\u7406\u5c42"}
-          </button>
-          {getDisplayDepartments().filter(dept => dept.name !== '管理层').map((dept) => (
-            <button key={dept.id} onClick={() => handleDepartmentClick(dept.id)}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all ${selectedDepartment === dept.id ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
-              {dept.name}
+          {/* 部门下拉框 */}
+          <div className="relative">
+            <button onClick={() => handleDepartmentClick('department')}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment !== 'honors' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              <span>部门</span>
+              <span className={`transition-transform ${showDepartmentDropdown ? 'rotate-180' : ''}`}>▼</span>
             </button>
-          ))}
+            {showDepartmentDropdown && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-48"
+              >
+                <button
+                  onClick={() => {
+                    setSelectedDepartment(null);
+                    setShowDepartmentDropdown(false);
+                    setSelectedEmployee(null);
+                    setIsAutoPlayDetail(false);
+                    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+                    startBatchRotation();
+                    resetInactivityTimer();
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
+                >
+                  全部
+                </button>
+                {getDisplayDepartments().map((dept) => (
+                  <button
+                    key={dept.id}
+                    onClick={() => {
+                      setSelectedDepartment(dept.id);
+                      setShowDepartmentDropdown(false);
+                      setSelectedEmployee(null);
+                      setIsAutoPlayDetail(false);
+                      if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+                      startBatchRotation();
+                      resetInactivityTimer();
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
+                  >
+                    {dept.name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </div>
+
+          {/* 荣誉榜按钮 */}
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
