@@ -44,7 +44,7 @@ export default function Admin() {
   const navItems = [
     { id: 'employees' as AdminTab, label: '员工管理', icon: Users },
     { id: 'departments' as AdminTab, label: '部门管理', icon: Settings },
-    { id: 'coreBone' as AdminTab, label: '核心骨干管理', icon: Settings },
+    { id: 'coreBone' as AdminTab, label: '骨干管理', icon: Settings },
     { id: 'honors' as AdminTab, label: '荣誉管理', icon: Settings },
     { id: 'awards' as AdminTab, label: '奖项管理', icon: Settings },
     { id: 'playback' as AdminTab, label: '轮播策略', icon: Settings },

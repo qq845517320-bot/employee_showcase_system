@@ -45,7 +45,7 @@ export default function CoreBoneManagement() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">
-            核心骨干 ({coreEmployees.length})
+            骨干 ({coreEmployees.length})
           </h3>
           <span className="text-sm text-gray-500">共 {employees.length} 名员工</span>
         </div>
@@ -93,7 +93,7 @@ export default function CoreBoneManagement() {
       {/* 非核心骨干列表 */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900">
-          普通员工 ({nonCoreEmployees.length})
+          员工 ({nonCoreEmployees.length})
         </h3>
 
         {nonCoreEmployees.length > 0 ? (
