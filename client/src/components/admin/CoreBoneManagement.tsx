@@ -37,7 +37,7 @@ export default function CoreBoneManagement() {
   return (
     <div className="p-6 space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">核心骨干管理</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">骨干管理</h2>
         <p className="text-gray-600">管理核心骨干员工，核心骨干员工将在轮播中单独展示</p>
       </div>
 
