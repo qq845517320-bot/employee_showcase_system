@@ -126,7 +126,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
         </div>
         {/* 下部分：工作职责+工作信条、奖励荣誉（2/5 高度） */}
-        <div className="flex-[2] flex gap-12 pt-8 mt-4 overflow-y-auto justify-between w-full">
+        <div className="flex-[2] flex gap-12 pt-12 mt-6 overflow-y-auto justify-between w-full">
           <div className="flex-1 space-y-4 text-lg">
             <div>
               <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
