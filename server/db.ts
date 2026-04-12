@@ -4,18 +4,45 @@ import { InsertUser, users, departments, employees, honors, playbackStrategies, 
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _migrationDone = false;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
       _db = drizzle(process.env.DATABASE_URL);
+      
+      // Run database migrations if not done yet
+      if (!_migrationDone) {
+        await runMigrations();
+        _migrationDone = true;
+      }
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
     }
   }
   return _db;
+}
+
+// Run database migrations
+async function runMigrations() {
+  if (!_db) return;
+  
+  try {
+    // Modify displayMode enum to include 'company_showcase'
+    await _db.execute(
+      `ALTER TABLE \`playback_strategies\` MODIFY COLUMN \`displayMode\` enum('all','core_bones','company_showcase') NOT NULL`
+    );
+    console.log('[Database] Migration completed: Updated playback_strategies displayMode enum');
+  } catch (error: any) {
+    // Ignore errors if the enum already has company_showcase
+    if (error.message && error.message.includes('Duplicate')) {
+      console.log('[Database] Migration skipped: displayMode enum already updated');
+    } else {
+      console.warn('[Database] Migration error:', error.message);
+    }
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {

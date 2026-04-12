@@ -584,7 +584,7 @@ const playbackRouter = router({
   create: protectedProcedure
     .input(z.object({
       name: z.string().min(1),
-      displayMode: z.enum(['all', 'core_bones']),
+      displayMode: z.enum(['all', 'core_bones', 'company_showcase']),
       description: z.string().optional(),
       autoPlayInterval: z.number().optional(),
     }))

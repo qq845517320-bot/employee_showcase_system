@@ -9,7 +9,7 @@ export default function PlaybackStrategyManagement() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    displayMode: 'all' as 'all' | 'core_bones',
+    displayMode: 'all' as 'all' | 'core_bones' | 'company_showcase',
     description: '',
     autoPlayInterval: 5000,
   });
@@ -52,25 +52,29 @@ export default function PlaybackStrategyManagement() {
   const displayModeLabel = {
     all: '全部员工',
     core_bones: '核心骨干',
+    company_showcase: '公司风采',
   };
 
   const displayModeIcon = {
     all: Users,
     core_bones: Zap,
+    company_showcase: Trophy,
   };
 
   const displayModeColor = {
     all: 'from-blue-500 to-blue-600',
     core_bones: 'from-yellow-500 to-yellow-600',
+    company_showcase: 'from-purple-500 to-purple-600',
   };
 
   // 快速切换预设策略
   const quickSwitchModes = [
     { mode: 'all' as const, label: '普通工作日', description: '展示全部员工' },
     { mode: 'core_bones' as const, label: '参观接待-核心骨干', description: '仅展示核心骨干' },
+    { mode: 'company_showcase' as const, label: '参观接待-公司风采展示', description: '展示公司风采照片' },
   ];
 
-  const handleQuickSwitch = async (mode: 'all' | 'core_bones') => {
+  const handleQuickSwitch = async (mode: 'all' | 'core_bones' | 'company_showcase') => {
     let strategy = strategies.find(s => s.displayMode === mode);
     
     if (!strategy) {
@@ -109,7 +113,9 @@ export default function PlaybackStrategyManagement() {
                 onClick={() => handleQuickSwitch(item.mode)}
                 className={`relative p-6 rounded-xl transition-all duration-300 ${
                   isActive
-                    ? `bg-gradient-to-br ${displayModeColor[item.mode]} text-white shadow-lg ring-2 ring-offset-2 ring-${item.mode === 'all' ? 'blue' : item.mode === 'core_bones' ? 'yellow' : 'purple'}-500`
+                    ? `bg-gradient-to-br ${displayModeColor[item.mode]} text-white shadow-lg ring-2 ring-offset-2 ${
+                        item.mode === 'all' ? 'ring-blue-500' : item.mode === 'core_bones' ? 'ring-yellow-500' : 'ring-purple-500'
+                      }`
                     : 'bg-white border-2 border-gray-200 text-gray-900 hover:border-gray-300 hover:shadow-md'
                 }`}
               >
@@ -185,11 +191,12 @@ export default function PlaybackStrategyManagement() {
               <label className="block text-sm font-medium text-gray-700 mb-2">展示模式</label>
               <select
                 value={formData.displayMode}
-                onChange={e => setFormData({ ...formData, displayMode: e.target.value as 'all' | 'core_bones' })}
+                onChange={e => setFormData({ ...formData, displayMode: e.target.value as 'all' | 'core_bones' | 'company_showcase' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">全部员工</option>
                 <option value="core_bones">核心骨干</option>
+                <option value="company_showcase">公司风采</option>
               </select>
             </div>
 

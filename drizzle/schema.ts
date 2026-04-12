@@ -82,7 +82,7 @@ export type InsertHonor = typeof honors.$inferInsert;
 export const playbackStrategies = mysqlTable("playback_strategies", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(), // 策略名称（如：普通工作日、参观接待）
-  displayMode: mysqlEnum("displayMode", ["all", "core_bones"]).notNull(), // 展示模式
+  displayMode: mysqlEnum("displayMode", ["all", "core_bones", "company_showcase"]).notNull(), // 展示模式
   description: text("description"), // 策略描述
   isActive: boolean("isActive").default(false).notNull(), // 是否为当前活跃策略
   autoPlayInterval: int("autoPlayInterval").default(5000).notNull(), // 自动轮播间隔（毫秒）

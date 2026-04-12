@@ -92,6 +92,13 @@
       "when": 1775925331943,
       "tag": "0012_chief_alice",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1775953329125,
+      "tag": "0013_foamy_demogoblin",
+      "breakpoints": true
     }
   ]
 }

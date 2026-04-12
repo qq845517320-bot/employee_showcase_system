@@ -1,0 +1,1 @@
+ALTER TABLE `playback_strategies` MODIFY COLUMN `displayMode` enum('all','core_bones','company_showcase') NOT NULL;
