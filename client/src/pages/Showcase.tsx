@@ -201,7 +201,9 @@ export default function Showcase() {
   const currentDetailIndexRef = useRef(0);
   const activeStrategyRef = useRef<any>(null);
   const initialLoadDoneRef = useRef(false);
+  const companyShowcaseIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
+  const [isAutoPlayCompanyShowcase, setIsAutoPlayCompanyShowcase] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<number | string | null>(null);
@@ -214,6 +216,7 @@ export default function Showcase() {
   const [showcasePhotoIndex, setShowcasePhotoIndex] = useState(0);
   const showcasePhotoIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const batchSize = 10;
+  const companyShowcaseAutoPlayRef = useRef(false);
 
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery(
@@ -346,20 +349,29 @@ export default function Showcase() {
 
   const resetInactivityTimer = () => {
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
-    setIsAutoPlayDetail(false);
-    isAutoPlayDetailRef.current = false;
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-    // 总是启动批次轮播
-    startBatchRotation();
-    inactivityTimeoutRef.current = setTimeout(() => {
-      // 使用 ref 获取最新的 displayEmployees
-      if (displayEmployeesRef.current.length > 0) {
-        setIsAutoPlayDetail(true);
-        isAutoPlayDetailRef.current = true;
-        stopBatchRotation();
-        startDetailRotationFromRef();
-      }
-    }, 30000);
+    if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
+    
+    // 如果是公司风采模式，启动公司风采自动轮播
+    if (activeStrategyRef.current?.displayMode === 'company_showcase') {
+      inactivityTimeoutRef.current = setTimeout(() => {
+        setIsAutoPlayCompanyShowcase(true);
+        companyShowcaseAutoPlayRef.current = true;
+        startCompanyShowcaseRotation();
+      }, 30000);
+    } else {
+      // 总是启动批次轮播
+      startBatchRotation();
+      inactivityTimeoutRef.current = setTimeout(() => {
+        // 使用 ref 获取最新的 displayEmployees
+        if (displayEmployeesRef.current.length > 0) {
+          setIsAutoPlayDetail(true);
+          isAutoPlayDetailRef.current = true;
+          stopBatchRotation();
+          startDetailRotationFromRef();
+        }
+      }, 30000);
+    }
   };
 
   const startBatchRotation = () => {
@@ -375,6 +387,21 @@ export default function Showcase() {
 
   const stopBatchRotation = () => {
     if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
+  };
+
+  const startCompanyShowcaseRotation = () => {
+    if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
+    const interval = activeStrategyRef.current?.autoPlayInterval || 5000;
+    companyShowcaseIntervalRef.current = setInterval(() => {
+      setShowcasePhotoIndex(prev => {
+        const total = showcaseCompanyPhotos.length;
+        return total > 0 ? (prev + 1) % total : 0;
+      });
+    }, interval);
+  };
+
+  const stopCompanyShowcaseRotation = () => {
+    if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
   };
 
   // 使用 ref 的版本，避免闭包问题
@@ -660,9 +687,9 @@ export default function Showcase() {
         </div>
         <motion.div
           initial={{ opacity: 1 }}
-          animate={{ opacity: selectedEmployee || activeStrategy?.displayMode === 'company_showcase' ? 0 : 1 }}
+          animate={{ opacity: selectedEmployee ? 0 : 1 }}
           transition={{ duration: 0.5 }}
-          style={{ pointerEvents: selectedEmployee || activeStrategy?.displayMode === 'company_showcase' ? 'none' : 'auto' }}
+          style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
           className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
         >
           {/* 部门下拉框 */}
@@ -805,62 +832,52 @@ export default function Showcase() {
 
       {/* Content area */}
       <div className="absolute inset-0 pt-40 pb-24 flex items-center justify-center">
-        {/* ====== COMPANY SHOWCASE MODE ====== */}
-        {activeStrategy?.displayMode === 'company_showcase' ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full h-full flex items-center justify-center"
-          >
-            {showcaseCompanyPhotos && showcaseCompanyPhotos.length > 0 ? (
-              <div className="relative flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`showcase-${showcaseCompanyPhotos[showcasePhotoIndex]?.id || showcasePhotoIndex}`}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.6 }}
-                    className="flex items-center justify-center"
-                    style={{
-                      width: '900px',
-                      height: '600px',
-                    }}
-                  >
-                    {showcaseCompanyPhotos[showcasePhotoIndex] && (
-                      <img
-                        src={showcaseCompanyPhotos[showcasePhotoIndex].photoUrl}
-                        alt="公司风采照片"
-                        className="w-full h-full object-cover rounded-2xl shadow-2xl"
-                      />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-                {/* Navigation arrows */}
-                <button
-                  onClick={() => setShowcasePhotoIndex(prev => (prev - 1 + showcaseCompanyPhotos.length) % showcaseCompanyPhotos.length)}
-                  className="absolute left-4 text-white/60 hover:text-white transition-colors z-10"
+        {/* ====== COMPANY SHOWCASE AUTO-PLAY MODE ====== */}
+        {isAutoPlayCompanyShowcase && activeStrategy?.displayMode === 'company_showcase' ? (
+          <div className="w-full h-full flex items-center justify-between px-4 relative">
+            {/* Left columns - show during auto-play */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={autoPlayLeftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+            </div>
+
+            {/* Center company showcase card */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
+              {showcaseCompanyPhotos && showcaseCompanyPhotos.length > 0 && showcaseCompanyPhotos[showcasePhotoIndex] ? (
+                <motion.div
+                  key={`showcase-auto-${showcaseCompanyPhotos[showcasePhotoIndex]?.id || showcasePhotoIndex}`}
+                  initial={{ opacity: 0, scale: 0.85, y: 40 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.85, y: -40 }}
+                  transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 }}
+                  className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative card-glow-pulse"
+                  style={{
+                    width: '950px',
+                    height: '750px',
+                    paddingTop: '40px',
+                    boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)'
+                  }}
                 >
-                  <ChevronLeft size={48} strokeWidth={2} />
-                </button>
-                <button
-                  onClick={() => setShowcasePhotoIndex(prev => (prev + 1) % showcaseCompanyPhotos.length)}
-                  className="absolute right-4 text-white/60 hover:text-white transition-colors z-10"
-                >
-                  <ChevronRight size={48} strokeWidth={2} />
-                </button>
-                {/* Photo counter */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium bg-black/40 px-4 py-2 rounded-full">
-                  {showcasePhotoIndex + 1} / {showcaseCompanyPhotos.length}
-                </div>
-              </div>
-            ) : (
-              <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
-            )}
-          </motion.div>
-        ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null ? (
+                  <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-xl">
+                    <img
+                      src={showcaseCompanyPhotos[showcasePhotoIndex].photoUrl}
+                      alt="公司风采照片"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
+              )}
+            </div>
+
+            {/* Right columns - show during auto-play */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayRightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+            </div>
+          </div>
+        ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
           <div className="w-full h-full flex items-center justify-between px-4 relative">
             {/* Left columns - use autoPlay batch to match center card */}
             <div className="flex gap-6 items-center">
@@ -1043,6 +1060,74 @@ export default function Showcase() {
                   </div>
                 </motion.div>
               )
+            ) : activeStrategy?.displayMode === 'company_showcase' && !isAutoPlayCompanyShowcase ? (
+              /* ====== COMPANY SHOWCASE NORMAL MODE ====== */
+              <div className="w-full h-full flex items-center justify-between px-4 relative">
+                {/* Left columns */}
+                <div className="flex gap-6 items-center">
+                  <PhotoColumn employees={leftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                  <PhotoColumn employees={leftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                </div>
+
+                {/* Center company showcase card */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
+                  {showcaseCompanyPhotos && showcaseCompanyPhotos.length > 0 && showcaseCompanyPhotos[showcasePhotoIndex] ? (
+                    <motion.div
+                      key={`showcase-manual-${showcaseCompanyPhotos[showcasePhotoIndex]?.id || showcasePhotoIndex}`}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.6 }}
+                      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative"
+                      style={{
+                        width: '950px',
+                        height: '750px',
+                        paddingTop: '40px',
+                        boxShadow: '0 0 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 0, 0, 0.3)'
+                      }}
+                    >
+                      <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-xl">
+                        <img
+                          src={showcaseCompanyPhotos[showcasePhotoIndex].photoUrl}
+                          alt="公司风采照片"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      {/* Navigation arrows */}
+                      <button
+                        onClick={() => {
+                          setShowcasePhotoIndex(prev => (prev - 1 + showcaseCompanyPhotos.length) % showcaseCompanyPhotos.length);
+                          resetInactivityTimer();
+                        }}
+                        className="absolute left-4 text-white/60 hover:text-white transition-colors z-10"
+                      >
+                        <ChevronLeft size={48} strokeWidth={2} />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowcasePhotoIndex(prev => (prev + 1) % showcaseCompanyPhotos.length);
+                          resetInactivityTimer();
+                        }}
+                        className="absolute right-4 text-white/60 hover:text-white transition-colors z-10"
+                      >
+                        <ChevronRight size={48} strokeWidth={2} />
+                      </button>
+                      {/* Photo counter */}
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium bg-black/40 px-4 py-2 rounded-full">
+                        {showcasePhotoIndex + 1} / {showcaseCompanyPhotos.length}
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
+                  )}
+                </div>
+
+                {/* Right columns */}
+                <div className="flex gap-6 items-center">
+                  <PhotoColumn employees={rightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                  <PhotoColumn employees={rightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
+                </div>
+              </div>
             ) : selectedDepartment !== null ? (
               /* ====== DEPARTMENT FILTER MODE ====== */
               <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
