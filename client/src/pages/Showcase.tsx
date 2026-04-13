@@ -1118,10 +1118,12 @@ export default function Showcase() {
                       >
                         <ChevronRight size={48} strokeWidth={2} />
                       </button>
-                      {/* Photo counter */}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium bg-black/40 px-4 py-2 rounded-full">
-                        {showcasePhotoIndex + 1} / {showcaseCompanyPhotos.length}
-                      </div>
+                      {/* Photo counter - hidden in auto play mode */}
+                      {!isAutoPlayCompanyShowcase && (
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium bg-black/40 px-4 py-2 rounded-full">
+                          {showcasePhotoIndex + 1} / {showcaseCompanyPhotos.length}
+                        </div>
+                      )}
                     </motion.div>
                   ) : (
                     <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
