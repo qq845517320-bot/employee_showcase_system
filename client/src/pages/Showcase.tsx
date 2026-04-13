@@ -1067,6 +1067,7 @@ export default function Showcase() {
                 </motion.div>
               )
             ) : activeStrategy?.displayMode === 'company_showcase' && !isAutoPlayCompanyShowcase ? (
+              /* ====== COMPANY SHOWCASE NORMAL MODE - EMPTY DISPLAY ====== */
               /* ====== COMPANY SHOWCASE NORMAL MODE ====== */
               <div className="w-full h-full flex items-center justify-between px-4 relative">
                 {/* Left columns */}
@@ -1075,59 +1076,9 @@ export default function Showcase() {
                   <PhotoColumn employees={leftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={2} onClickEmployee={handleEmployeeClick} isAutoPlay={false} />
                 </div>
 
-                {/* Center company showcase card */}
+                {/* Center - empty, waiting for auto play */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
-                  {showcaseCompanyPhotos && showcaseCompanyPhotos.length > 0 && showcaseCompanyPhotos[showcasePhotoIndex] ? (
-                    <motion.div
-                      key={`showcase-manual-${showcaseCompanyPhotos[showcasePhotoIndex]?.id || showcasePhotoIndex}`}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.6 }}
-                      className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative"
-                      style={{
-                        width: '950px',
-                        height: '750px',
-                        paddingTop: '40px',
-                        boxShadow: '0 0 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(0, 0, 0, 0.3)'
-                      }}
-                    >
-                      <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-xl">
-                        <img
-                          src={showcaseCompanyPhotos[showcasePhotoIndex].photoUrl}
-                          alt="公司风采照片"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      {/* Navigation arrows */}
-                      <button
-                        onClick={() => {
-                          setShowcasePhotoIndex(prev => (prev - 1 + showcaseCompanyPhotos.length) % showcaseCompanyPhotos.length);
-                          resetInactivityTimer();
-                        }}
-                        className="absolute left-4 text-white/60 hover:text-white transition-colors z-10"
-                      >
-                        <ChevronLeft size={48} strokeWidth={2} />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowcasePhotoIndex(prev => (prev + 1) % showcaseCompanyPhotos.length);
-                          resetInactivityTimer();
-                        }}
-                        className="absolute right-4 text-white/60 hover:text-white transition-colors z-10"
-                      >
-                        <ChevronRight size={48} strokeWidth={2} />
-                      </button>
-                      {/* Photo counter - hidden in auto play mode */}
-                      {!isAutoPlayCompanyShowcase && (
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm font-medium bg-black/40 px-4 py-2 rounded-full">
-                          {showcasePhotoIndex + 1} / {showcaseCompanyPhotos.length}
-                        </div>
-                      )}
-                    </motion.div>
-                  ) : (
-                    <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
-                  )}
+                  {/* Empty space - no card displayed until auto play starts */}
                 </div>
 
                 {/* Right columns */}
