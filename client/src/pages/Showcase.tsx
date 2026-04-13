@@ -1241,7 +1241,8 @@ export default function Showcase() {
         </button>
       </motion.div>
 
-      {/* Batch indicator */}
+      {/* Batch indicator - 公司风采轮播模式下隐藏 */}
+      {!isAutoPlayCompanyShowcase && (
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center z-30"
         initial={{ opacity: 1 }}
@@ -1253,6 +1254,7 @@ export default function Showcase() {
           {totalBatches > 0 ? `${currentBatchIndex + 1} / ${totalBatches}` : '0 / 0'}
         </div>
       </motion.div>
+      )}
     </div>
   );
 }
