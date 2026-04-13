@@ -163,7 +163,7 @@ export default function PlaybackStrategyManagement() {
                 autoPlayInterval: 5000,
               });
             }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hidden"
           >
             <Plus className="w-4 h-4" />
             添加自定义策略
@@ -299,7 +299,7 @@ export default function PlaybackStrategyManagement() {
                         )}
                         <button
                           onClick={() => deleteMutation.mutate({ id: strategy.id })}
-                          className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                          className="p-2 hover:bg-red-100 rounded-lg transition-colors hidden"
                           title="删除策略"
                         >
                           <Trash2 className="w-4 h-4 text-red-600" />
