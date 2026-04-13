@@ -204,6 +204,7 @@ export default function Showcase() {
   const companyShowcaseIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isAutoPlayDetail, setIsAutoPlayDetail] = useState(false);
   const [isAutoPlayCompanyShowcase, setIsAutoPlayCompanyShowcase] = useState(false);
+  const [companyShowcaseClickExit, setCompanyShowcaseClickExit] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<number | string | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<number | string | null>(null);
@@ -216,7 +217,7 @@ export default function Showcase() {
   const [showcasePhotoIndex, setShowcasePhotoIndex] = useState(0);
   const showcasePhotoIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const batchSize = 10;
-  const companyShowcaseAutoPlayRef = useRef(false);
+  const companyShowcaseAutoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data: activeStrategy } = trpc.playback.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: employeesData, isLoading } = trpc.employees.list.useQuery(
@@ -356,7 +357,6 @@ export default function Showcase() {
     if (activeStrategyRef.current?.displayMode === 'company_showcase') {
       inactivityTimeoutRef.current = setTimeout(() => {
         setIsAutoPlayCompanyShowcase(true);
-        companyShowcaseAutoPlayRef.current = true;
         startCompanyShowcaseRotation();
       }, 30000);
     } else {
@@ -455,6 +455,19 @@ export default function Showcase() {
   };
 
   const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Handle any click to exit company showcase autoplay
+  useEffect(() => {
+    if (!isAutoPlayCompanyShowcase || activeStrategy?.displayMode !== 'company_showcase') return;
+
+    const handleClick = (e: MouseEvent) => {
+      setIsAutoPlayCompanyShowcase(false);
+      if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [isAutoPlayCompanyShowcase, activeStrategy?.displayMode]);
+
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (!selectedEmployee || isAutoPlayDetail) return;
@@ -504,6 +517,11 @@ export default function Showcase() {
 
   useEffect(() => {
     activeStrategyRef.current = activeStrategy;
+    if (activeStrategy?.displayMode === 'company_showcase') {
+      setIsAutoPlayCompanyShowcase(true);
+    } else {
+      setIsAutoPlayCompanyShowcase(false);
+    }
   }, [activeStrategy]);
 
   // 当 isAutoPlayDetail 变化时的处理
@@ -687,9 +705,9 @@ export default function Showcase() {
         </div>
         <motion.div
           initial={{ opacity: 1 }}
-          animate={{ opacity: selectedEmployee ? 0 : 1 }}
+          animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
           transition={{ duration: 0.5 }}
-          style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+          style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
           className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
         >
           {/* 部门下拉框 */}
@@ -834,15 +852,9 @@ export default function Showcase() {
       <div className="absolute inset-0 pt-40 pb-24 flex items-center justify-center">
         {/* ====== COMPANY SHOWCASE AUTO-PLAY MODE ====== */}
         {isAutoPlayCompanyShowcase && activeStrategy?.displayMode === 'company_showcase' ? (
-          <div className="w-full h-full flex items-center justify-between px-4 relative">
-            {/* Left columns - show during auto-play */}
-            <div className="flex gap-6 items-center">
-              <PhotoColumn employees={autoPlayLeftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-            </div>
-
-            {/* Center company showcase card */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
+          <div className="w-full h-full flex items-center justify-center px-4 relative">
+            {/* Center company showcase card - full screen in autoplay mode */}
+            <div className="flex items-center justify-center px-4 z-10">
               {showcaseCompanyPhotos && showcaseCompanyPhotos.length > 0 && showcaseCompanyPhotos[showcasePhotoIndex] ? (
                 <motion.div
                   key={`showcase-auto-${showcaseCompanyPhotos[showcasePhotoIndex]?.id || showcasePhotoIndex}`}
@@ -869,12 +881,6 @@ export default function Showcase() {
               ) : (
                 <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
               )}
-            </div>
-
-            {/* Right columns - show during auto-play */}
-            <div className="flex gap-6 items-center">
-              <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={autoPlayRightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
@@ -1189,9 +1195,9 @@ export default function Showcase() {
       <motion.div
         className="absolute bottom-8 left-8 z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+        style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
       >
         <button onClick={handlePreviousBatch}
           className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-2xl font-bold transition-all border border-white/30">
@@ -1203,9 +1209,9 @@ export default function Showcase() {
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+        style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
       >
         <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
           <Search className="w-5 h-5 text-white" />
@@ -1225,9 +1231,9 @@ export default function Showcase() {
       <motion.div
         className="absolute bottom-8 right-8 z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: selectedEmployee ? 0 : 1 }}
+        animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        style={{ pointerEvents: selectedEmployee ? 'none' : 'auto' }}
+        style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
       >
         <button onClick={handleNextBatch}
           className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-2xl font-bold transition-all border border-white/30">
