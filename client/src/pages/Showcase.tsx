@@ -310,7 +310,7 @@ export default function Showcase() {
   useEffect(() => { if (backgroundData?.backgroundUrl) setBackgroundUrl(backgroundData.backgroundUrl); }, [backgroundData]);
 
   const handleDepartmentClick = (deptId: number | string | null) => {
-    setSelectedDepartment(deptId);
+    // 仅切换下拉菜单，不改变 selectedDepartment
     if (deptId === 'honors') {
       setShowHonorDropdown(!showHonorDropdown);
       setShowDepartmentDropdown(false);
@@ -320,21 +320,24 @@ export default function Showcase() {
       setShowHonorDropdown(false);
       setShowCompanyDropdown(false);
     } else if (deptId === 'company') {
+      // 仅展开/关闭公司下拉菜单，不改变 selectedDepartment
       setShowCompanyDropdown(!showCompanyDropdown);
       setShowDepartmentDropdown(false);
       setShowHonorDropdown(false);
     } else {
+      // 选择具体部门时才改变 selectedDepartment
       setShowHonorDropdown(false);
       setShowDepartmentDropdown(false);
       setShowCompanyDropdown(false);
       setSelectedDepartment(deptId);
+      setSelectedEmployee(null);
+      setIsAutoPlayDetail(false);
+      if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+      // 当选择具体部门时，允许批次轮播
+      startBatchRotation();
+      resetInactivityTimer();
+      return;
     }
-    setSelectedEmployee(null);
-    setIsAutoPlayDetail(false);
-    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-    // 当点击部门时，允许批次轮播
-    startBatchRotation();
-    resetInactivityTimer();
   };
 
   const handleSearch = () => {
