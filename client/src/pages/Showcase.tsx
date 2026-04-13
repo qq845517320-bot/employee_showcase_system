@@ -515,8 +515,29 @@ export default function Showcase() {
     currentDetailIndexRef.current = currentDetailIndex;
   }, [currentDetailIndex]);
 
+  // 用 ref 跟踪上一次的策略 id 和 displayMode，避免 refetchInterval 每5秒重置计时器
+  const prevStrategyIdRef = useRef<number | null | undefined>(undefined);
+  const prevStrategyModeRef = useRef<string | null | undefined>(undefined);
+
   useEffect(() => {
+    // 始终同步 ref
     activeStrategyRef.current = activeStrategy;
+
+    const newId = activeStrategy?.id ?? null;
+    const newMode = activeStrategy?.displayMode ?? null;
+
+    // 只有策略真正切换时（id 或 displayMode 变化）才重置计时器
+    const isFirstLoad = prevStrategyIdRef.current === undefined;
+    const strategyChanged = prevStrategyIdRef.current !== newId || prevStrategyModeRef.current !== newMode;
+
+    prevStrategyIdRef.current = newId;
+    prevStrategyModeRef.current = newMode;
+
+    if (!isFirstLoad && !strategyChanged) {
+      // 仅轮询刷新，策略未变化，不重置计时器
+      return;
+    }
+
     // 清除所有计时器和轮播状态
     if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
