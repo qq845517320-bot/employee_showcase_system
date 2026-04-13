@@ -216,6 +216,7 @@ export default function Showcase() {
   const [selectedCompanyPhoto, setSelectedCompanyPhoto] = useState<any>(null);
   const [showcasePhotoIndex, setShowcasePhotoIndex] = useState(0);
   const showcasePhotoIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const showcaseCompanyPhotosRef = useRef<any[]>([]); // ref 版本，避免闭包问题
   const batchSize = 10;
   const companyShowcaseAutoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -244,10 +245,13 @@ export default function Showcase() {
   );
   
   // Get all company photos for company showcase mode
+  // 始终启用查询，避免 enabled 条件变化导致数据丢失（影响轮播渲染）
   const { data: showcaseCompanyPhotos = [] } = trpc.companies.getAllPhotos.useQuery(
     undefined,
-    { enabled: activeStrategy?.displayMode === 'company_showcase' }
+    { enabled: true }
   );
+  // 同步到 ref，供 setTimeout 回调中使用，避免闭包捕获旧值
+  showcaseCompanyPhotosRef.current = showcaseCompanyPhotos;
   
   // Use single company photos when a specific company is selected, all photos when "全部" is selected
   const displayPhotos = selectedCompany === null ? allCompanyPhotos : companyPhotos;
@@ -356,8 +360,10 @@ export default function Showcase() {
     // 如果是公司风采模式，启动公司风采自动轮播
     if (activeStrategyRef.current?.displayMode === 'company_showcase') {
       inactivityTimeoutRef.current = setTimeout(() => {
+        setShowcasePhotoIndex(0); // 从第一张开始轮播
         setIsAutoPlayCompanyShowcase(true);
-        startCompanyShowcaseRotation();
+        // 注意：不在此处直接调用 startCompanyShowcaseRotation()
+        // 而是通过 useEffect 监听 isAutoPlayCompanyShowcase 变化来启动，避免时序问题
       }, 30000);
     } else {
       // 总是启动批次轮播
@@ -392,9 +398,10 @@ export default function Showcase() {
   const startCompanyShowcaseRotation = () => {
     if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
     const interval = activeStrategyRef.current?.autoPlayInterval || 5000;
+    // 使用 ref 而非闭包中的 state，避免从部门模式触发时 showcaseCompanyPhotos 为旧值
     companyShowcaseIntervalRef.current = setInterval(() => {
       setShowcasePhotoIndex(prev => {
-        const total = showcaseCompanyPhotos.length;
+        const total = showcaseCompanyPhotosRef.current.length;
         return total > 0 ? (prev + 1) % total : 0;
       });
     }, interval);
@@ -557,6 +564,17 @@ export default function Showcase() {
     }
     return () => { if (detailIntervalRef.current) clearInterval(detailIntervalRef.current); };
   }, [isAutoPlayDetail]);
+
+  // 当 isAutoPlayCompanyShowcase 变为 true 时，启动公司风采轮播 interval
+  // 通过 useEffect 而非在 setTimeout 回调中直接调用，确保 React 状态更新后再启动
+  useEffect(() => {
+    if (isAutoPlayCompanyShowcase && activeStrategyRef.current?.displayMode === 'company_showcase') {
+      startCompanyShowcaseRotation();
+    } else {
+      if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
+    }
+    return () => { if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current); };
+  }, [isAutoPlayCompanyShowcase]);
 
   const handleDetailPanelClick = (e: React.MouseEvent) => { e.stopPropagation(); };
 
@@ -876,13 +894,16 @@ export default function Showcase() {
       {/* Content area */}
       <div className="absolute inset-0 pt-40 pb-24 flex items-center justify-center">
         {/* ====== COMPANY SHOWCASE AUTO-PLAY MODE ====== */}
-        {isAutoPlayCompanyShowcase && activeStrategy?.displayMode === 'company_showcase' ? (
+        {isAutoPlayCompanyShowcase ? (
           <div className="w-full h-full flex items-center justify-center px-4 relative">
             {/* Center company showcase card - full screen in autoplay mode */}
             <div className="flex items-center justify-center px-4 z-10">
-              {showcaseCompanyPhotos && showcaseCompanyPhotos.length > 0 && showcaseCompanyPhotos[showcasePhotoIndex] ? (
+              {(() => {
+                const photos = showcaseCompanyPhotosRef.current.length > 0 ? showcaseCompanyPhotosRef.current : showcaseCompanyPhotos;
+                const photo = photos[showcasePhotoIndex];
+                return photos.length > 0 && photo ? (
                 <motion.div
-                  key={`showcase-auto-${showcaseCompanyPhotos[showcasePhotoIndex]?.id || showcasePhotoIndex}`}
+                  key={`showcase-auto-${photo?.id || showcasePhotoIndex}`}
                   initial={{ opacity: 0, scale: 0.85, y: 40 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.85, y: -40 }}
@@ -897,7 +918,7 @@ export default function Showcase() {
                 >
                   <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-xl">
                     <img
-                      src={showcaseCompanyPhotos[showcasePhotoIndex].photoUrl}
+                      src={photo.photoUrl}
                       alt="公司风采照片"
                       className="w-full h-full object-cover"
                     />
@@ -905,7 +926,8 @@ export default function Showcase() {
                 </motion.div>
               ) : (
                 <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
-              )}
+              );
+              })()}
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
