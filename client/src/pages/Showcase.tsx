@@ -518,9 +518,14 @@ export default function Showcase() {
   useEffect(() => {
     activeStrategyRef.current = activeStrategy;
     if (activeStrategy?.displayMode === 'company_showcase') {
-      setIsAutoPlayCompanyShowcase(true);
+      // 不立即进入轮播模式，只重置计时器
+      setIsAutoPlayCompanyShowcase(false);
+      resetInactivityTimer();
     } else {
       setIsAutoPlayCompanyShowcase(false);
+      // 重置计时器以恢复正常模式
+      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
+      if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
     }
   }, [activeStrategy]);
 
