@@ -870,7 +870,13 @@ export default function Showcase() {
                 <button
                   onClick={() => {
                     setSelectedHonorCategory(null);
+                    setSelectedDepartment('honors');
                     setShowHonorDropdown(false);
+                    setSelectedEmployee(null);
+                    setIsAutoPlayDetail(false);
+                    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+                    startBatchRotation();
+                    resetInactivityTimer();
                   }}
                   className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
                 >
@@ -881,7 +887,13 @@ export default function Showcase() {
                     key={category}
                     onClick={() => {
                       setSelectedHonorCategory(category);
+                      setSelectedDepartment('honors');
                       setShowHonorDropdown(false);
+                      setSelectedEmployee(null);
+                      setIsAutoPlayDetail(false);
+                      if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+                      startBatchRotation();
+                      resetInactivityTimer();
                     }}
                     className="block w-full text-left px-4 py-2 text-sm font-medium transition-colors rounded bg-white/10 text-white hover:bg-white/20 mb-1"
                   >
