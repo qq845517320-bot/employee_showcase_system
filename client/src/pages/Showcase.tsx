@@ -517,16 +517,15 @@ export default function Showcase() {
 
   useEffect(() => {
     activeStrategyRef.current = activeStrategy;
-    if (activeStrategy?.displayMode === 'company_showcase') {
-      // 不立即进入轮播模式，只重置计时器
-      setIsAutoPlayCompanyShowcase(false);
-      resetInactivityTimer();
-    } else {
-      setIsAutoPlayCompanyShowcase(false);
-      // 重置计时器以恢复正常模式
-      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
-      if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
-    }
+    // 清除所有计时器和轮播状态
+    if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
+    if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
+    if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
+    if (batchIntervalRef.current) clearInterval(batchIntervalRef.current);
+    setIsAutoPlayDetail(false);
+    setIsAutoPlayCompanyShowcase(false);
+    // 重新启动计时器
+    resetInactivityTimer();
   }, [activeStrategy]);
 
   // 当 isAutoPlayDetail 变化时的处理
