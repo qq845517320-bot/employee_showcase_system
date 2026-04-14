@@ -264,7 +264,7 @@ export default function PlaybackStrategyManagement() {
                 const Icon = displayModeIcon[strategy.displayMode as keyof typeof displayModeIcon];
                 return (
                   <tr key={strategy.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">{strategy.name}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{displayModeLabel[strategy.displayMode as keyof typeof displayModeLabel]}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         {Icon && <Icon className="w-4 h-4 text-gray-600" />}
