@@ -1153,7 +1153,7 @@ export default function Showcase() {
                   </div>
                 </motion.div>
               )
-            ) : activeStrategy?.displayMode === 'company_showcase' && !isAutoPlayCompanyShowcase ? (
+            ) : activeStrategy?.displayMode === 'company_showcase' && !isAutoPlayCompanyShowcase && selectedDepartment === null ? (
               /* ====== COMPANY SHOWCASE NORMAL MODE - EMPTY DISPLAY ====== */
               /* ====== COMPANY SHOWCASE NORMAL MODE ====== */
               <div className="w-full h-full flex items-center justify-between px-4 relative">
