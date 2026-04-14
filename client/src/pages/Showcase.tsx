@@ -214,6 +214,7 @@ export default function Showcase() {
   const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
   const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
   const [selectedCompanyPhoto, setSelectedCompanyPhoto] = useState<any>(null);
+  const [photoSlideDirection, setPhotoSlideDirection] = useState<'left' | 'right'>('right');
   const [showcasePhotoIndex, setShowcasePhotoIndex] = useState(0);
   const showcasePhotoIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const showcaseCompanyPhotosRef = useRef<any[]>([]); // ref 版本，避免闭包问题
@@ -1087,12 +1088,25 @@ export default function Showcase() {
                     >
                       <div className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse p-3"
                         style={{ width: '950px', height: '750px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}>
-                        <div className="w-full h-full overflow-hidden rounded-xl">
-                          <img
-                            src={selectedCompanyPhoto.photoUrl}
-                            alt="公司风采照片"
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="w-full h-full overflow-hidden rounded-xl relative">
+                          <AnimatePresence mode="wait" custom={photoSlideDirection}>
+                            <motion.img
+                              key={selectedCompanyPhoto.id}
+                              src={selectedCompanyPhoto.photoUrl}
+                              alt="公司风采照片"
+                              className="w-full h-full object-cover absolute inset-0"
+                              custom={photoSlideDirection}
+                              variants={{
+                                enter: (dir: 'left' | 'right') => ({ x: dir === 'right' ? '100%' : '-100%', opacity: 0 }),
+                                center: { x: 0, opacity: 1 },
+                                exit: (dir: 'left' | 'right') => ({ x: dir === 'right' ? '-100%' : '100%', opacity: 0 }),
+                              }}
+                              initial="enter"
+                              animate="center"
+                              exit="exit"
+                              transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+                            />
+                          </AnimatePresence>
                         </div>
                       </div>
                       {/* 关闭按钮 */}
@@ -1108,6 +1122,7 @@ export default function Showcase() {
                           const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
                           if (displayPhotos.length > 0) {
                             const newIndex = (currentIndex - 1 + displayPhotos.length) % displayPhotos.length;
+                            setPhotoSlideDirection('left');
                             setSelectedCompanyPhoto(displayPhotos[newIndex]);
                           }
                         }}
@@ -1120,6 +1135,7 @@ export default function Showcase() {
                           const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
                           if (displayPhotos.length > 0) {
                             const newIndex = (currentIndex + 1) % displayPhotos.length;
+                            setPhotoSlideDirection('right');
                             setSelectedCompanyPhoto(displayPhotos[newIndex]);
                           }
                         }}
