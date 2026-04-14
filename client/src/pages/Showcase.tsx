@@ -1086,24 +1086,26 @@ export default function Showcase() {
                       transition={{ duration: 0.4 }}
                       className="relative"
                     >
-                      <div className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse p-3"
-                        style={{ width: '950px', height: '750px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}>
-                        <div className="w-full h-full overflow-hidden rounded-xl relative">
-                          <AnimatePresence mode="wait" custom={photoSlideDirection}>
-                            <motion.img
-                              key={selectedCompanyPhoto.id}
+                      <AnimatePresence mode="wait" custom={photoSlideDirection}>
+                        <motion.div
+                          key={selectedCompanyPhoto.id}
+                          className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse p-3"
+                          style={{ width: '950px', height: '750px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}
+                          custom={photoSlideDirection}
+                          initial={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? -80 : 80, rotateZ: dir === 'right' ? -5 : 5 })}
+                          animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
+                          exit={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? 80 : -80, rotateZ: dir === 'right' ? 5 : -5 })}
+                          transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
+                        >
+                          <div className="w-full h-full overflow-hidden rounded-xl relative">
+                            <img
                               src={selectedCompanyPhoto.photoUrl}
                               alt="公司风采照片"
-                              className="w-full h-full object-cover absolute inset-0"
-                              custom={photoSlideDirection}
-                              initial={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? -80 : 80, rotateZ: dir === 'right' ? -5 : 5 })}
-                              animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
-                              exit={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? 80 : -80, rotateZ: dir === 'right' ? 5 : -5 })}
-                              transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
+                              className="w-full h-full object-cover"
                             />
-                          </AnimatePresence>
-                        </div>
-                      </div>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
                       {/* 关闭按钮 */}
                       <button
                         onClick={() => setSelectedCompanyPhoto(null)}
