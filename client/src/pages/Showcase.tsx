@@ -1096,15 +1096,10 @@ export default function Showcase() {
                               alt="公司风采照片"
                               className="w-full h-full object-cover absolute inset-0"
                               custom={photoSlideDirection}
-                              variants={{
-                                enter: (dir: 'left' | 'right') => ({ x: dir === 'right' ? '100%' : '-100%', opacity: 0 }),
-                                center: { x: 0, opacity: 1 },
-                                exit: (dir: 'left' | 'right') => ({ x: dir === 'right' ? '-100%' : '100%', opacity: 0 }),
-                              }}
-                              initial="enter"
-                              animate="center"
-                              exit="exit"
-                              transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+                              initial={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? -80 : 80, rotateZ: dir === 'right' ? -5 : 5 })}
+                              animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
+                              exit={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? 80 : -80, rotateZ: dir === 'right' ? 5 : -5 })}
+                              transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                             />
                           </AnimatePresence>
                         </div>
