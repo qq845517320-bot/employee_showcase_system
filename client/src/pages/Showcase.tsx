@@ -331,7 +331,7 @@ export default function Showcase() {
       setShowCompanyDropdown(false);
       setSelectedDepartment(deptId);
       setSelectedEmployee(null);
-      setIsAutoPlayDetail(false);
+      // 不设置 setIsAutoPlayDetail(false)，保持当前值，允许30秒后进入自动轮播
       if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
       // 当选择具体部门时，允许批次轮播
       startBatchRotation();
@@ -761,7 +761,6 @@ export default function Showcase() {
             <button onClick={() => handleDepartmentClick('department')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== 'company' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               <span>部门</span>
-              <span className={`transition-transform ${showDepartmentDropdown ? 'rotate-180' : ''}`}>▼</span>
             </button>
             {showDepartmentDropdown && (
               <motion.div
@@ -809,7 +808,6 @@ export default function Showcase() {
             <button onClick={() => handleDepartmentClick('company')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment === 'company' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
               <span>公司</span>
-              <span className={`transition-transform ${showCompanyDropdown ? 'rotate-180' : ''}`}>▼</span>
             </button>
             {showCompanyDropdown && (
               <motion.div
@@ -943,6 +941,44 @@ export default function Showcase() {
                 <div className="text-white text-2xl font-bold">暂无公司风采照片</div>
               );
               })()}
+            </div>
+          </div>
+        ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
+          <div className="w-full h-full flex items-center justify-between px-4 relative">
+            {/* Left columns - use autoPlay batch to match center card */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={autoPlayLeftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+            </div>
+
+            {/* Center detail panel (absolute overlay) */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
+              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} fallbackHonors={selectedEmployee?.honors} />
+            </div>
+
+            {/* Right columns */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayRightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+            </div>
+          </div>
+        ) : isAutoPlayDetail && selectedEmployee && (selectedDepartment === 'honors' || (selectedDepartment !== null && selectedDepartment !== 'company')) && activeStrategy?.displayMode === 'company_showcase' ? (
+          <div className="w-full h-full flex items-center justify-between px-4 relative">
+            {/* Left columns */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={autoPlayLeftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+            </div>
+
+            {/* Center detail panel */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
+              <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} fallbackHonors={selectedEmployee?.honors} />
+            </div>
+
+            {/* Right columns */}
+            <div className="flex gap-6 items-center">
+              <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
+              <PhotoColumn employees={autoPlayRightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
