@@ -50,9 +50,9 @@ export default function PlaybackStrategyManagement() {
   };
 
   const displayModeLabel = {
-    all: '全部员工',
-    core_bones: '核心骨干',
-    company_showcase: '公司风采',
+    all: '全体员工风采展示',
+    core_bones: '骨干员工风采展示',
+    company_showcase: '公司风采展示',
   };
 
   const displayModeIcon = {
@@ -69,9 +69,9 @@ export default function PlaybackStrategyManagement() {
 
   // 快速切换预设策略
   const quickSwitchModes = [
-    { mode: 'all' as const, label: '普通工作日', description: '展示全部员工' },
-    { mode: 'core_bones' as const, label: '参观接待-核心骨干', description: '仅展示核心骨干' },
-    { mode: 'company_showcase' as const, label: '参观接待-公司风采展示', description: '展示公司风采照片' },
+    { mode: 'all' as const, label: '全体员工风采展示', description: '展示全体员工' },
+    { mode: 'core_bones' as const, label: '骨干员工风采展示', description: '仅展示骨干员工' },
+    { mode: 'company_showcase' as const, label: '公司风采展示', description: '展示公司风采照片' },
   ];
 
   const handleQuickSwitch = async (mode: 'all' | 'core_bones' | 'company_showcase') => {
