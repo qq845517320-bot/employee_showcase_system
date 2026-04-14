@@ -138,7 +138,7 @@ export default function CompanyManagement() {
     <div className="p-6 space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">公司管理</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">公司风采管理</h2>
           <p className="text-gray-600">管理系统中的所有公司信息</p>
         </div>
         {!isAddingNew && (
@@ -147,7 +147,7 @@ export default function CompanyManagement() {
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             <Plus className="w-4 h-4 mr-2" />
-            新增公司
+            新增
           </Button>
         )}
       </div>

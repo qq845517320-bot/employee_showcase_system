@@ -1086,15 +1086,19 @@ export default function Showcase() {
                       transition={{ duration: 0.4 }}
                       className="relative"
                     >
-                      <AnimatePresence mode="wait" custom={photoSlideDirection}>
+                      <AnimatePresence mode="wait">
                         <motion.div
                           key={selectedCompanyPhoto.id}
                           className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse px-12 py-8"
                           style={{ width: '950px', height: '750px', paddingTop: '40px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}
-                          custom={photoSlideDirection}
-                          initial={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? -80 : 80, rotateZ: dir === 'right' ? -5 : 5 })}
-                          animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
-                          exit={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? 80 : -80, rotateZ: dir === 'right' ? 5 : -5 })}
+                          variants={{
+                            initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
+                            animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
+                            exit: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 } : { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 },
+                          }}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
                           <div className="w-full h-full overflow-hidden rounded-xl relative">
