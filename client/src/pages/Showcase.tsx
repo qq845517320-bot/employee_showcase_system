@@ -1123,9 +1123,9 @@ export default function Showcase() {
                             setSelectedCompanyPhoto(displayPhotos[newIndex]);
                           }
                         }}
-                        className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-16 text-white hover:text-red-400 transition-colors text-4xl font-bold"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors"
                       >
-                        ‹
+                        <ChevronLeft size={40} strokeWidth={2.5} />
                       </button>
                       <button
                         onClick={() => {
@@ -1136,9 +1136,9 @@ export default function Showcase() {
                             setSelectedCompanyPhoto(displayPhotos[newIndex]);
                           }
                         }}
-                        className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-16 text-white hover:text-red-400 transition-colors text-4xl font-bold"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors"
                       >
-                        ›
+                        <ChevronRight size={40} strokeWidth={2.5} />
                       </button>
                       {/* 计数器 */}
                       <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold">
