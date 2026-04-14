@@ -1086,7 +1086,7 @@ export default function Showcase() {
                       className="relative"
                     >
                       <div className="bg-white/5 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 overflow-hidden"
-                        style={{ width: '600px', height: '450px' }}>
+                        style={{ width: '950px', height: '750px' }}>
                         <img
                           src={selectedCompanyPhoto.photoUrl}
                           alt="公司风采照片"
