@@ -788,18 +788,9 @@ export default function Showcase() {
                     onClick={() => {
                       setSelectedDepartment(dept.id);
                       setShowDepartmentDropdown(false);
+                      setSelectedEmployee(null);
                       setIsAutoPlayDetail(false);
                       if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-                      
-                      // 立即选择该部门的第一个员工
-                      const deptEmployees = filteredEmployees.filter(emp => emp.departmentId === dept.id);
-                      if (deptEmployees.length > 0) {
-                        setSelectedEmployee(deptEmployees[0]);
-                        setCurrentDetailIndex(0);
-                      } else {
-                        setSelectedEmployee(null);
-                      }
-                      
                       startBatchRotation();
                       resetInactivityTimer();
                     }}
@@ -879,18 +870,9 @@ export default function Showcase() {
                     setSelectedHonorCategory(null);
                     setSelectedDepartment('honors');
                     setShowHonorDropdown(false);
+                    setSelectedEmployee(null);
                     setIsAutoPlayDetail(false);
                     if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-                    
-                    // 立即选择第一个有荣誉的员工
-                    const honorEmployees = filteredEmployees.filter(emp => emp.honors && emp.honors.length > 0);
-                    if (honorEmployees.length > 0) {
-                      setSelectedEmployee(honorEmployees[0]);
-                      setCurrentDetailIndex(0);
-                    } else {
-                      setSelectedEmployee(null);
-                    }
-                    
                     startBatchRotation();
                     resetInactivityTimer();
                   }}
@@ -905,20 +887,9 @@ export default function Showcase() {
                       setSelectedHonorCategory(category);
                       setSelectedDepartment('honors');
                       setShowHonorDropdown(false);
+                      setSelectedEmployee(null);
                       setIsAutoPlayDetail(false);
                       if (detailIntervalRef.current) clearInterval(detailIntervalRef.current);
-                      
-                      // 立即选择该荣誉分类的第一个员工
-                      const categoryEmployees = filteredEmployees.filter(emp => 
-                        emp.honors && emp.honors.some((h: any) => h.category === category)
-                      );
-                      if (categoryEmployees.length > 0) {
-                        setSelectedEmployee(categoryEmployees[0]);
-                        setCurrentDetailIndex(0);
-                      } else {
-                        setSelectedEmployee(null);
-                      }
-                      
                       startBatchRotation();
                       resetInactivityTimer();
                     }}
