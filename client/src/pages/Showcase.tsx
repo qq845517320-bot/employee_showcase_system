@@ -1090,7 +1090,7 @@ export default function Showcase() {
                         <motion.div
                           key={selectedCompanyPhoto.id}
                           className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse p-3"
-                          style={{ width: '950px', height: '750px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}
+                          style={{ width: '950px', height: '750px', borderWidth: '1px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}
                           custom={photoSlideDirection}
                           initial={(dir: 'left' | 'right') => ({ opacity: 0, scale: 0.85, x: dir === 'right' ? -80 : 80, rotateZ: dir === 'right' ? -5 : 5 })}
                           animate={{ opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
