@@ -1085,13 +1085,15 @@ export default function Showcase() {
                       transition={{ duration: 0.4 }}
                       className="relative"
                     >
-                      <div className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse overflow-hidden"
+                      <div className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse p-3"
                         style={{ width: '950px', height: '750px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}>
-                        <img
-                          src={selectedCompanyPhoto.photoUrl}
-                          alt="公司风采照片"
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="w-full h-full overflow-hidden rounded-xl">
+                          <img
+                            src={selectedCompanyPhoto.photoUrl}
+                            alt="公司风采照片"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                       </div>
                       {/* 关闭按钮 */}
                       <button
