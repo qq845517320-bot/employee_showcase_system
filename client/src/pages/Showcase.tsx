@@ -963,22 +963,11 @@ export default function Showcase() {
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && (selectedDepartment === 'honors' || (selectedDepartment !== null && selectedDepartment !== 'company')) && activeStrategy?.displayMode === 'company_showcase' ? (
-          <div className="w-full h-full flex items-center justify-between px-4 relative">
-            {/* Left columns */}
-            <div className="flex gap-6 items-center">
-              <PhotoColumn employees={autoPlayLeftColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={autoPlayLeftMiddleColumn} highlightedId={highlightedId} size={150} fromX={-100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-            </div>
-
-            {/* Center detail panel */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
+          /* 在公司风采展示策略下，部门和荣誉榜模式仅显示中间员工详情，不显示两边照片墙 */
+          <div className="w-full h-full flex items-center justify-center px-4 relative">
+            {/* Center detail panel only */}
+            <div className="flex items-center justify-center px-4 z-10">
               <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} fallbackHonors={selectedEmployee?.honors} />
-            </div>
-
-            {/* Right columns */}
-            <div className="flex gap-6 items-center">
-              <PhotoColumn employees={autoPlayRightMiddleColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={0} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
-              <PhotoColumn employees={autoPlayRightColumn} highlightedId={highlightedId} size={150} fromX={100} baseDelay={3} onClickEmployee={handleEmployeeClick} isAutoPlay={true} />
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
