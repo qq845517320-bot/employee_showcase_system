@@ -91,7 +91,12 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         width: '960px',
         height: '660px',
         borderRadius: '12px',
-        background: 'linear-gradient(160deg, #7a1a1a 0%, #5c0f0f 40%, #4a0c0c 70%, #3d0a0a 100%)',
+        background: `
+          linear-gradient(160deg, rgba(122,26,26,0.97) 0%, rgba(92,15,15,0.97) 40%, rgba(74,12,12,0.97) 70%, rgba(61,10,10,0.97) 100%),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.04 0.06' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23t)' opacity='0.05'/%3E%3C/svg%3E")
+        `,
+        backgroundBlendMode: 'normal, overlay, soft-light',
         border: '2px solid rgba(212,175,55,0.5)',
         boxShadow: isAutoPlay
           ? '0 0 0 1px rgba(212,175,55,0.15), 0 0 60px rgba(212,175,55,0.4), 0 32px 80px rgba(0,0,0,0.6)'
@@ -170,8 +175,23 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
+      {/* 皮革/纸张纹理叠加层 */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0,
+        backgroundImage: `
+          repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+          repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 6px)
+        `,
+        mixBlendMode: 'overlay'
+      }} />
+      {/* 边缘暗角效果 */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0,
+        background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)',
+        mixBlendMode: 'multiply'
+      }} />
       {/* 内容区 */}
-      <div style={{ padding: '32px 48px 32px 48px', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+      <div style={{ padding: '32px 48px 32px 48px', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', position: 'relative', zIndex: 1 }}>
         {/* 上部分：照片 + 基本信息 */}
         <div style={{ display: 'flex', gap: '36px', paddingBottom: '24px', marginBottom: '0', borderBottom: '1px solid rgba(212,175,55,0.25)', alignItems: 'flex-start', flex: '0 0 auto' }}>
           {/* 照片区域 */}
