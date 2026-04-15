@@ -134,7 +134,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       className={`text-white relative ${isAutoPlay ? 'card-glow-pulse' : ''} detail-panel-font`}
       style={{
         width: '960px',
-        height: '660px',
+        height: '740px',
         borderRadius: '12px',
         background: `
           linear-gradient(160deg, rgba(122,26,26,0.97) 0%, rgba(92,15,15,0.97) 40%, rgba(74,12,12,0.97) 70%, rgba(61,10,10,0.97) 100%),
