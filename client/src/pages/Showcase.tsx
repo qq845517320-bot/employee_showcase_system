@@ -101,7 +101,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         boxShadow: isAutoPlay
           ? '0 0 0 1px rgba(212,175,55,0.15), 0 0 60px rgba(212,175,55,0.4), 0 32px 80px rgba(0,0,0,0.6)'
           : '0 0 0 1px rgba(212,175,55,0.15), 0 32px 80px rgba(0,0,0,0.6)',
-        overflow: 'hidden'
+        overflow: 'visible'
       }}
       onClick={onClick}
     >
@@ -176,24 +176,35 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         </div>
       )}
       {/* 皮革/纸张纹理叠加层 */}
+      {/* 纹理层：需要裁剪到卡片范围内 */}
       <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0,
-        backgroundImage: `
-          repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
-          repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 6px)
-        `,
-        mixBlendMode: 'overlay'
-      }} />
-      {/* 边缘暗角效果 */}
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0,
-        background: 'radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%)',
-        mixBlendMode: 'multiply'
-      }} />
+        position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0, overflow: 'hidden'
+      }}>
+        {/* 细密横纹理线条 */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `
+            repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.09) 3px, rgba(0,0,0,0.09) 4px),
+            repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(255,255,255,0.03) 4px, rgba(255,255,255,0.03) 8px)
+          `,
+          mixBlendMode: 'overlay'
+        }} />
+        {/* 边缘暗角晕影 */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)',
+          mixBlendMode: 'multiply'
+        }} />
+        {/* 顶部光泽高光 */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
+          background: 'linear-gradient(180deg, rgba(255,220,160,0.06) 0%, transparent 100%)'
+        }} />
+      </div>
       {/* 内容区 */}
       <div style={{ padding: '32px 48px 32px 48px', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', position: 'relative', zIndex: 1 }}>
         {/* 上部分：照片 + 基本信息 */}
-        <div style={{ display: 'flex', gap: '36px', paddingBottom: '24px', marginBottom: '0', borderBottom: '1px solid rgba(212,175,55,0.25)', alignItems: 'flex-start', flex: '0 0 auto' }}>
+        <div style={{ display: 'flex', gap: '36px', paddingBottom: '24px', marginBottom: '0', alignItems: 'flex-start', flex: '0 0 auto' }}>
           {/* 照片区域 */}
           <div style={{ flexShrink: 0, width: '300px', height: '300px' }}>
             {employee.workPhoto ? (
@@ -251,8 +262,24 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
         </div>
 
+        {/* 金色分割线 */}
+        <div style={{ position: 'relative', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
+          {/* 左端菱形装饰 */}
+          <div style={{ width: '8px', height: '8px', background: 'rgba(212,175,55,0.7)', transform: 'rotate(45deg)', flexShrink: 0 }} />
+          {/* 左段线 */}
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, rgba(212,175,55,0.7) 0%, rgba(212,175,55,0.3) 40%, rgba(212,175,55,0.15) 100%)' }} />
+          {/* 中间装饰 */}
+          <div style={{ padding: '0 16px', flexShrink: 0 }}>
+            <div style={{ width: '6px', height: '6px', background: 'rgba(212,175,55,0.5)', transform: 'rotate(45deg)' }} />
+          </div>
+          {/* 右段线 */}
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(270deg, rgba(212,175,55,0.7) 0%, rgba(212,175,55,0.3) 40%, rgba(212,175,55,0.15) 100%)' }} />
+          {/* 右端菱形装饰 */}
+          <div style={{ width: '8px', height: '8px', background: 'rgba(212,175,55,0.7)', transform: 'rotate(45deg)', flexShrink: 0 }} />
+        </div>
+
         {/* 下部分：工作职责/信条 + 荣誉 */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: 1, paddingTop: '20px', minHeight: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: 1, paddingTop: '0', minHeight: 0 }}>
           {/* 左侧：工作职责 + 工作信条 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* 工作职责 */}
