@@ -257,7 +257,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         {/* 上部分：照片 + 基本信息 */}
         <div style={{ display: 'flex', gap: '36px', paddingBottom: '16px', marginBottom: '0', alignItems: 'flex-start', flex: '1 0 60%', overflow: 'hidden' }}>
           {/* 照片区域 - 证件照尺寸比例 (3:4) */}
-          <div style={{ flexShrink: 0, width: '290px', height: '370px', marginLeft: '64px', marginTop: '26px' }}>
+          <div style={{ flexShrink: 0, width: '290px', height: '370px', marginLeft: '64px', marginTop: '16px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} style={{
                 width: '100%', height: '100%', objectFit: 'cover',
