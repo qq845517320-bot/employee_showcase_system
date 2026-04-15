@@ -280,7 +280,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
 
           {/* 基本信息区域 */}
-          <div style={{ flex: 1, paddingTop: '8px', paddingLeft: '48px' }}>
+          <div style={{ flex: 1, paddingTop: '56px', paddingLeft: '112px' }}>
             {/* 姓名 + 党员徽章 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '28px' }}>
               <h2 style={{ fontSize: '52px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px' }}>
