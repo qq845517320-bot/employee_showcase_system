@@ -177,7 +177,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             disabled={!canGoPrevious}
             className="absolute z-20 transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{
-              left: '-72px', top: '50%', transform: 'translateY(-50%)',
+              left: '16px', top: '50%', transform: 'translateY(-50%)',
               width: '52px', height: '52px',
               borderRadius: '50%',
               border: '1.5px solid rgba(212,175,55,0.45)',
@@ -196,7 +196,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             disabled={!canGoNext}
             className="absolute z-20 transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
             style={{
-              right: '-72px', top: '50%', transform: 'translateY(-50%)',
+              right: '16px', top: '50%', transform: 'translateY(-50%)',
               width: '52px', height: '52px',
               borderRadius: '50%',
               border: '1.5px solid rgba(212,175,55,0.45)',
