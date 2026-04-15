@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { trpc } from '@/lib/trpc';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -79,6 +79,51 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
 function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, isLoadingDetail, onPrevious, onNext, canGoPrevious, canGoNext, fallbackHonors }: {
   employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; isLoadingDetail?: boolean; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean; fallbackHonors?: any[];
 }) {
+  const [velvetTexture, setVelvetTexture] = React.useState<string>('');
+
+  React.useEffect(() => {
+    // 用 Canvas 生成绒面皮革纹理
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d')!;
+
+    // 透明底色
+    ctx.clearRect(0, 0, 256, 256);
+
+    // 第一层：随机短纤维（模拟绒面绒毛）
+    for (let i = 0; i < 18000; i++) {
+      const x = Math.random() * 256;
+      const y = Math.random() * 256;
+      const len = Math.random() * 3 + 1;
+      const angle = Math.random() * Math.PI * 2;
+      const alpha = Math.random() * 0.12 + 0.03;
+      const bright = Math.random() > 0.5;
+      ctx.strokeStyle = bright
+        ? `rgba(255,220,180,${alpha})`
+        : `rgba(0,0,0,${alpha * 1.5})`;
+      ctx.lineWidth = Math.random() * 0.8 + 0.2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(angle) * len, y + Math.sin(angle) * len);
+      ctx.stroke();
+    }
+
+    // 第二层：细小噪点（增强颗粒感）
+    for (let i = 0; i < 6000; i++) {
+      const x = Math.random() * 256;
+      const y = Math.random() * 256;
+      const alpha = Math.random() * 0.08 + 0.02;
+      const bright = Math.random() > 0.6;
+      ctx.fillStyle = bright
+        ? `rgba(255,200,150,${alpha})`
+        : `rgba(0,0,0,${alpha * 2})`;
+      ctx.fillRect(x, y, 1, 1);
+    }
+
+    setVelvetTexture(canvas.toDataURL('image/png'));
+  }, []);
+
   return (
     <motion.div
       key={`detail-${isAutoPlay ? 'auto' : 'manual'}-${employee.id}`}
@@ -175,30 +220,36 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
-      {/* 皮革/纸张纹理叠加层 */}
-      {/* 纹理层：需要裁剪到卡片范围内 */}
+      {/* 绒面皮革纹理层 - Canvas 动态生成 */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0, overflow: 'hidden'
       }}>
-        {/* 细密横纹理线条 */}
+        {/* 绒面纹理主层 */}
+        {velvetTexture && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `url(${velvetTexture})`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '256px 256px',
+            mixBlendMode: 'overlay',
+            opacity: 0.65
+          }} />
+        )}
+        {/* 边缘暗角晕影 - 增强立体感 */}
         <div style={{
           position: 'absolute', inset: 0,
-          backgroundImage: `
-            repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.09) 3px, rgba(0,0,0,0.09) 4px),
-            repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(255,255,255,0.03) 4px, rgba(255,255,255,0.03) 8px)
-          `,
-          mixBlendMode: 'overlay'
-        }} />
-        {/* 边缘暗角晕影 */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)',
+          background: 'radial-gradient(ellipse at 50% 42%, transparent 40%, rgba(0,0,0,0.5) 100%)',
           mixBlendMode: 'multiply'
         }} />
-        {/* 顶部光泽高光 */}
+        {/* 顶部光泽高光 - 模拟光源打在绒面上 */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
-          background: 'linear-gradient(180deg, rgba(255,220,160,0.06) 0%, transparent 100%)'
+          position: 'absolute', top: 0, left: 0, right: 0, height: '180px',
+          background: 'linear-gradient(180deg, rgba(255,210,140,0.09) 0%, transparent 100%)'
+        }} />
+        {/* 底部暗色过渡 */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px',
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.18) 0%, transparent 100%)'
         }} />
       </div>
       {/* 内容区 */}
