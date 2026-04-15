@@ -137,11 +137,11 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         height: '740px',
         borderRadius: '12px',
         background: `
-          linear-gradient(160deg, rgba(122,26,26,0.97) 0%, rgba(92,15,15,0.97) 40%, rgba(74,12,12,0.97) 70%, rgba(61,10,10,0.97) 100%),
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.04 0.06' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23t)' opacity='0.05'/%3E%3C/svg%3E")
+          radial-gradient(circle at 50% 8%, rgba(244, 205, 137, 0.18), transparent 15%),
+          radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.04), transparent 10%),
+          linear-gradient(180deg, #6d0d0a 0%, #8f1410 28%, #a21a14 62%, #5b0907 100%)
         `,
-        backgroundBlendMode: 'normal, overlay, soft-light',
+        backgroundBlendMode: 'normal',
         border: '2px solid rgba(212,175,55,0.5)',
         boxShadow: isAutoPlay
           ? '0 0 0 1px rgba(212,175,55,0.15), 0 0 60px rgba(212,175,55,0.4), 0 32px 80px rgba(0,0,0,0.6)'
@@ -220,36 +220,40 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
-      {/* 绒面皮革纹理层 - Canvas 动态生成 */}
+      {/* 顶部柔光和细节层 */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0, overflow: 'hidden'
       }}>
-        {/* 绒面纹理主层 */}
-        {velvetTexture && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            backgroundImage: `url(${velvetTexture})`,
-            backgroundRepeat: 'repeat',
-            backgroundSize: '256px 256px',
-            mixBlendMode: 'overlay',
-            opacity: 0.65
-          }} />
-        )}
-        {/* 边缘暗角晕影 - 增强立体感 */}
+        {/* 顶部暖金柔光和细节 */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse at 50% 42%, transparent 40%, rgba(0,0,0,0.5) 100%)',
-          mixBlendMode: 'multiply'
+          background: `
+            radial-gradient(circle at 50% 10%, rgba(255, 214, 138, 0.10), transparent 18%),
+            radial-gradient(circle at 22% 38%, rgba(255, 255, 255, 0.03), transparent 22%),
+            radial-gradient(circle at 78% 40%, rgba(255, 170, 92, 0.05), transparent 24%),
+            linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 22%)
+          `
         }} />
-        {/* 顶部光泽高光 - 模拟光源打在绒面上 */}
+        {/* 上部金色粒子 */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '180px',
-          background: 'linear-gradient(180deg, rgba(255,210,140,0.09) 0%, transparent 100%)'
+          position: 'absolute', inset: 0,
+          backgroundImage: `
+            radial-gradient(circle, rgba(255, 225, 170, 0.55) 0 1px, transparent 1.6px),
+            radial-gradient(circle, rgba(255, 235, 188, 0.30) 0 1px, transparent 1.8px)
+          `,
+          backgroundSize: '28px 28px, 44px 44px',
+          backgroundPosition: '0 0, 12px 18px',
+          opacity: 0.55,
+          maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 16%, rgba(0,0,0,0.32) 42%, transparent 68%)',
+          WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 16%, rgba(0,0,0,0.32) 42%, transparent 68%)'
         }} />
-        {/* 底部暗色过渡 */}
+        {/* 左下到右下的金色流线 */}
         <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px',
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.18) 0%, transparent 100%)'
+          position: 'absolute', left: 0, right: 0, bottom: 0, height: '18%',
+          background: `
+            radial-gradient(circle at 50% 0%, rgba(255, 183, 102, 0.12), transparent 42%),
+            linear-gradient(180deg, transparent 0%, rgba(255, 173, 95, 0.05) 100%)
+          `
         }} />
       </div>
       {/* 内容区 */}
