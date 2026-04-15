@@ -19,12 +19,15 @@
 
 ### 当前最新版本信息
 
-**最新提交**: `86d22ab` (2026-04-03)
+**最新提交**: `b681c21a` (2026-04-15)
 
 **最新修改内容**:
-- ✅ 隐藏首页的"快速开始"部分
-- ✅ 将首页图标文字从"ES"改为"深"
-- ✅ 在员工管理列表中添加序号列功能
+- ✅ 员工详情卡片字体改为 Noto Sans SC 900 字重（模拟方正大黑简体效果）
+- ✅ 修复了 Showcase.tsx 中 Framer Motion 的 TypeScript 类型错误
+- ✅ 单张公司风采照片卡片的左右翻页箭头改为 ChevronLeft/ChevronRight 图标
+- ✅ 管理后台 CompanyManagement 组件标题改为"公司风采管理"
+- ✅ 轮播策略管理页面三个策略名称已更新
+- ✅ 策略表格第一列改为使用 displayModeLabel 替代 strategy.name
 - ✅ 所有修改已同步至 GitHub (`user_github/main` 和 `origin/main`)
 
 **GitHub 同步状态**: ✅ **已完全同步**
@@ -36,6 +39,20 @@ HEAD -> main, user_github/main, origin/main
 ```
 
 您可以放心地从 GitHub 克隆最新版本，所有修改都已保存。
+
+### 新增部署工具和文档
+
+本次更新新增了以下部署辅助工具和文档：
+
+| 文件 | 说明 |
+|------|------|
+| `scripts/start-windows.bat` | Windows 快速启动脚本 |
+| `scripts/start-unix.sh` | Linux/macOS 快速启动脚本 |
+| `scripts/start-production.sh` | 生产环境启动脚本（使用 PM2） |
+| `scripts/init-database.sql` | 数据库初始化 SQL 脚本 |
+| `ENV_CONFIG_GUIDE.md` | 环境配置详细指南 |
+| `DEPLOYMENT_CHECKLIST.md` | 部署检查清单 |
+| `OFFLINE_DEPLOYMENT_GUIDE.md` | 离线部署完整教程（本文件） |
 
 ---
 
