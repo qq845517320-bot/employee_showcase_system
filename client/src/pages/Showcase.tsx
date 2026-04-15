@@ -18,28 +18,41 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
       className="cursor-pointer"
       onClick={onClick}
     >
-      <div
-        className={`relative flex items-center justify-center overflow-hidden group transition-all duration-500 ${isHighlighted ? 'scale-110 z-10' : ''}`}
-        style={{
-          width: `${size}px`, height: `${size}px`,
-          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-          filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(250,204,21,0.8))' : undefined,
-          backgroundColor: '#dc2626',
-        }}
-      >
-        {employee.workPhoto ? (
-          <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain object-center" />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-            <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
-          </div>
-        )}
-        <div className={`absolute inset-0 transition-all duration-500 ${isHighlighted ? 'bg-black/5' : 'bg-black/30 group-hover:bg-black/10'}`} />
-        {isHighlighted && !isAutoPlay && (
-          <div className="absolute bottom-1 left-0 right-0 text-center">
-            <span className="text-white text-xs font-bold drop-shadow-lg bg-black/40 px-2 py-0.5 rounded">{employee.name}</span>
-          </div>
-        )}
+      {/* 金色边框包裹层 */}
+      <div style={{
+        width: `${size + 6}px`,
+        height: `${size + 6}px`,
+        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+        backgroundColor: '#d4af37',
+          filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(212,175,55,0.8))' : 'drop-shadow(0 0 8px rgba(212,175,55,0.5))',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        <div
+          className={`relative flex items-center justify-center overflow-hidden group transition-all duration-500 ${isHighlighted ? 'scale-110 z-10' : ''}`}
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+            backgroundColor: '#dc2626',
+          }}
+        >
+          {employee.workPhoto ? (
+            <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-contain object-center" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+              <span className="text-white text-2xl font-bold">{employee.name?.charAt(0)}</span>
+            </div>
+          )}
+          <div className={`absolute inset-0 transition-all duration-500 ${isHighlighted ? 'bg-black/5' : 'bg-black/30 group-hover:bg-black/10'}`} />
+          {isHighlighted && !isAutoPlay && (
+            <div className="absolute bottom-1 left-0 right-0 text-center">
+              <span className="text-white text-xs font-bold drop-shadow-lg bg-black/40 px-2 py-0.5 rounded">{employee.name}</span>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
@@ -748,7 +761,7 @@ export default function Showcase() {
               {activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : activeStrategy?.displayMode === 'company_showcase' ? '公司风采展示' : '员工风采展示'}
             </h1>
           </div>
-          <div className="text-2xl font-semibold text-white tracking-wider" style={{ fontFamily: 'Noto Sans SC, sans-serif' }}>{currentTime}</div>
+          <div className="text-2xl font-semibold tracking-wider" style={{ fontFamily: 'Noto Sans SC, sans-serif', color: '#ddc078', textShadow: '0 6px 22px rgba(84,22,0,0.22)' }}>{currentTime}</div>
         </div>
         <motion.div
           initial={{ opacity: 1 }}
