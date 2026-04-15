@@ -314,7 +314,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         </div>
 
         {/* 金色分割线 */}
-        <div style={{ position: 'relative', margin: '0 0 30px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
+        <div style={{ position: 'relative', margin: '0 0 50px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
           {/* 左端菱形装饰 */}
           <div style={{ width: '8px', height: '8px', background: 'rgba(212,175,55,0.7)', transform: 'rotate(45deg)', flexShrink: 0 }} />
           {/* 左段线 */}
