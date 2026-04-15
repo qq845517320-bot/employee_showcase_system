@@ -255,7 +255,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       {/* 内容区 */}
       <div style={{ padding: '32px 48px 32px 48px', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', position: 'relative', zIndex: 1 }}>
         {/* 上部分：照片 + 基本信息 */}
-        <div style={{ display: 'flex', gap: '36px', paddingBottom: '16px', marginBottom: '0', alignItems: 'flex-start', flex: '0 0 auto' }}>
+        <div style={{ display: 'flex', gap: '36px', paddingBottom: '16px', marginBottom: '0', alignItems: 'flex-start', flex: '1 0 60%', overflow: 'hidden' }}>
           {/* 照片区域 - 证件照尺寸比例 (3:4) */}
           <div style={{ flexShrink: 0, width: '240px', height: '320px' }}>
             {employee.workPhoto ? (
@@ -330,7 +330,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         </div>
 
         {/* 下部分：工作职责/信条 + 荣誉 */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: '0 1 auto', paddingTop: '12px', minHeight: 0, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: '1 0 40%', paddingTop: '12px', minHeight: 0, overflow: 'hidden' }}>
           {/* 左侧：工作职责 + 工作信条 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* 工作职责 */}
