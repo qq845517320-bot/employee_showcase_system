@@ -20,8 +20,8 @@ function HexPhoto({ employee, size = 150, isHighlighted = false, onClick, delay 
     >
       {/* 金色边框包裹层 */}
       <div style={{
-        width: `${size + 6}px`,
-        height: `${size + 6}px`,
+        width: `${size + 2}px`,
+        height: `${size + 2}px`,
         clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
         backgroundColor: '#d4af37',
           filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(212,175,55,0.8))' : 'drop-shadow(0 0 8px rgba(212,175,55,0.5))',
@@ -97,21 +97,106 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       }}
       onClick={onClick}
     >
+      {/* 关闭按钮 */}
       {!isAutoPlay && onClose && (
         <button onClick={(e) => { e.stopPropagation(); onClose(); }}
-          className="absolute top-5 right-5 text-white/60 hover:text-white text-3xl z-50 pointer-events-auto">{"\u2715"}</button>
+          className="absolute top-6 right-6 z-50 pointer-events-auto transition-all duration-300 hover:scale-110"
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            border: '2px solid rgba(212,175,55,0.6)',
+            background: 'rgba(255,255,255,0.06)',
+            color: 'rgb(212,175,55)',
+            fontSize: '28px',
+            lineHeight: '1',
+            display: 'grid',
+            placeItems: 'center',
+            boxShadow: '0 8px 24px rgba(58,0,0,.2)',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(212,175,55,0.12)';
+            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.8)';
+            e.currentTarget.style.boxShadow = '0 12px 32px rgba(212,175,55,0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+            e.currentTarget.style.borderColor = 'rgba(212,175,55,0.6)';
+            e.currentTarget.style.boxShadow = '0 8px 24px rgba(58,0,0,.2)';
+          }}
+        >×</button>
       )}
+      {/* 左右导航按钮 */}
       {!isAutoPlay && onPrevious && onNext && (
         <>
           <button onClick={(e) => { e.stopPropagation(); onPrevious(); }}
             disabled={!canGoPrevious}
-            className="absolute left-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors">
-            <ChevronLeft size={40} strokeWidth={2.5} />
+            className="absolute left-6 top-1/2 -translate-y-1/2 z-20 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              border: `2px solid ${canGoPrevious ? 'rgba(212,175,55,.5)' : 'rgba(212,175,55,.2)'}`,
+              background: 'rgba(255,255,255,.04)',
+              color: 'rgb(212,175,55)',
+              display: 'grid',
+              placeItems: 'center',
+              fontSize: '28px',
+              lineHeight: '1',
+              boxShadow: '0 12px 32px rgba(58,0,0,.24)',
+              cursor: canGoPrevious ? 'pointer' : 'not-allowed'
+            }}
+            onMouseEnter={(e) => {
+              if (canGoPrevious) {
+                e.currentTarget.style.background = 'rgba(212,175,55,.12)';
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,.8)';
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(212,175,55,.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canGoPrevious) {
+                e.currentTarget.style.background = 'rgba(255,255,255,.04)';
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,.5)';
+                e.currentTarget.style.boxShadow = '0 12px 32px rgba(58,0,0,.24)';
+              }
+            }}
+          >
+            <ChevronLeft size={28} strokeWidth={2.5} />
           </button>
           <button onClick={(e) => { e.stopPropagation(); onNext(); }}
             disabled={!canGoNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors">
-            <ChevronRight size={40} strokeWidth={2.5} />
+            className="absolute right-6 top-1/2 -translate-y-1/2 z-20 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              border: `2px solid ${canGoNext ? 'rgba(212,175,55,.5)' : 'rgba(212,175,55,.2)'}`,
+              background: 'rgba(255,255,255,.04)',
+              color: 'rgb(212,175,55)',
+              display: 'grid',
+              placeItems: 'center',
+              fontSize: '28px',
+              lineHeight: '1',
+              boxShadow: '0 12px 32px rgba(58,0,0,.24)',
+              cursor: canGoNext ? 'pointer' : 'not-allowed'
+            }}
+            onMouseEnter={(e) => {
+              if (canGoNext) {
+                e.currentTarget.style.background = 'rgba(212,175,55,.12)';
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,.8)';
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(212,175,55,.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canGoNext) {
+                e.currentTarget.style.background = 'rgba(255,255,255,.04)';
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,.5)';
+                e.currentTarget.style.boxShadow = '0 12px 32px rgba(58,0,0,.24)';
+              }
+            }}
+          >
+            <ChevronRight size={28} strokeWidth={2.5} />
           </button>
         </>
       )}
@@ -122,67 +207,151 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <span className="text-xs font-medium">{"\u81ea\u52a8\u8f6e\u64ad\u4e2d"}</span>
         </div>
       )}
-      <div className="flex flex-col w-full h-full items-center justify-center overflow-hidden">
-        {/* 上部分：照片 + 基本信息（3/5 高度） */}
-        <div className="flex-[3.4] flex gap-12 pb-8 border-b border-white/30 items-center justify-center w-full">
-          <div className="flex-shrink-0" style={{ width: '330px', height: '420px', marginLeft: '60px', marginTop: '-15px' }}>
+      <div className="flex flex-col w-full h-full relative" style={{ padding: '40px 46px' }}>
+        {/* 上部分：照片 + 基本信息 */}
+        <div className="flex gap-10 pb-8 mb-8 border-b" style={{ borderColor: 'rgba(212,175,55,0.2)', alignItems: 'flex-start' }}>
+          {/* 照片区域 */}
+          <div className="flex-shrink-0" style={{ width: '360px', height: '360px' }}>
             {employee.workPhoto ? (
-              <img src={employee.workPhoto} alt={employee.name} className="h-full w-full rounded-xl object-cover shadow-lg" />
+              <img src={employee.workPhoto} alt={employee.name} className="w-full h-full object-cover" style={{
+                borderRadius: '20px',
+                border: '2px solid rgba(212,175,55,0.3)',
+                boxShadow: '0 16px 48px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,0.08)'
+              }} />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center" style={{
+                borderRadius: '20px',
+                border: '2px solid rgba(212,175,55,0.3)',
+                boxShadow: '0 16px 48px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,0.08)'
+              }}>
                 <span className="text-white text-9xl font-bold">{employee.name?.charAt(0)}</span>
               </div>
             )}
           </div>
-          <div className="flex-1 flex flex-col justify-center space-y-4" style={{ marginLeft: '90px' }}>
-            <div className="flex items-start gap-3">
-              <div className="text-5xl font-bold">{employee.name}</div>
+
+          {/* 基本信息区域 */}
+          <div className="flex-1 pt-4">
+            {/* 姓名 + 党员徽章 */}
+            <div className="flex items-center gap-3 mb-8">
+              <h2 style={{ fontSize: '48px', lineHeight: '1.1', letterSpacing: '-0.5px', fontWeight: 900, margin: 0, color: 'rgb(212,175,55)' }}>
+                {employee.name}
+              </h2>
               {employee.isPartyMember && (
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Partyemblem_a1be73e2.png" 
                   alt="党员" 
-                  className="w-12 h-12 -mt-2"
+                  className="flex-shrink-0"
                   style={{
+                    width: '36px',
+                    height: '36px',
                     filter: 'hue-rotate(0deg) saturate(1.2) brightness(1.1)',
                   }}
                   title="党员"
                 />
               )}
             </div>
-            <div className="space-y-3 text-xl mt-2">
-              <div>{"\u90e8\u95e8\uff1a"}{getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId}</div>
-              <div>{"\u5c97\u4f4d\uff1a"}{employee.position}</div>
-              <div>{"\u804c\u52a1\uff1a"}{employee.level}</div>
-              <div>{"\u5165\u804c\u65f6\u95f4\uff1a"}{new Date(employee.joinDate || 0).toLocaleDateString()}</div>
+
+            {/* 基本信息项 */}
+            <div style={{ display: 'grid', rowGap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', alignItems: 'baseline', columnGap: '16px' }}>
+                <span style={{ fontSize: '15px', lineHeight: '24px', fontWeight: 500, color: 'rgba(255,246,238,0.54)' }}>部门</span>
+                <span style={{ fontSize: '18px', lineHeight: '28px', fontWeight: 600, color: 'rgb(255,246,238)' }}>
+                  {getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId}
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', alignItems: 'baseline', columnGap: '16px' }}>
+                <span style={{ fontSize: '15px', lineHeight: '24px', fontWeight: 500, color: 'rgba(255,246,238,0.54)' }}>岗位</span>
+                <span style={{ fontSize: '18px', lineHeight: '28px', fontWeight: 600, color: 'rgb(255,246,238)' }}>
+                  {employee.position}
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', alignItems: 'baseline', columnGap: '16px' }}>
+                <span style={{ fontSize: '15px', lineHeight: '24px', fontWeight: 500, color: 'rgba(255,246,238,0.54)' }}>职务</span>
+                <span style={{ fontSize: '18px', lineHeight: '28px', fontWeight: 600, color: 'rgb(255,246,238)' }}>
+                  {employee.level}
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', alignItems: 'baseline', columnGap: '16px' }}>
+                <span style={{ fontSize: '15px', lineHeight: '24px', fontWeight: 500, color: 'rgba(255,246,238,0.54)' }}>入职时间</span>
+                <span style={{ fontSize: '18px', lineHeight: '28px', fontWeight: 600, color: 'rgb(255,246,238)' }}>
+                  {new Date(employee.joinDate || 0).toLocaleDateString()}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-        {/* 下部分：工作职责+工作信条、奖励荣誉（2/5 高度） */}
-        <div className="flex-[1.6] flex gap-12 pt-2 mt-0 overflow-y-auto justify-between w-full">
-          <div className="flex-1 space-y-4 text-lg">
+
+        {/* 下部分：工作职责/信条 + 荣誉 */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '32px', flex: 1, minHeight: '200px' }}>
+          {/* 左侧：工作职责 + 工作信条 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* 工作职责 */}
             <div>
-              <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u804c\u8d23\uff1a"}</div>
-              <div className="leading-relaxed text-left">{employee.jobResponsibilities || "\u6682\u65e0\u6570\u636e"}</div>
+              <h3 style={{ margin: 0, fontSize: '16px', lineHeight: '24px', fontWeight: 700, color: 'rgb(212,175,55)', marginBottom: '10px' }}>工作职责</h3>
+              <p style={{ margin: 0, fontSize: '15px', lineHeight: '26px', fontWeight: 500, color: 'rgba(255,246,238,0.82)' }}>
+                {employee.jobResponsibilities || "暂无数据"}
+              </p>
             </div>
+
+            {/* 工作信条 - 引述框 */}
             <div>
-              <div className="font-semibold mb-2 text-xl">{"\u5de5\u4f5c\u4fe1\u6761\uff1a"}</div>
-              <div className="italic text-left">{employee.workTenet || "\u6682\u65e0\u6570\u636e"}</div>
+              <h3 style={{ margin: 0, fontSize: '16px', lineHeight: '24px', fontWeight: 700, color: 'rgb(212,175,55)', marginBottom: '10px' }}>工作信条</h3>
+              <blockquote style={{
+                margin: 0,
+                padding: '16px 18px',
+                borderLeft: '3px solid rgb(212,175,55)',
+                borderRadius: '2px',
+                background: 'rgba(212,175,55,0.08)',
+                fontSize: '15px',
+                lineHeight: '26px',
+                fontWeight: 500,
+                color: 'rgb(255,246,238)',
+                boxShadow: 'inset 0 1px 0 rgba(212,175,55,0.12)',
+                fontStyle: 'normal'
+              }}>
+                {employee.workTenet || "暂无数据"}
+              </blockquote>
             </div>
           </div>
-          <div className="flex-1" style={{ marginLeft: '10px' }}>
-            <div className="font-semibold mb-2 text-xl">{"\u5956\u52b1\u8363\u8a89\uff1a"}</div>
-            <div className="text-base space-y-1 text-left">
+
+          {/* 右侧：奖励荣誉 */}
+          <div>
+            <h3 style={{ margin: 0, fontSize: '16px', lineHeight: '24px', fontWeight: 700, color: 'rgb(212,175,55)', marginBottom: '12px' }}>奖励荣誉</h3>
+            <div style={{ display: 'grid', rowGap: '12px' }}>
               {isLoadingDetail && !fallbackHonors ? (
-                <div className="space-y-2">
-                  <div className="h-4 bg-red-700/40 rounded animate-pulse w-3/4"></div>
-                  <div className="h-4 bg-red-700/40 rounded animate-pulse w-2/3"></div>
+                <div style={{ display: 'grid', rowGap: '8px' }}>
+                  <div style={{ height: '32px', background: 'rgba(212,175,55,0.12)', borderRadius: '6px', animation: 'pulse 2s ease-in-out infinite' }}></div>
+                  <div style={{ height: '32px', background: 'rgba(212,175,55,0.12)', borderRadius: '6px', animation: 'pulse 2s ease-in-out infinite' }}></div>
                 </div>
               ) : (selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0) ? (
                 (selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
-                  <div key={idx} className="text-sm leading-relaxed">• {honor.title}</div>
+                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '70px 1fr', columnGap: '14px', alignItems: 'center' }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: '70px',
+                      height: '32px',
+                      padding: '0 10px',
+                      borderRadius: '4px',
+                      border: '1.5px solid rgba(212,175,55,.36)',
+                      background: 'rgba(212,175,55,0.12)',
+                      color: 'rgb(212,175,55)',
+                      fontSize: '13px',
+                      lineHeight: '20px',
+                      fontWeight: 700,
+                      letterSpacing: '0.2px',
+                      flexShrink: 0
+                    }}>
+                      {honor.awardDate ? new Date(honor.awardDate).getFullYear() : '年份'}
+                    </span>
+                    <span style={{ fontSize: '14px', lineHeight: '24px', fontWeight: 500, color: 'rgba(255,246,238,0.82)' }}>
+                      {honor.title}
+                    </span>
+                  </div>
                 ))
               ) : (
-                <div>{"\u6682\u65e0\u6570\u636e"}</div>
+                <div style={{ fontSize: '14px', lineHeight: '24px', fontWeight: 500, color: 'rgba(255,246,238,0.82)' }}>暂无数据</div>
               )}
             </div>
           </div>
