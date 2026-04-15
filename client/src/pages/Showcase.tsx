@@ -257,7 +257,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         {/* 上部分：照片 + 基本信息 */}
         <div style={{ display: 'flex', gap: '36px', paddingBottom: '16px', marginBottom: '0', alignItems: 'flex-start', flex: '1 0 60%', overflow: 'hidden' }}>
           {/* 照片区域 - 证件照尺寸比例 (3:4) */}
-          <div style={{ flexShrink: 0, width: '290px', height: '370px', marginLeft: '64px', marginTop: '36px' }}>
+          <div style={{ flexShrink: 0, width: '290px', height: '370px', marginLeft: '64px', marginTop: '26px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} style={{
                 width: '100%', height: '100%', objectFit: 'cover',
@@ -280,7 +280,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           </div>
 
           {/* 基本信息区域 */}
-          <div style={{ flex: 1, paddingTop: '56px', paddingLeft: '112px' }}>
+          <div style={{ flex: 1, paddingTop: '66px', paddingLeft: '132px' }}>
             {/* 姓名 + 党员徽章 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '28px' }}>
               <h2 style={{ fontSize: '52px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px' }}>
@@ -314,7 +314,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         </div>
 
         {/* 金色分割线 */}
-        <div style={{ position: 'relative', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
+        <div style={{ position: 'relative', margin: '0 0 30px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
           {/* 左端菱形装饰 */}
           <div style={{ width: '8px', height: '8px', background: 'rgba(212,175,55,0.7)', transform: 'rotate(45deg)', flexShrink: 0 }} />
           {/* 左段线 */}
