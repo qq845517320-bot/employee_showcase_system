@@ -330,7 +330,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         </div>
 
         {/* 下部分：工作职责/信条 + 荣誉 */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: '1 0 40%', paddingTop: '0px', minHeight: 0, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: '1 0 40%', paddingTop: '-20px', minHeight: 0, overflow: 'hidden' }}>
           {/* 左侧：工作职责 + 工作信条 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '0px' }}>
             {/* 工作职责 */}
