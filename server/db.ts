@@ -392,7 +392,7 @@ export async function getCompanyPhotos(companyId: number) {
   return result;
 }
 
-export async function createCompanyPhoto(companyId: number, photoUrl: string, description?: string) {
+export async function createCompanyPhoto(companyId: number, photoUrl: string, title: string, subtitle?: string, description?: string) {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
@@ -402,19 +402,26 @@ export async function createCompanyPhoto(companyId: number, photoUrl: string, de
   const result = await db.insert(companyPhotos).values({
     companyId,
     photoUrl,
+    title,
+    subtitle: subtitle || null,
     description,
     order: maxOrder + 1,
   });
   
-  return result;
+  // Drizzle insert返回的是一个对象，需要从数据库查询获取实际的ID
+  // 或者使用最新插入的数据查询
+  const createdPhotos = await getCompanyPhotos(companyId);
+  const latestPhoto = createdPhotos[createdPhotos.length - 1];
+  
+  return {
+    insertId: latestPhoto?.id || 0,
+  };
 }
 
 export async function deleteCompanyPhoto(photoId: number) {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
-  
-  await db.delete(companyPhotos).where(eq(companyPhotos.id, photoId));
-  return { success: true };
+  return db.delete(companyPhotos).where(eq(companyPhotos.id, photoId));
 }
 
 export async function getAllCompanyPhotos() {

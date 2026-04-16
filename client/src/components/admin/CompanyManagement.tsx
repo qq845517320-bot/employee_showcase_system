@@ -19,6 +19,10 @@ export default function CompanyManagement() {
   });
   const [error, setError] = useState<string | null>(null);
   const [expandedCompanyId, setExpandedCompanyId] = useState<number | null>(null);
+  const [photoFormData, setPhotoFormData] = useState({
+    title: '',
+    subtitle: '',
+  });
 
   const createMutation = trpc.companies.create.useMutation({
     onSuccess: () => {
@@ -87,7 +91,10 @@ export default function CompanyManagement() {
   });
 
   const handlePhotoUpload = async (companyId: number, file: File) => {
-    if (!file) return;
+    if (!file || !photoFormData.title.trim()) {
+      alert('请输入照片标题');
+      return;
+    }
     
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -96,7 +103,10 @@ export default function CompanyManagement() {
         companyId,
         fileData: base64,
         fileName: file.name,
+        title: photoFormData.title,
+        subtitle: photoFormData.subtitle,
       });
+      setPhotoFormData({ title: '', subtitle: '' });
     };
     reader.readAsDataURL(file);
   };
@@ -271,26 +281,52 @@ export default function CompanyManagement() {
                     className="mt-4 pt-4 border-t border-gray-200 space-y-3"
                   >
                     {/* 上传区域 */}
-                    <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files?.[0]) {
-                            handlePhotoUpload(company.id, e.target.files[0]);
-                            e.target.value = '';
-                          }
-                        }}
-                        disabled={uploadPhotoMutation.isPending}
-                        className="hidden"
-                        id={`photo-upload-${company.id}`}
-                      />
-                      <label
-                        htmlFor={`photo-upload-${company.id}`}
-                        className="cursor-pointer text-blue-600 hover:text-blue-700 text-sm font-medium"
-                      >
-                        {uploadPhotoMutation.isPending ? '上传中...' : '点击上传照片'}
-                      </label>
+                    <div className="space-y-2 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          照片标题 <span className="text-red-500">*</span>
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="请输入照片标题"
+                          value={photoFormData.title}
+                          onChange={(e) => setPhotoFormData({ ...photoFormData, title: e.target.value })}
+                          className="text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          照片副标题 <span className="text-gray-400">(可选)</span>
+                        </label>
+                        <Input
+                          type="text"
+                          placeholder="请输入照片副标题"
+                          value={photoFormData.subtitle}
+                          onChange={(e) => setPhotoFormData({ ...photoFormData, subtitle: e.target.value })}
+                          className="text-sm"
+                        />
+                      </div>
+                      <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files?.[0]) {
+                              handlePhotoUpload(company.id, e.target.files[0]);
+                              e.target.value = '';
+                            }
+                          }}
+                          disabled={uploadPhotoMutation.isPending}
+                          className="hidden"
+                          id={`photo-upload-${company.id}`}
+                        />
+                        <label
+                          htmlFor={`photo-upload-${company.id}`}
+                          className="cursor-pointer text-blue-600 hover:text-blue-700 text-sm font-medium"
+                        >
+                          {uploadPhotoMutation.isPending ? '上传中...' : '点击上传照片'}
+                        </label>
+                      </div>
                     </div>
 
                     {/* 照片列表 */}
@@ -310,7 +346,11 @@ export default function CompanyManagement() {
                                   }}
                                 />
                               </div>
-                              <p className="text-xs text-gray-600 truncate flex-1">{photo.photoUrl.split('/').pop()}</p>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900">{photo.title}</p>
+                                {photo.subtitle && <p className="text-xs text-gray-600">{photo.subtitle}</p>}
+                                <p className="text-xs text-gray-500 truncate">{photo.photoUrl}</p>
+                              </div>
                             </div>
                             <Button
                               size="sm"

@@ -1327,12 +1327,23 @@ export default function Showcase() {
                           exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
-                          <div className="w-full h-full overflow-hidden rounded-xl relative">
+                          <div className="w-full h-full overflow-hidden rounded-xl relative flex flex-col">
                             <img
                               src={selectedCompanyPhoto.photoUrl}
                               alt="公司风采照片"
-                              className="w-full h-full object-cover"
+                              className="flex-1 w-full object-cover"
                             />
+                            {/* 标题和副标题区域 */}
+                            <div className="bg-black/60 backdrop-blur-sm px-6 py-4 border-t border-white/20">
+                              <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                                {selectedCompanyPhoto.title}
+                              </h3>
+                              {selectedCompanyPhoto.subtitle && (
+                                <p className="text-lg text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                                  {selectedCompanyPhoto.subtitle}
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </motion.div>
                       </AnimatePresence>

@@ -97,6 +97,8 @@ const companyRouter = router({
       companyId: z.number(),
       fileData: z.string(),
       fileName: z.string(),
+      title: z.string(),
+      subtitle: z.string().optional(),
       description: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
@@ -109,7 +111,7 @@ const companyRouter = router({
         
         const { url } = await storagePut(fileKey, buffer, `image/${ext}`);
         
-        await createCompanyPhoto(input.companyId, url, input.description);
+        await createCompanyPhoto(input.companyId, url, input.title, input.subtitle, input.description);
         return { success: true, photoUrl: url };
       } catch (error) {
         throw new TRPCError({

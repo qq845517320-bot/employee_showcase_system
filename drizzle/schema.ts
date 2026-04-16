@@ -147,6 +147,8 @@ export const companyPhotos = mysqlTable("company_photos", {
   id: int("id").autoincrement().primaryKey(),
   companyId: int("companyId").notNull(), // 外键关联公司
   photoUrl: varchar("photoUrl", { length: 500 }).notNull(), // 照片 URL（S3）
+  title: varchar("title", { length: 255 }).notNull(), // 照片标题（必填）
+  subtitle: varchar("subtitle", { length: 255 }), // 照片副标题（可选）
   description: text("description"), // 照片描述
   order: int("order").default(0).notNull(), // 排序顺序
   createdAt: timestamp("createdAt").defaultNow().notNull(),
