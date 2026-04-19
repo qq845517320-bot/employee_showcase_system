@@ -24,7 +24,12 @@ export const CompanyPhotoCard: React.FC<CompanyPhotoCardProps> = ({
     setImageError(false);
   };
 
-  const handleImageError = () => {
+  const handleImageError = (e: any) => {
+    console.error('[CompanyPhotoCard] Image load failed:', {
+      photoUrl,
+      error: e,
+      errorMessage: e?.message || 'Unknown error'
+    });
     setImageError(true);
     setImageLoaded(false);
   };

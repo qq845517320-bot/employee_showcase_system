@@ -1425,7 +1425,10 @@ export default function Showcase() {
                         onClick={() => setSelectedCompanyPhoto(photo)}
                       >
                         <div style={{ width: '280px', height: '200px' }}>
-                          <CompanyPhotoCard photoUrl={photo.photoUrl} alt="公司风采照片" />
+                          <CompanyPhotoCard 
+                            photoUrl={photo.photoUrl || ''} 
+                            alt={photo.title || "公司风采照片"} 
+                          />
                         </div>
                       </motion.div>
                     ))}
