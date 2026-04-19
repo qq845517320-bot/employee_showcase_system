@@ -484,6 +484,18 @@ export default function Showcase() {
   const displayPhotos = selectedCompany === null ? allCompanyPhotos : companyPhotos;
   const showPhotos = selectedDepartment === 'company' && displayPhotos.length > 0;
   
+  // When displayPhotos changes, automatically select the first photo
+  useEffect(() => {
+    if (selectedDepartment === 'company' && displayPhotos.length > 0) {
+      // Only auto-select if selectedCompanyPhoto is not in the new displayPhotos list
+      if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
+        setSelectedCompanyPhoto(displayPhotos[0]);
+      }
+    } else if (displayPhotos.length === 0) {
+      setSelectedCompanyPhoto(null);
+    }
+  }, [displayPhotos, selectedDepartment]);
+
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
     { id: selectedEmployee?.id || 0 },
@@ -1045,6 +1057,7 @@ export default function Showcase() {
                 <button
                   onClick={() => {
                     setSelectedCompany(null);
+                    setSelectedCompanyPhoto(null); // Reset selected photo when switching to "all"
                     setSelectedDepartment('company');
                     setShowCompanyDropdown(false);
                     setSelectedEmployee(null);
@@ -1061,6 +1074,7 @@ export default function Showcase() {
                     key={company.id}
                     onClick={() => {
                       setSelectedCompany(company.id);
+                      setSelectedCompanyPhoto(null); // Reset selected photo when switching company
                       setSelectedDepartment('company');
                       setShowCompanyDropdown(false);
                       setSelectedEmployee(null);
