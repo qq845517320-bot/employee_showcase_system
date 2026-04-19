@@ -462,7 +462,7 @@ export default function Showcase() {
   const companyIdNumber = typeof selectedCompany === 'number' ? selectedCompany : (typeof selectedCompany === 'string' ? parseInt(selectedCompany, 10) : null);
   const { data: companyPhotos = [] } = trpc.companies.getPhotos.useQuery(
     { companyId: companyIdNumber || 0 },
-    { enabled: !!companyIdNumber && typeof companyIdNumber === 'number' }
+    { enabled: companyIdNumber !== null && companyIdNumber !== 0 && typeof companyIdNumber === 'number' }
   );
   
   // Get all company photos when "全部" is selected
@@ -486,15 +486,18 @@ export default function Showcase() {
   
   // When displayPhotos changes, automatically select the first photo
   useEffect(() => {
-    if (selectedDepartment === 'company' && displayPhotos.length > 0) {
-      // Only auto-select if selectedCompanyPhoto is not in the new displayPhotos list
-      if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
-        setSelectedCompanyPhoto(displayPhotos[0]);
+    if (selectedDepartment === 'company') {
+      if (displayPhotos.length > 0) {
+        // Only auto-select if selectedCompanyPhoto is not in the new displayPhotos list
+        if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
+          setSelectedCompanyPhoto(displayPhotos[0]);
+        }
+      } else {
+        // No photos available
+        setSelectedCompanyPhoto(null);
       }
-    } else if (displayPhotos.length === 0) {
-      setSelectedCompanyPhoto(null);
     }
-  }, [displayPhotos, selectedDepartment]);
+  }, [displayPhotos, selectedDepartment, selectedCompanyPhoto]);
 
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
@@ -1312,7 +1315,7 @@ export default function Showcase() {
                   </div>
                 )}
               </div>
-            ) : showPhotos ? (
+            ) : showPhotos || (selectedDepartment === 'company' && displayPhotos.length > 0) ? (
               /* ====== COMPANY PHOTOS MODE ====== */
               selectedCompanyPhoto ? (
                 /* 单张大卡片模式 */
