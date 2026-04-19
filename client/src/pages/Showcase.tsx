@@ -1368,6 +1368,75 @@ export default function Showcase() {
                           exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
+                          {/* 关闭按钮 - 右上角内侧 */}
+                          <button onClick={() => setSelectedCompanyPhoto(null)}
+                            className="absolute z-50 pointer-events-auto transition-all duration-200"
+                            style={{
+                              top: '18px', right: '18px',
+                              width: '40px', height: '40px',
+                              borderRadius: '50%',
+                              border: '1.5px solid rgba(212,175,55,0.55)',
+                              background: 'rgba(80,10,10,0.7)',
+                              color: 'rgba(255,246,238,0.85)',
+                              fontSize: '20px',
+                              display: 'grid', placeItems: 'center',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
+                          >×</button>
+                          {/* 左右导航按钮 - 卡片内侧 */}
+                          <button onClick={() => {
+                            const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
+                            if (displayPhotos.length > 0) {
+                              const newIndex = (currentIndex - 1 + displayPhotos.length) % displayPhotos.length;
+                              setPhotoSlideDirection('left');
+                              setSelectedCompanyPhoto(displayPhotos[newIndex]);
+                            }
+                          }}
+                            className="absolute z-20 transition-all duration-200"
+                            style={{
+                              left: '16px', top: '50%', transform: 'translateY(-50%)',
+                              width: '52px', height: '52px',
+                              borderRadius: '50%',
+                              border: '1.5px solid rgba(212,175,55,0.45)',
+                              background: 'rgba(60,8,8,0.75)',
+                              color: 'rgba(212,175,55,0.9)',
+                              display: 'grid', placeItems: 'center',
+                              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                              cursor: 'pointer'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
+                          >
+                            <ChevronLeft size={26} strokeWidth={2} />
+                          </button>
+                          <button onClick={() => {
+                            const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
+                            if (displayPhotos.length > 0) {
+                              const newIndex = (currentIndex + 1) % displayPhotos.length;
+                              setPhotoSlideDirection('right');
+                              setSelectedCompanyPhoto(displayPhotos[newIndex]);
+                            }
+                          }}
+                            className="absolute z-20 transition-all duration-200"
+                            style={{
+                              right: '16px', top: '50%', transform: 'translateY(-50%)',
+                              width: '52px', height: '52px',
+                              borderRadius: '50%',
+                              border: '1.5px solid rgba(212,175,55,0.45)',
+                              background: 'rgba(60,8,8,0.75)',
+                              color: 'rgba(212,175,55,0.9)',
+                              display: 'grid', placeItems: 'center',
+                              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                              cursor: 'pointer'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
+                          >
+                            <ChevronRight size={26} strokeWidth={2} />
+                          </button>
                           <div className="w-full h-full overflow-hidden rounded-xl relative flex flex-col">
                             <img
                               src={selectedCompanyPhoto.photoUrl}
@@ -1388,40 +1457,6 @@ export default function Showcase() {
                           </div>
                         </motion.div>
                       </AnimatePresence>
-                      {/* 关闭按钮 */}
-                      <button
-                        onClick={() => setSelectedCompanyPhoto(null)}
-                        className="absolute -top-12 right-0 text-white hover:text-red-400 transition-colors text-2xl font-bold"
-                      >
-                        ✕
-                      </button>
-                      {/* 左右翻页按钮 */}
-                      <button
-                        onClick={() => {
-                          const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
-                          if (displayPhotos.length > 0) {
-                            const newIndex = (currentIndex - 1 + displayPhotos.length) % displayPhotos.length;
-                            setPhotoSlideDirection('left');
-                            setSelectedCompanyPhoto(displayPhotos[newIndex]);
-                          }
-                        }}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors"
-                      >
-                        <ChevronLeft size={40} strokeWidth={2.5} />
-                      </button>
-                      <button
-                        onClick={() => {
-                          const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
-                          if (displayPhotos.length > 0) {
-                            const newIndex = (currentIndex + 1) % displayPhotos.length;
-                            setPhotoSlideDirection('right');
-                            setSelectedCompanyPhoto(displayPhotos[newIndex]);
-                          }
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-10 transition-colors"
-                      >
-                        <ChevronRight size={40} strokeWidth={2.5} />
-                      </button>
                       {/* 计数器 */}
                       <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold">
                         {displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id) + 1} / {displayPhotos.length}
