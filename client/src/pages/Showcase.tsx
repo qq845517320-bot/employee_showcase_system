@@ -484,20 +484,26 @@ export default function Showcase() {
   const displayPhotos = selectedCompany === null ? allCompanyPhotos : companyPhotos;
   const showPhotos = selectedDepartment === 'company' && displayPhotos.length > 0;
   
-  // When displayPhotos changes, automatically select the first photo
+  // When displayPhotos changes, automatically select the first photo only if a specific company is selected
   useEffect(() => {
     if (selectedDepartment === 'company') {
       if (displayPhotos.length > 0) {
-        // Only auto-select if selectedCompanyPhoto is not in the new displayPhotos list
-        if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
-          setSelectedCompanyPhoto(displayPhotos[0]);
+        // Only auto-select if a specific company is selected (not "全部")
+        if (selectedCompany !== null) {
+          // For specific company, auto-select the first photo
+          if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
+            setSelectedCompanyPhoto(displayPhotos[0]);
+          }
+        } else {
+          // For "全部", don't auto-select, show grid instead
+          setSelectedCompanyPhoto(null);
         }
       } else {
         // No photos available
         setSelectedCompanyPhoto(null);
       }
     }
-  }, [displayPhotos, selectedDepartment, selectedCompanyPhoto]);
+  }, [displayPhotos, selectedDepartment, selectedCompany]);
 
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
@@ -1060,7 +1066,7 @@ export default function Showcase() {
                 <button
                   onClick={() => {
                     setSelectedCompany(null);
-                    setSelectedCompanyPhoto(null); // Reset selected photo when switching to "all"
+                    setSelectedCompanyPhoto(null); // Reset selected photo to show grid
                     setSelectedDepartment('company');
                     setShowCompanyDropdown(false);
                     setSelectedEmployee(null);
