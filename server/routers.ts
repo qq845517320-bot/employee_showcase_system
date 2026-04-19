@@ -125,7 +125,27 @@ const companyRouter = router({
     .input(z.object({ photoId: z.number() }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
-      return deleteCompanyPhoto(input.photoId);
+      
+      try {
+        console.log(`[API] deletePhoto called with photoId: ${input.photoId}`);
+        const result = await deleteCompanyPhoto(input.photoId);
+        console.log(`[API] deletePhoto result:`, result);
+        
+        if (!result.success) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: result.error || 'Failed to delete photo',
+          });
+        }
+        
+        return result;
+      } catch (error) {
+        console.error(`[API] deletePhoto error:`, error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: `Failed to delete photo: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        });
+      }
     }),
 });
 

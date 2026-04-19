@@ -421,7 +421,34 @@ export async function createCompanyPhoto(companyId: number, photoUrl: string, ti
 export async function deleteCompanyPhoto(photoId: number) {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
-  return db.delete(companyPhotos).where(eq(companyPhotos.id, photoId));
+  
+  try {
+    console.log(`[Database] Deleting company photo with ID: ${photoId}`);
+    
+    // First check if photo exists
+    const photoExists = await db.select().from(companyPhotos).where(eq(companyPhotos.id, photoId)).limit(1);
+    if (photoExists.length === 0) {
+      console.warn(`[Database] Photo ${photoId} does not exist, cannot delete`);
+      return { success: false, error: 'Photo not found' };
+    }
+    
+    // Delete the photo
+    const result = await db.delete(companyPhotos).where(eq(companyPhotos.id, photoId));
+    console.log(`[Database] Delete result:`, result);
+    
+    // Verify deletion by querying the photo
+    const verifyResult = await db.select().from(companyPhotos).where(eq(companyPhotos.id, photoId)).limit(1);
+    if (verifyResult.length === 0) {
+      console.log(`[Database] Photo ${photoId} successfully deleted from database`);
+      return { success: true, deletedId: photoId };
+    } else {
+      console.warn(`[Database] Photo ${photoId} still exists after delete attempt`);
+      return { success: false, error: 'Photo still exists after delete' };
+    }
+  } catch (error) {
+    console.error(`[Database] Error deleting photo ${photoId}:`, error);
+    throw error;
+  }
 }
 
 export async function getAllCompanyPhotos() {

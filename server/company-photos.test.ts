@@ -113,4 +113,44 @@ describe('Company Photos with Title and Subtitle', () => {
       expect(foundPhoto.subtitle).toBeNull();
     }
   });
+
+  it('should delete a company photo and verify it no longer exists', async () => {
+    const title = '待删除照片';
+    const photoUrl = 'https://example.com/photo-to-delete.jpg';
+
+    // 创建一张照片
+    const createResult = await createCompanyPhoto(
+      testCompanyId,
+      photoUrl,
+      title
+    );
+
+    expect(createResult.insertId).toBeGreaterThan(0);
+    const photoId = createResult.insertId;
+
+    // 验证照片存在
+    let photos = await getCompanyPhotos(testCompanyId);
+    let foundPhoto = photos.find(p => p.id === photoId);
+    expect(foundPhoto).toBeDefined();
+
+    // 删除照片
+    const deleteResult = await deleteCompanyPhoto(photoId);
+    expect(deleteResult).toBeDefined();
+    expect(deleteResult.success).toBe(true);
+    expect(deleteResult.deletedId).toBe(photoId);
+
+    // 验证照片已被删除
+    photos = await getCompanyPhotos(testCompanyId);
+    foundPhoto = photos.find(p => p.id === photoId);
+    expect(foundPhoto).toBeUndefined();
+  });
+
+  it('should handle deletion of non-existent photo gracefully', async () => {
+    const fakePhotoId = 999999;
+    const deleteResult = await deleteCompanyPhoto(fakePhotoId);
+    
+    // 应该返回 success: false，因为照片不存在
+    expect(deleteResult).toBeDefined();
+    expect(deleteResult.success).toBe(false);
+  });
 });

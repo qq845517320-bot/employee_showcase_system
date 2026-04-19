@@ -23,6 +23,8 @@ export default function CompanyManagement() {
     title: '',
     subtitle: '',
   });
+  const [isUploading, setIsUploading] = useState(false);
+  const [fileInputKey, setFileInputKey] = useState(0);
 
   const createMutation = trpc.companies.create.useMutation({
     onSuccess: () => {
@@ -90,6 +92,7 @@ export default function CompanyManagement() {
     },
     onError: (err) => {
       console.error('Delete photo error:', err);
+      alert('删除照片失败，请重试');
     },
   });
 
@@ -99,19 +102,42 @@ export default function CompanyManagement() {
       return;
     }
     
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64 = (e.target?.result as string).split(',')[1];
-      await uploadPhotoMutation.mutateAsync({
-        companyId,
-        fileData: base64,
-        fileName: file.name,
-        title: photoFormData.title,
-        subtitle: photoFormData.subtitle,
-      });
-      setPhotoFormData({ title: '', subtitle: '' });
-    };
-    reader.readAsDataURL(file);
+    // 防止重复提交
+    if (isUploading) {
+      alert('正在上传中，请稍候');
+      return;
+    }
+    
+    setIsUploading(true);
+    
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = (e.target?.result as string).split(',')[1];
+          await uploadPhotoMutation.mutateAsync({
+            companyId,
+            fileData: base64,
+            fileName: file.name,
+            title: photoFormData.title,
+            subtitle: photoFormData.subtitle,
+          });
+          setPhotoFormData({ title: '', subtitle: '' });
+          // 重置文件输入框
+          setFileInputKey(prev => prev + 1);
+        } catch (error) {
+          console.error('Upload error:', error);
+          alert('上传失败，请重试');
+        } finally {
+          setIsUploading(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('File read error:', error);
+      alert('文件读取失败');
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -311,15 +337,15 @@ export default function CompanyManagement() {
                       </div>
                       <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center">
                         <input
+                          key={`${company.id}-${fileInputKey}`}
                           type="file"
                           accept="image/*"
                           onChange={(e) => {
                             if (e.target.files?.[0]) {
                               handlePhotoUpload(company.id, e.target.files[0]);
-                              e.target.value = '';
                             }
                           }}
-                          disabled={uploadPhotoMutation.isPending}
+                          disabled={isUploading || uploadPhotoMutation.isPending}
                           className="hidden"
                           id={`photo-upload-${company.id}`}
                         />
@@ -327,7 +353,7 @@ export default function CompanyManagement() {
                           htmlFor={`photo-upload-${company.id}`}
                           className="cursor-pointer text-blue-600 hover:text-blue-700 text-sm font-medium"
                         >
-                          {uploadPhotoMutation.isPending ? '上传中...' : '点击上传照片'}
+                          {isUploading || uploadPhotoMutation.isPending ? '上传中...' : '点击上传照片'}
                         </label>
                       </div>
                     </div>
