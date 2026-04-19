@@ -453,7 +453,9 @@ export default function Showcase() {
     { refetchInterval: 5000 }
   );
   const { data: departmentsData } = trpc.departments.list.useQuery({} as any);
+  console.log('[Showcase] departmentsData loaded:', departmentsData?.length || 0);
   const { data: companiesData } = trpc.companies.list.useQuery({} as any);
+  console.log('[Showcase] companiesData loaded:', companiesData?.length || 0);
   const { data: backgroundData } = trpc.backgrounds.getActive.useQuery({} as any, { refetchInterval: 5000 });
   const { data: honorCategoriesData = [] } = trpc.honors.listCategories.useQuery({} as any);
   const honorCategories = honorCategoriesData.map((cat: any) => cat.name);
@@ -466,6 +468,7 @@ export default function Showcase() {
   );
   
   // Get all company photos when "全部" is selected
+  // Note: This query is kept for backward compatibility but displayPhotos now uses showcaseCompanyPhotos
   const { data: allCompanyPhotos = [] } = trpc.companies.getAllPhotos.useQuery(
     undefined,
     { enabled: selectedCompany === null && selectedDepartment === 'company' }
@@ -477,33 +480,48 @@ export default function Showcase() {
     undefined,
     { enabled: true }
   );
+  console.log('[Showcase] showcaseCompanyPhotos query result:', showcaseCompanyPhotos.length);
   // 同步到 ref，供 setTimeout 回调中使用，避免闭包捕获旧值
   showcaseCompanyPhotosRef.current = showcaseCompanyPhotos;
   
   // Use single company photos when a specific company is selected, all photos when "全部" is selected
-  const displayPhotos = selectedCompany === null ? allCompanyPhotos : companyPhotos;
+  // Use showcaseCompanyPhotos (always enabled) instead of allCompanyPhotos to avoid enabled condition issues
+  const displayPhotos = selectedCompany === null ? showcaseCompanyPhotos : companyPhotos;
   const showPhotos = selectedDepartment === 'company' && displayPhotos.length > 0;
+  
+  console.log('[Showcase] displayPhotos calculation:', {
+    selectedCompany,
+    selectedDepartment,
+    showcaseCompanyPhotosLength: showcaseCompanyPhotos.length,
+    companyPhotosLength: companyPhotos.length,
+    displayPhotosLength: displayPhotos.length,
+    showPhotos
+  });
   
   // When displayPhotos changes, automatically select the first photo only if a specific company is selected
   useEffect(() => {
+    console.log('[Showcase] displayPhotos useEffect:', { displayPhotosLength: displayPhotos.length, selectedCompany, selectedDepartment });
     if (selectedDepartment === 'company') {
       if (displayPhotos.length > 0) {
         // Only auto-select if a specific company is selected (not "全部")
         if (selectedCompany !== null) {
           // For specific company, auto-select the first photo
           if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
+            console.log('[Showcase] Auto-selecting first photo for company:', selectedCompany);
             setSelectedCompanyPhoto(displayPhotos[0]);
           }
         } else {
           // For "全部", don't auto-select, show grid instead
+          console.log('[Showcase] Showing grid for "全部"');
           setSelectedCompanyPhoto(null);
         }
       } else {
         // No photos available
+        console.log('[Showcase] No photos available');
         setSelectedCompanyPhoto(null);
       }
     }
-  }, [displayPhotos, selectedDepartment, selectedCompany]);
+  }, [displayPhotos, selectedCompany, selectedDepartment]);
 
   // Get detailed employee info including honors
   const { data: selectedEmployeeDetail, isLoading: isLoadingDetail } = trpc.employees.get.useQuery(
