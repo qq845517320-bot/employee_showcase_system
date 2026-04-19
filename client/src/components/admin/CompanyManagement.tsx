@@ -64,13 +64,16 @@ export default function CompanyManagement() {
 
   const { data: companyPhotos = [] } = trpc.companies.getPhotos.useQuery(
     { companyId: expandedCompanyId || 0 },
-    { enabled: expandedCompanyId !== null }
+    { enabled: expandedCompanyId !== null && typeof expandedCompanyId === 'number' }
   );
+  
+  console.log('[CompanyManagement] expandedCompanyId:', expandedCompanyId, 'companyPhotos:', companyPhotos);
 
   const uploadPhotoMutation = trpc.companies.uploadPhoto.useMutation({
     onSuccess: () => {
       if (expandedCompanyId) {
         utils.companies.getPhotos.invalidate({ companyId: expandedCompanyId });
+        setPhotoFormData({ title: '', subtitle: '' });
       }
     },
     onError: (err) => {
