@@ -244,7 +244,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 { label: '部门', value: getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId },
                 { label: '岗位', value: employee.position },
                 { label: '职务', value: employee.level },
-                { label: '入职时间', value: new Date(employee.joinDate || 0).toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' }) },
+                { label: '入职时间', value: (() => { const date = new Date(employee.joinDate || 0); return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月`; })() },
               ].map(({ label, value }) => (
                 <div key={label} style={{ fontSize: '27px', lineHeight: '42px', color: 'rgba(255,246,238,0.88)' }}>
                   <span style={{ fontWeight: 400, color: 'rgba(255,246,238,0.6)' }}>{label}：</span>
