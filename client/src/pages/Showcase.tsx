@@ -1479,26 +1479,32 @@ export default function Showcase() {
                               {/* 主标题 */}
                               <div style={{
                                 margin: 0,
-                                fontSize: '32px',
+                                fontSize: '48px',
                                 lineHeight: 1.3,
-                                fontWeight: 700,
-                                color: 'rgb(212,175,55)',
-                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)',
+                                fontWeight: 900,
+                                background: 'linear-gradient(135deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                                filter: 'drop-shadow(0 4px 20px rgba(212, 175, 55, 0.3))',
                                 fontFamily: "'Microsoft YaHei', '微软雅黑', sans-serif"
-                              }}>
+                              } as React.CSSProperties}>
                                 {selectedCompanyPhoto.title}
                               </div>
                               {/* 副标题 - 按需显示 */}
                               {selectedCompanyPhoto.subtitle && (
                                 <div style={{
                                   marginTop: '8px',
-                                  fontSize: '20px',
+                                  fontSize: '28px',
                                   lineHeight: 1.5,
-                                  fontWeight: 400,
-                                  color: 'rgb(212,175,55)',
-                                  textShadow: '0 1px 8px rgba(0, 0, 0, 0.22)',
-                                  fontFamily: "'Cormorant Garamond', serif"
-                                }}>
+                                  fontWeight: 600,
+                                  background: 'linear-gradient(135deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%)',
+                                  WebkitBackgroundClip: 'text',
+                                  WebkitTextFillColor: 'transparent',
+                                  backgroundClip: 'text',
+                                  filter: 'drop-shadow(0 4px 20px rgba(212, 175, 55, 0.3))',
+                                  fontFamily: "'Microsoft YaHei', '微软雅黑', sans-serif"
+                                } as React.CSSProperties}>
                                   {selectedCompanyPhoto.subtitle}
                                 </div>
                               )}

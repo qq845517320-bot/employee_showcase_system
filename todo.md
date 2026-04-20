@@ -881,3 +881,14 @@
   - [x] 保持fontSize 32px，color rgb(212,175,55)，fontWeight 700
   - [x] 与员工风采展示的标题字体保持一致
 
+
+
+## 公司风采卡片标题渐变效果优化（2026-04-20 第六十一轮）
+- [x] 将主标题和副标题改为渐变色和金色阴影效果
+  - [x] 主标题：fontSize改为48px，fontWeight改为900（加粗）
+  - [x] 主标题：应用渐变色linear-gradient(135deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%)
+  - [x] 主标题：应用金色阴影filter: drop-shadow(0 4px 20px rgba(212, 175, 55, 0.3))
+  - [x] 副标题：fontSize改为28px，fontWeight改为600
+  - [x] 副标题：应用相同的渐变色和阴影效果
+  - [x] 两者都改为Microsoft YaHei字体
+
