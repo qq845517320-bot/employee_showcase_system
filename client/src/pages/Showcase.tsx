@@ -290,7 +290,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <div style={{ flex: 1, paddingTop: '66px', paddingLeft: '132px' }}>
             {/* 姓名 + 党员徽章 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '35px' }}>
-              <h2 style={{ fontSize: '80px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px', fontFamily: 'KaiTi, 楷体, serif' }}>
+              <h2 style={{ fontSize: '100px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px', fontFamily: 'KaiTi, 楷体, serif' }}>
                 {employee.name}
               </h2>
               {employee.isPartyMember && (
@@ -311,7 +311,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 { label: '职务', value: employee.level },
                 { label: '入职时间', value: (() => { const date = new Date(employee.joinDate || 0); return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月`; })() },
               ].map(({ label, value }) => (
-                <div key={label} style={{ fontSize: '27px', lineHeight: '42px', color: 'rgba(255,246,238,0.88)' }}>
+                <div key={label} style={{ fontSize: '34px', lineHeight: '52px', color: 'rgba(255,246,238,0.88)' }}>
                   <span style={{ fontWeight: 400, color: 'rgba(255,246,238,0.6)' }}>{label}：</span>
                   <span style={{ fontWeight: 600 }}>{value}</span>
                 </div>
