@@ -158,7 +158,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         width: '1200px',
         height: '920px',
         borderRadius: '12px',
-        background: 'linear-gradient(160deg, rgba(220,80,80,0.95) 0%, rgba(200,60,60,0.95) 40%, rgba(180,50,50,0.95) 70%, rgba(160,40,40,0.95) 100%)',
+        background: 'linear-gradient(160deg, rgba(180,50,50,0.95) 0%, rgba(160,40,40,0.95) 40%, rgba(140,30,30,0.95) 70%, rgba(120,20,20,0.95) 100%)',
         border: '2px solid rgba(212,175,55,0.5)',
         boxShadow: isAutoPlay
           ? '0 0 0 1px rgba(212,175,55,0.15), 0 0 60px rgba(212,175,55,0.4), 0 32px 80px rgba(0,0,0,0.6)'
