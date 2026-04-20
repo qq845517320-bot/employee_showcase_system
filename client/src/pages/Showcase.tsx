@@ -1521,8 +1521,8 @@ export default function Showcase() {
                           </div>
                         </motion.div>
                       </AnimatePresence>
-                      {/* 计数器 */}
-                      <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold">
+                      {/* 计数器 - 已隐藏 */}
+                      <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-white text-lg font-semibold hidden">
                         {displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id) + 1} / {displayPhotos.length}
                       </div>
                     </motion.div>
