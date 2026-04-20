@@ -1484,7 +1484,7 @@ export default function Showcase() {
                                 fontWeight: 700,
                                 color: 'rgb(212,175,55)',
                                 textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)',
-                                fontFamily: "'Cormorant Garamond', serif"
+                                fontFamily: "'Microsoft YaHei', '微软雅黑', sans-serif"
                               }}>
                                 {selectedCompanyPhoto.title}
                               </div>

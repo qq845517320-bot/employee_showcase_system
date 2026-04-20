@@ -873,3 +873,11 @@
   - [x] 关闭按钮：color改为rgb(212,175,55)，悬停时变为rgb(255,255,200)
 - [x] 保持按钮的圆形黄色边框和透明背景
 
+
+
+## 公司风采卡片主标题字体统一优化（2026-04-20 第六十轮）
+- [x] 将公司风采卡片的主标题字体改为Microsoft YaHei（微软雅黑）
+  - [x] 主标题fontFamily改为'Microsoft YaHei', '微软雅黑', sans-serif
+  - [x] 保持fontSize 32px，color rgb(212,175,55)，fontWeight 700
+  - [x] 与员工风采展示的标题字体保持一致
+
