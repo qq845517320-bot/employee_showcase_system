@@ -75,6 +75,71 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
   );
 }
 
+/* ========== HexCompanyPhoto ========== */
+function HexCompanyPhoto({ photo, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0 }: {
+  photo: any; size?: number; isHighlighted?: boolean; onClick?: (e: React.MouseEvent) => void; delay?: number; fromX?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: fromX }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: fromX }}
+      transition={{ duration: 0.5, delay }}
+      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239,68,68,0.6))' }}
+      className="cursor-pointer"
+      onClick={onClick}
+    >
+      {/* 金色边框包裹层 */}
+      <div style={{
+        width: `${size + 2}px`,
+        height: `${size + 2}px`,
+        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+        backgroundColor: '#d4af37',
+        filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(212,175,55,0.8))' : 'drop-shadow(0 0 8px rgba(212,175,55,0.5))',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        <div
+          className={`relative flex items-center justify-center overflow-hidden group transition-all duration-500 ${isHighlighted ? 'scale-110 z-10' : ''}`}
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+            backgroundColor: '#dc2626',
+          }}
+        >
+          {photo.photoUrl ? (
+            <img src={photo.photoUrl} alt={photo.title} className="w-full h-full object-cover object-center" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+              <span className="text-white text-2xl font-bold">公</span>
+            </div>
+          )}
+          <div className={`absolute inset-0 transition-all duration-500 ${isHighlighted ? 'bg-black/5' : 'bg-black/30 group-hover:bg-black/10'}`} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ========== CompanyPhotoColumn ========== */
+function CompanyPhotoColumn({ photos, highlightedId, size = 150, fromX = 0, baseDelay = 0, onClickPhoto }: {
+  photos: any[]; highlightedId?: number | null; size?: number; fromX?: number; baseDelay?: number; onClickPhoto: (photo: any) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-8 justify-center items-center">
+      {photos.map((photo, idx) => (
+        <HexCompanyPhoto key={photo.id} photo={photo} size={size} isHighlighted={highlightedId === photo.id}
+          fromX={fromX} delay={(baseDelay + idx) * 0.1}
+          onClick={(e) => { e.stopPropagation(); onClickPhoto(photo); }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ========== DetailPanel ========== */
 function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, isLoadingDetail, onPrevious, onNext, canGoPrevious, canGoNext, fallbackHonors }: {
   employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; isLoadingDetail?: boolean; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean; fallbackHonors?: any[];
@@ -927,6 +992,35 @@ export default function Showcase() {
 
   const highlightedId = selectedEmployee?.id || null;
 
+  // 公司照片轮播分割逻辑（与员工轮播逻辑独立）
+  const getAutoPlayCompanyPhotoBatch = () => {
+    if (!isAutoPlayCompanyShowcase || showcaseCompanyPhotos.length === 0) {
+      return { left1: [], left2: [], right1: [], right2: [] };
+    }
+    const photos = showcaseCompanyPhotosRef.current.length > 0 ? showcaseCompanyPhotosRef.current : showcaseCompanyPhotos;
+    if (photos.length === 0) {
+      return { left1: [], left2: [], right1: [], right2: [] };
+    }
+    // 根据当前轮播的照片索引获取对应批次
+    const batchSize = 10;
+    const batchStartIdx = Math.floor(showcasePhotoIndex / batchSize) * batchSize;
+    const batchEndIdx = Math.min(batchStartIdx + batchSize, photos.length);
+    const batch = photos.slice(batchStartIdx, batchEndIdx);
+    
+    return {
+      left1: batch.slice(0, 2),
+      left2: batch.slice(2, 5),
+      right1: batch.slice(5, 8),
+      right2: batch.slice(8, 10)
+    };
+  };
+  
+  const autoPlayCompanyPhotoBatch = getAutoPlayCompanyPhotoBatch();
+  const autoPlayCompanyPhotoLeftColumn = autoPlayCompanyPhotoBatch.left1;
+  const autoPlayCompanyPhotoLeftMiddleColumn = autoPlayCompanyPhotoBatch.left2;
+  const autoPlayCompanyPhotoRightMiddleColumn = autoPlayCompanyPhotoBatch.right1;
+  const autoPlayCompanyPhotoRightColumn = autoPlayCompanyPhotoBatch.right2;
+
   // 统一的覆盖层打开状态：员工详情卡片、公司风采卡片或自动轮播公司展示
   const isOverlayOpen = !!selectedEmployee || !!selectedCompanyPhoto || isAutoPlayCompanyShowcase;
 
@@ -1121,9 +1215,15 @@ export default function Showcase() {
       <div className="absolute inset-0 pt-40 pb-24 flex items-center justify-center">
         {/* ====== COMPANY SHOWCASE AUTO-PLAY MODE ====== */}
         {isAutoPlayCompanyShowcase ? (
-          <div className="w-full h-full flex items-center justify-center px-4 relative">
+          <div className="w-full h-full flex items-center justify-between px-4 relative">
+            {/* Left columns - company photos */}
+            <div className="flex gap-6 items-center">
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoLeftColumn} highlightedId={null} size={150} fromX={-100} baseDelay={0} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoLeftMiddleColumn} highlightedId={null} size={150} fromX={-100} baseDelay={3} onClickPhoto={() => {}} />
+            </div>
+            
             {/* Center company showcase card - full screen in autoplay mode */}
-            <div className="flex items-center justify-center px-4 z-10">
+            <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-10">
               {(() => {
                 const photos = showcaseCompanyPhotosRef.current.length > 0 ? showcaseCompanyPhotosRef.current : showcaseCompanyPhotos;
                 const photo = photos[showcasePhotoIndex];
@@ -1137,7 +1237,7 @@ export default function Showcase() {
                   className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative card-glow-pulse"
                   style={{
                     width: '1200px',
-                    height: '800px',
+                    height: '920px',
                     paddingTop: '40px',
                     boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)'
                   }}
@@ -1222,6 +1322,12 @@ export default function Showcase() {
               );
               })()}
             </div>
+            
+            {/* Right columns - company photos */}
+            <div className="flex gap-6 items-center">
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightMiddleColumn} highlightedId={null} size={150} fromX={100} baseDelay={0} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightColumn} highlightedId={null} size={150} fromX={100} baseDelay={3} onClickPhoto={() => {}} />
+            </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
           <div className="w-full h-full flex items-center justify-between px-4 relative">
@@ -1248,6 +1354,12 @@ export default function Showcase() {
             {/* Center detail panel only */}
             <div className="flex items-center justify-center px-4 z-10">
               <DetailPanel key={`auto-${selectedEmployee.id}`} employee={selectedEmployee} isAutoPlay={true} onClick={handleDetailPanelClick} getDepartmentName={getDepartmentName} selectedEmployeeDetail={selectedEmployeeDetail} isLoadingDetail={isLoadingDetail} fallbackHonors={selectedEmployee?.honors} />
+            </div>
+            
+            {/* Right columns - company photos */}
+            <div className="flex gap-6 items-center">
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightMiddleColumn} highlightedId={null} size={150} fromX={100} baseDelay={0} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightColumn} highlightedId={null} size={150} fromX={100} baseDelay={3} onClickPhoto={() => {}} />
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
