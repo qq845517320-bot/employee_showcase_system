@@ -1377,13 +1377,17 @@ export default function Showcase() {
                               style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
                             />
 
-                            {/* 渐变遮罩层 - 从透明到深色 */}
+                            {/* 红色相框效果 - 底部区域，使用clip-path创建波浪形 */}
                             <div style={{
                               position: 'absolute',
-                              inset: 0,
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              height: '220px',
+                              background: 'linear-gradient(180deg, rgba(220, 38, 38, 0) 0%, rgba(220, 38, 38, 0.2) 15%, rgba(220, 38, 38, 0.5) 50%, rgba(220, 38, 38, 0.8) 100%)',
                               pointerEvents: 'none',
-                              background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 54%, rgba(0, 0, 0, 0.08) 64%, rgba(0, 0, 0, 0.24) 76%, rgba(0, 0, 0, 0.46) 88%, rgba(0, 0, 0, 0.62) 100%)',
-                              zIndex: 2
+                              zIndex: 2,
+                              clipPath: 'polygon(0 35%, 100% 25%, 100% 100%, 0 100%)'
                             }} />
 
                             {/* 关闭按钮 - 右上角 */}
@@ -1462,13 +1466,13 @@ export default function Showcase() {
                               <ChevronRight size={26} strokeWidth={2} />
                             </button>
 
-                            {/* 标题和副标题 - 在底部，在渐变遮罩上方 */}
+                            {/* 标题和副标题 - 在红色相框上方 */}
                             <div style={{
                               position: 'absolute',
-                              bottom: 0,
+                              bottom: '40px',
                               left: 0,
                               right: 0,
-                              padding: '40px 48px 32px 48px',
+                              padding: '0 48px',
                               zIndex: 3,
                               display: 'flex',
                               flexDirection: 'column',
