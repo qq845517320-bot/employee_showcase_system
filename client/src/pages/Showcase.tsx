@@ -1357,7 +1357,7 @@ export default function Showcase() {
                         <motion.div
                           key={selectedCompanyPhoto.id}
                           className="rounded-2xl text-white border border-red-600/60 relative card-glow-pulse overflow-hidden"
-                          style={{ width: '1000px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
+                          style={{ width: '1100px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.8) 0%, rgba(80,10,10,0.9) 100%)', padding: '0' }}
                           variants={{
                             initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
                             animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
@@ -1368,27 +1368,38 @@ export default function Showcase() {
                           exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
-                          {/* 图片区域 + 渐变遮罩 + 标题 - 占据整个卡片 */}
-                          <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                            {/* 全景照片 */}
-                            <img
-                              src={selectedCompanyPhoto.photoUrl}
-                              alt="公司风采照片"
-                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
-                            />
+                          {/* 内容容器 - 照片占据大部分，底部为标题区域 */}
+                          <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0' }}>
+                            {/* 照片区域 - 占据大部分空间 */}
+                            <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {/* 全景照片 */}
+                              <img
+                                src={selectedCompanyPhoto.photoUrl}
+                                alt="公司风采照片"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            </div>
 
-                            {/* 红色相框效果 - 底部区域，使用clip-path创建波浪形 */}
+                            {/* 标题和副标题区域 - 底部红色区域 */}
                             <div style={{
-                              position: 'absolute',
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              height: '220px',
-                              background: 'linear-gradient(180deg, rgba(220, 38, 38, 0) 0%, rgba(220, 38, 38, 0.2) 15%, rgba(220, 38, 38, 0.5) 50%, rgba(220, 38, 38, 0.8) 100%)',
-                              pointerEvents: 'none',
-                              zIndex: 2,
-                              clipPath: 'polygon(0 35%, 100% 25%, 100% 100%, 0 100%)'
-                            }} />
+                              padding: '24px 32px',
+                              background: 'linear-gradient(180deg, rgba(220, 38, 38, 0.4) 0%, rgba(220, 38, 38, 0.7) 100%)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '4px',
+                              zIndex: 2
+                            }}>
+                              {/* 主标题 */}
+                              <h3 className="text-3xl font-bold text-white" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.2, letterSpacing: '1px' }}>
+                                {selectedCompanyPhoto.title}
+                              </h3>
+                              {/* 副标题 - 按需显示 */}
+                              {selectedCompanyPhoto.subtitle && (
+                                <p className="text-lg text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.3, letterSpacing: '0.5px', opacity: 0.95 }}>
+                                  {selectedCompanyPhoto.subtitle}
+                                </p>
+                              )}
+                            </div>
 
                             {/* 关闭按钮 - 右上角 */}
                             <button onClick={() => setSelectedCompanyPhoto(null)}
@@ -1421,7 +1432,7 @@ export default function Showcase() {
                             }}
                               className="transition-all duration-200 flex-shrink-0 absolute"
                               style={{
-                                left: '16px', top: '50%', transform: 'translateY(-50%)',
+                                left: '-26px', top: '50%', transform: 'translateY(-50%)',
                                 width: '52px', height: '52px',
                                 borderRadius: '50%',
                                 border: '1.5px solid rgba(212,175,55,0.45)',
@@ -1449,7 +1460,7 @@ export default function Showcase() {
                             }}
                               className="transition-all duration-200 flex-shrink-0 absolute"
                               style={{
-                                right: '16px', top: '50%', transform: 'translateY(-50%)',
+                                right: '-26px', top: '50%', transform: 'translateY(-50%)',
                                 width: '52px', height: '52px',
                                 borderRadius: '50%',
                                 border: '1.5px solid rgba(212,175,55,0.45)',
@@ -1466,29 +1477,7 @@ export default function Showcase() {
                               <ChevronRight size={26} strokeWidth={2} />
                             </button>
 
-                            {/* 标题和副标题 - 在红色相框上方 */}
-                            <div style={{
-                              position: 'absolute',
-                              bottom: '40px',
-                              left: 0,
-                              right: 0,
-                              padding: '0 48px',
-                              zIndex: 3,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '8px'
-                            }}>
-                              {/* 主标题 */}
-                              <h3 className="text-4xl font-bold text-white" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.2, letterSpacing: '1px' }}>
-                                {selectedCompanyPhoto.title}
-                              </h3>
-                              {/* 副标题 - 按需显示 */}
-                              {selectedCompanyPhoto.subtitle && (
-                                <p className="text-xl text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.3, letterSpacing: '0.5px', opacity: 0.95 }}>
-                                  {selectedCompanyPhoto.subtitle}
-                                </p>
-                              )}
-                            </div>
+
                           </div>
                         </motion.div>
                       </AnimatePresence>
