@@ -1002,6 +1002,16 @@ export default function Showcase() {
   };
   
   const autoPlayCompanyPhotoBatch = getAutoPlayCompanyPhotoBatch();
+  
+  // 计算当前轮播图片在六边形列表中的ID（用于高亮）
+  const getHighlightedCompanyPhotoId = () => {
+    const photos = showcaseCompanyPhotosRef.current.length > 0 ? showcaseCompanyPhotosRef.current : showcaseCompanyPhotos;
+    if (photos.length === 0 || !photos[showcasePhotoIndex]) {
+      return null;
+    }
+    return photos[showcasePhotoIndex]?.id || null;
+  };
+  const highlightedCompanyPhotoId = getHighlightedCompanyPhotoId();
   const autoPlayCompanyPhotoLeftColumn = autoPlayCompanyPhotoBatch.left1;
   const autoPlayCompanyPhotoLeftMiddleColumn = autoPlayCompanyPhotoBatch.left2;
   const autoPlayCompanyPhotoRightMiddleColumn = autoPlayCompanyPhotoBatch.right1;
@@ -1204,8 +1214,8 @@ export default function Showcase() {
           <div className="w-full h-full flex items-center justify-between px-4 relative">
             {/* Left columns - company photos */}
             <div className="flex gap-6 items-center">
-              <CompanyPhotoColumn photos={autoPlayCompanyPhotoLeftColumn} highlightedId={null} size={150} fromX={-100} baseDelay={0} onClickPhoto={() => {}} />
-              <CompanyPhotoColumn photos={autoPlayCompanyPhotoLeftMiddleColumn} highlightedId={null} size={150} fromX={-100} baseDelay={3} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoLeftColumn} highlightedId={highlightedCompanyPhotoId} size={150} fromX={-100} baseDelay={0} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoLeftMiddleColumn} highlightedId={highlightedCompanyPhotoId} size={150} fromX={-100} baseDelay={3} onClickPhoto={() => {}} />
             </div>
             
             {/* Center company showcase card - full screen in autoplay mode */}
@@ -1311,8 +1321,8 @@ export default function Showcase() {
             
             {/* Right columns - company photos */}
             <div className="flex gap-6 items-center">
-              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightMiddleColumn} highlightedId={null} size={150} fromX={100} baseDelay={0} onClickPhoto={() => {}} />
-              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightColumn} highlightedId={null} size={150} fromX={100} baseDelay={3} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightMiddleColumn} highlightedId={highlightedCompanyPhotoId} size={150} fromX={100} baseDelay={0} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightColumn} highlightedId={highlightedCompanyPhotoId} size={150} fromX={100} baseDelay={3} onClickPhoto={() => {}} />
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
@@ -1344,8 +1354,8 @@ export default function Showcase() {
             
             {/* Right columns - company photos */}
             <div className="flex gap-6 items-center">
-              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightMiddleColumn} highlightedId={null} size={150} fromX={100} baseDelay={0} onClickPhoto={() => {}} />
-              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightColumn} highlightedId={null} size={150} fromX={100} baseDelay={3} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightMiddleColumn} highlightedId={highlightedCompanyPhotoId} size={150} fromX={100} baseDelay={0} onClickPhoto={() => {}} />
+              <CompanyPhotoColumn photos={autoPlayCompanyPhotoRightColumn} highlightedId={highlightedCompanyPhotoId} size={150} fromX={100} baseDelay={3} onClickPhoto={() => {}} />
             </div>
           </div>
         ) : isAutoPlayDetail && selectedEmployee && selectedDepartment === null && activeStrategy?.displayMode !== 'company_showcase' ? (
