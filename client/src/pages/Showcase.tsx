@@ -175,13 +175,13 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             top: '18px', right: '18px',
             width: '40px', height: '40px',
             borderRadius: '50%',
-            border: '1.5px solid rgba(255,0,0,0.6)',
-            background: 'linear-gradient(135deg, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0.3) 100%)',
-            color: 'rgba(255,255,255,0.9)',
+            border: '1.5px solid rgba(212,175,55,0.6)',
+            background: 'rgba(212,175,55,0.15)',
+            color: 'rgba(212,175,55,0.85)',
             fontSize: '20px',
             display: 'grid', placeItems: 'center',
             cursor: 'pointer',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
+            boxShadow: '0 4px 16px rgba(212,175,55,0.2)'
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
@@ -197,11 +197,11 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               left: '16px', top: '50%', transform: 'translateY(-50%)',
               width: '52px', height: '52px',
               borderRadius: '50%',
-              border: '1.5px solid rgba(255,0,0,0.6)',
-              background: 'linear-gradient(135deg, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0.3) 100%)',
-              color: 'rgba(255,255,255,0.9)',
+              border: '1.5px solid rgba(212,175,55,0.5)',
+              background: 'rgba(212,175,55,0.12)',
+              color: 'rgba(212,175,55,0.8)',
               display: 'grid', placeItems: 'center',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+              boxShadow: '0 8px 24px rgba(212,175,55,0.15)',
               cursor: canGoPrevious ? 'pointer' : 'not-allowed'
             }}
             onMouseEnter={(e) => { if(canGoPrevious){ e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; } }}
@@ -216,11 +216,11 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               right: '16px', top: '50%', transform: 'translateY(-50%)',
               width: '52px', height: '52px',
               borderRadius: '50%',
-              border: '1.5px solid rgba(255,0,0,0.6)',
-              background: 'linear-gradient(135deg, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0.3) 100%)',
-              color: 'rgba(255,255,255,0.9)',
+              border: '1.5px solid rgba(212,175,55,0.5)',
+              background: 'rgba(212,175,55,0.12)',
+              color: 'rgba(212,175,55,0.8)',
               display: 'grid', placeItems: 'center',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+              boxShadow: '0 8px 24px rgba(212,175,55,0.15)',
               cursor: canGoNext ? 'pointer' : 'not-allowed'
             }}
             onMouseEnter={(e) => { if(canGoNext){ e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; } }}
