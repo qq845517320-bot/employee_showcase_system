@@ -90,8 +90,8 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       transition={isAutoPlay ? { duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 } : { duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
       className={`text-white relative ${isAutoPlay ? 'card-glow-pulse' : ''} detail-panel-font`}
       style={{
-        width: '960px',
-        height: '740px',
+        width: '1200px',
+        height: '920px',
         borderRadius: '12px',
         background: 'linear-gradient(160deg, rgba(160,50,50,0.97) 0%, rgba(140,35,35,0.97) 40%, rgba(120,25,25,0.97) 70%, rgba(100,15,15,0.97) 100%)',
         border: '2px solid rgba(212,175,55,0.5)',
@@ -199,7 +199,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         {/* 上部分：照片 + 基本信息 */}
         <div style={{ display: 'flex', gap: '36px', paddingBottom: '16px', marginBottom: '0', alignItems: 'flex-start', flex: '1 0 60%', overflow: 'hidden' }}>
           {/* 照片区域 - 证件照尺寸比例 (3:4) */}
-          <div style={{ flexShrink: 0, width: '290px', height: '370px', marginLeft: '64px', marginTop: '16px' }}>
+          <div style={{ flexShrink: 0, width: '362px', height: '462px', marginLeft: '80px', marginTop: '20px' }}>
             {employee.workPhoto ? (
               <img src={employee.workPhoto} alt={employee.name} style={{
                 width: '100%', height: '100%', objectFit: 'cover',
@@ -224,29 +224,29 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           {/* 基本信息区域 */}
           <div style={{ flex: 1, paddingTop: '66px', paddingLeft: '132px' }}>
             {/* 姓名 + 党员徽章 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '28px' }}>
-              <h2 style={{ fontSize: '52px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '35px' }}>
+              <h2 style={{ fontSize: '65px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px' }}>
                 {employee.name}
               </h2>
               {employee.isPartyMember && (
                 <img 
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663273338301/dTX999GnT8s8oqjJyp2eQW/Partyemblem_a1be73e2.png" 
                   alt="党员" 
-                  style={{ width: '40px', height: '40px', flexShrink: 0, filter: 'saturate(1.3) brightness(1.1)' }}
+                  style={{ width: '50px', height: '50px', flexShrink: 0, filter: 'saturate(1.3) brightness(1.1)' }}
                   title="党员"
                 />
               )}
             </div>
 
             {/* 基本信息项 - 冒号格式 */}
-            <div style={{ display: 'grid', rowGap: '14px' }}>
+            <div style={{ display: 'grid', rowGap: '18px' }}>
               {[
                 { label: '部门', value: getDepartmentName ? getDepartmentName(employee.departmentId) : employee.departmentId },
                 { label: '岗位', value: employee.position },
                 { label: '职务', value: employee.level },
                 { label: '入职时间', value: new Date(employee.joinDate || 0).toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' }) },
               ].map(({ label, value }) => (
-                <div key={label} style={{ fontSize: '18px', lineHeight: '28px', color: 'rgba(255,246,238,0.88)' }}>
+                <div key={label} style={{ fontSize: '22px', lineHeight: '35px', color: 'rgba(255,246,238,0.88)' }}>
                   <span style={{ fontWeight: 400, color: 'rgba(255,246,238,0.6)' }}>{label}：</span>
                   <span style={{ fontWeight: 600 }}>{value}</span>
                 </div>
@@ -256,7 +256,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         </div>
 
         {/* 金色分割线 */}
-        <div style={{ position: 'relative', margin: '0 0 50px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
+          <div style={{ position: 'relative', margin: '0 0 62px 0', display: 'flex', alignItems: 'center', gap: '0' }}>
           {/* 左端菱形装饰 */}
           <div style={{ width: '8px', height: '8px', background: 'rgba(212,175,55,0.7)', transform: 'rotate(45deg)', flexShrink: 0 }} />
           {/* 左段线 */}
@@ -274,18 +274,18 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         {/* 下部分：工作职责/信条 + 荣誉 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: '1 0 40%', marginTop: '-40px', minHeight: 0, overflow: 'hidden' }}>
           {/* 左侧：工作职责 + 工作信条 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '0px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '0px' }}>
             {/* 工作职责 */}
             <div>
-              <div style={{ fontSize: '15px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '8px', letterSpacing: '0.5px' }}>工作职责：</div>
-              <p style={{ margin: 0, fontSize: '14px', lineHeight: '24px', fontWeight: 400, color: 'rgba(255,246,238,0.75)' }}>
+              <div style={{ fontSize: '19px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '10px', letterSpacing: '0.5px' }}>工作职责：</div>
+              <p style={{ margin: 0, fontSize: '17px', lineHeight: '30px', fontWeight: 400, color: 'rgba(255,246,238,0.75)' }}>
                 {employee.jobResponsibilities || '暂无数据'}
               </p>
             </div>
 
             {/* 工作信条 - 四角边框引述框 */}
             <div>
-              <div style={{ fontSize: '15px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '8px', letterSpacing: '0.5px' }}>工作信条：</div>
+              <div style={{ fontSize: '19px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '10px', letterSpacing: '0.5px' }}>工作信条：</div>
               <div style={{ position: 'relative', padding: '14px 16px' }}>
                 {/* 四角装饰 */}
                 {[['0','0','top','left'],['0','auto','top','right'],['auto','0','bottom','left'],['auto','auto','bottom','right']].map(([t,r,_bt,_br], i) => (
@@ -293,14 +293,14 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                     position: 'absolute',
                     top: i < 2 ? '0' : 'auto', bottom: i >= 2 ? '0' : 'auto',
                     left: i % 2 === 0 ? '0' : 'auto', right: i % 2 === 1 ? '0' : 'auto',
-                    width: '14px', height: '14px',
+                    width: '18px', height: '18px',
                     borderTop: i < 2 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                     borderBottom: i >= 2 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                     borderLeft: i % 2 === 0 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                     borderRight: i % 2 === 1 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                   }} />
                 ))}
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: '24px', fontWeight: 400, color: 'rgba(255,246,238,0.82)', fontStyle: 'normal' }}>
+                <p style={{ margin: 0, fontSize: '17px', lineHeight: '30px', fontWeight: 400, color: 'rgba(255,246,238,0.82)', fontStyle: 'normal' }}>
                   {employee.workTenet || '暂无数据'}
                 </p>
               </div>
@@ -309,8 +309,8 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
 
           {/* 右侧：奖励荣誉 */}
           <div>
-            <div style={{ fontSize: '15px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '12px', letterSpacing: '0.5px' }}>奖励荣誉：</div>
-            <div style={{ display: 'grid', rowGap: '10px' }}>
+            <div style={{ fontSize: '19px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '15px', letterSpacing: '0.5px' }}>奖励荣誉：</div>
+            <div style={{ display: 'grid', rowGap: '12px' }}>
               {isLoadingDetail && !fallbackHonors ? (
                 <>
                   <div style={{ height: '30px', background: 'rgba(212,175,55,0.1)', borderRadius: '4px' }} />
@@ -318,26 +318,26 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 </>
               ) : ((selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0)) ? (
                 (selectedEmployeeDetail?.honors?.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <span style={{
                       flexShrink: 0,
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      width: '64px', height: '28px',
+                      width: '80px', height: '35px',
                       borderRadius: '4px',
                       border: '1.5px solid rgba(212,175,55,0.5)',
                       background: 'rgba(212,175,55,0.15)',
                       color: 'rgb(212,175,55)',
-                      fontSize: '13px', fontWeight: 700, letterSpacing: '0.5px'
+                      fontSize: '16px', fontWeight: 700, letterSpacing: '0.5px'
                     }}>
                       {honor.awardDate ? new Date(honor.awardDate).getFullYear() : '年份'}
                     </span>
-                    <span style={{ fontSize: '14px', lineHeight: '22px', fontWeight: 400, color: 'rgba(255,246,238,0.82)' }}>
+                    <span style={{ fontSize: '17px', lineHeight: '28px', fontWeight: 400, color: 'rgba(255,246,238,0.82)' }}>
                       {honor.title}
                     </span>
                   </div>
                 ))
               ) : (
-                <div style={{ fontSize: '14px', color: 'rgba(255,246,238,0.5)' }}>暂无数据</div>
+                <div style={{ fontSize: '17px', color: 'rgba(255,246,238,0.5)' }}>暂无数据</div>
               )}
             </div>
           </div>
