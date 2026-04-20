@@ -152,7 +152,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       initial={isAutoPlay ? { opacity: 0, scale: 0.9, y: 40 } : { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 }}
       animate={isAutoPlay ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, x: 0, rotateZ: 0 }}
       exit={isAutoPlay ? { opacity: 0, scale: 0.9, y: -40 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 }}
-      transition={isAutoPlay ? { duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], type: 'tween' } : { duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
+      transition={isAutoPlay ? { duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 } : { duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
       className={`text-white relative ${isAutoPlay ? 'card-glow-pulse' : ''} detail-panel-font`}
       style={{
         width: '1200px',
@@ -1486,7 +1486,7 @@ export default function Showcase() {
                           initial="initial"
                           animate="animate"
                           exit="exit"
-                          transition={{ duration: 1.0, ease: [0.25, 0.46, 0.45, 0.94], type: 'tween' }}
+                          transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
                           {/* 图片区域 + 渐变遮罩 + 标题 - 占据整个卡片 */}
                           <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
