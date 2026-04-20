@@ -829,3 +829,14 @@
   - [x] 保留关闭按钮和翻页按钮的位置和样式
   - [x] 整体视觉效果更加突出和有冲击力
 
+
+
+## 公司风采卡片宽度调整和按钮透明化（2026-04-20 第五十六轮）
+- [x] 调整公司风采卡片宽度，从1000px增加到1100px
+- [x] 将所有按钮改成透明色
+  - [x] 关闭按钮：border改为transparent，background改为transparent，boxShadow改为none
+  - [x] 左翻页按钮：border改为transparent，background改为transparent，boxShadow改为none
+  - [x] 右翻页按钮：border改为transparent，background改为transparent，boxShadow改为none
+  - [x] 按钮悬停效果：只改变color，不改变background和border
+  - [x] 按钮图标颜色保持金色（rgba(212,175,55,0.9)），悬停时变为更亮的金色（rgb(212,175,55)）
+

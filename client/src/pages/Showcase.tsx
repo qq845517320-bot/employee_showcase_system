@@ -1357,7 +1357,7 @@ export default function Showcase() {
                         <motion.div
                           key={selectedCompanyPhoto.id}
                           className="rounded-2xl text-white border border-red-600/60 relative card-glow-pulse overflow-hidden"
-                          style={{ width: '1000px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
+                          style={{ width: '1100px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
                           variants={{
                             initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
                             animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
@@ -1397,17 +1397,17 @@ export default function Showcase() {
                                 top: '16px', right: '16px',
                                 width: '40px', height: '40px',
                                 borderRadius: '50%',
-                                border: '1.5px solid rgba(212,175,55,0.55)',
-                                background: 'rgba(80,10,10,0.7)',
+                                border: '1.5px solid transparent',
+                                background: 'transparent',
                                 color: 'rgba(255,246,238,0.85)',
                                 fontSize: '20px',
                                 display: 'grid', placeItems: 'center',
                                 cursor: 'pointer',
-                                boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                                boxShadow: 'none',
                                 zIndex: 10
                               }}
-                              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'rgb(212,175,55)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
                             >×</button>
 
                             {/* 左翻页按钮 */}
@@ -1424,16 +1424,16 @@ export default function Showcase() {
                                 left: '16px', top: '50%', transform: 'translateY(-50%)',
                                 width: '52px', height: '52px',
                                 borderRadius: '50%',
-                                border: '1.5px solid rgba(212,175,55,0.45)',
-                                background: 'rgba(60,8,8,0.75)',
+                                border: '1.5px solid transparent',
+                                background: 'transparent',
                                 color: 'rgba(212,175,55,0.9)',
                                 display: 'grid', placeItems: 'center',
-                                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                                boxShadow: 'none',
                                 cursor: 'pointer',
                                 zIndex: 5
                               }}
-                              onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color='rgb(212,175,55)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color='rgba(212,175,55,0.9)'; }}
                             >
                               <ChevronLeft size={26} strokeWidth={2} />
                             </button>
@@ -1452,16 +1452,16 @@ export default function Showcase() {
                                 right: '16px', top: '50%', transform: 'translateY(-50%)',
                                 width: '52px', height: '52px',
                                 borderRadius: '50%',
-                                border: '1.5px solid rgba(212,175,55,0.45)',
-                                background: 'rgba(60,8,8,0.75)',
+                                border: '1.5px solid transparent',
+                                background: 'transparent',
                                 color: 'rgba(212,175,55,0.9)',
                                 display: 'grid', placeItems: 'center',
-                                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                                boxShadow: 'none',
                                 cursor: 'pointer',
                                 zIndex: 5
                               }}
-                              onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color='rgb(212,175,55)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color='rgba(212,175,55,0.9)'; }}
                             >
                               <ChevronRight size={26} strokeWidth={2} />
                             </button>
