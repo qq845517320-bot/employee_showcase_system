@@ -79,50 +79,7 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
 function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, isLoadingDetail, onPrevious, onNext, canGoPrevious, canGoNext, fallbackHonors }: {
   employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; isLoadingDetail?: boolean; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean; fallbackHonors?: any[];
 }) {
-  const [velvetTexture, setVelvetTexture] = React.useState<string>('');
 
-  React.useEffect(() => {
-    // 用 Canvas 生成绒面皮革纹理
-    const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext('2d')!;
-
-    // 透明底色
-    ctx.clearRect(0, 0, 256, 256);
-
-    // 第一层：随机短纤维（模拟绒面绒毛）
-    for (let i = 0; i < 18000; i++) {
-      const x = Math.random() * 256;
-      const y = Math.random() * 256;
-      const len = Math.random() * 3 + 1;
-      const angle = Math.random() * Math.PI * 2;
-      const alpha = Math.random() * 0.12 + 0.03;
-      const bright = Math.random() > 0.5;
-      ctx.strokeStyle = bright
-        ? `rgba(255,220,180,${alpha})`
-        : `rgba(0,0,0,${alpha * 1.5})`;
-      ctx.lineWidth = Math.random() * 0.8 + 0.2;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + Math.cos(angle) * len, y + Math.sin(angle) * len);
-      ctx.stroke();
-    }
-
-    // 第二层：细小噪点（增强颗粒感）
-    for (let i = 0; i < 6000; i++) {
-      const x = Math.random() * 256;
-      const y = Math.random() * 256;
-      const alpha = Math.random() * 0.08 + 0.02;
-      const bright = Math.random() > 0.6;
-      ctx.fillStyle = bright
-        ? `rgba(255,200,150,${alpha})`
-        : `rgba(0,0,0,${alpha * 2})`;
-      ctx.fillRect(x, y, 1, 1);
-    }
-
-    setVelvetTexture(canvas.toDataURL('image/png'));
-  }, []);
 
   return (
     <motion.div
@@ -136,12 +93,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         width: '960px',
         height: '740px',
         borderRadius: '12px',
-        background: `
-          linear-gradient(160deg, rgba(122,26,26,0.97) 0%, rgba(92,15,15,0.97) 40%, rgba(74,12,12,0.97) 70%, rgba(61,10,10,0.97) 100%),
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.04 0.06' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23t)' opacity='0.05'/%3E%3C/svg%3E")
-        `,
-        backgroundBlendMode: 'normal, overlay, soft-light',
+        background: 'linear-gradient(160deg, rgba(122,26,26,0.97) 0%, rgba(92,15,15,0.97) 40%, rgba(74,12,12,0.97) 70%, rgba(61,10,10,0.97) 100%)',
         border: '2px solid rgba(212,175,55,0.5)',
         boxShadow: isAutoPlay
           ? '0 0 0 1px rgba(212,175,55,0.15), 0 0 60px rgba(212,175,55,0.4), 0 32px 80px rgba(0,0,0,0.6)'
@@ -224,17 +176,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, borderRadius: '12px', pointerEvents: 'none', zIndex: 0, overflow: 'hidden'
       }}>
-        {/* 绒面纹理主层 */}
-        {velvetTexture && (
-          <div style={{
-            position: 'absolute', inset: 0,
-            backgroundImage: `url(${velvetTexture})`,
-            backgroundRepeat: 'repeat',
-            backgroundSize: '256px 256px',
-            mixBlendMode: 'overlay',
-            opacity: 0.65
-          }} />
-        )}
+
         {/* 边缘暗角晕影 - 增强立体感 */}
         <div style={{
           position: 'absolute', inset: 0,
