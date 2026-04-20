@@ -505,28 +505,14 @@ export default function Showcase() {
     showPhotos
   });
   
-  // When displayPhotos changes, automatically select the first photo only if a specific company is selected
+  // When displayPhotos changes, always show grid for all company selections (both "全部" and specific companies)
   useEffect(() => {
     console.log('[Showcase] displayPhotos useEffect:', { displayPhotosLength: displayPhotos.length, selectedCompany, selectedDepartment });
     if (selectedDepartment === 'company') {
-      if (displayPhotos.length > 0) {
-        // Only auto-select if a specific company is selected (not "全部")
-        if (selectedCompany !== null) {
-          // For specific company, auto-select the first photo
-          if (!selectedCompanyPhoto || !displayPhotos.find(p => p.id === selectedCompanyPhoto.id)) {
-            console.log('[Showcase] Auto-selecting first photo for company:', selectedCompany);
-            setSelectedCompanyPhoto(displayPhotos[0]);
-          }
-        } else {
-          // For "全部", don't auto-select, show grid instead
-          console.log('[Showcase] Showing grid for "全部"');
-          setSelectedCompanyPhoto(null);
-        }
-      } else {
-        // No photos available
-        console.log('[Showcase] No photos available');
-        setSelectedCompanyPhoto(null);
-      }
+      // Always show grid for company photos, regardless of whether "全部" or specific company is selected
+      // This ensures consistent behavior across all dropdown options
+      console.log('[Showcase] Showing grid for company photos');
+      setSelectedCompanyPhoto(null);
     }
   }, [displayPhotos, selectedCompany, selectedDepartment]);
 
