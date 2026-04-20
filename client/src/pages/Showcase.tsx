@@ -1368,36 +1368,72 @@ export default function Showcase() {
                           exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
-                          {/* 内容容器 - 照片占据大部分，底部为标题区域 */}
-                          <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '0' }}>
-                            {/* 照片区域 - 占据大部分空间 */}
-                            <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {/* 全景照片 */}
-                              <img
-                                src={selectedCompanyPhoto.photoUrl}
-                                alt="公司风采照片"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              />
-                            </div>
+                          {/* 内容容器 - 使用三层效果（照片 + 主遮罩 + 暖光 + 文案） */}
+                          <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+                            {/* 照片 */}
+                            <img
+                              src={selectedCompanyPhoto.photoUrl}
+                              alt="公司风采照片"
+                              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                            />
 
-                            {/* 标题和副标题区域 - 底部红色区域 */}
+                            {/* 主遮罩：负责把底部压暗 */}
                             <div style={{
-                              padding: '24px 32px',
-                              background: 'linear-gradient(180deg, rgba(220, 38, 38, 0.4) 0%, rgba(220, 38, 38, 0.7) 100%)',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '4px',
-                              zIndex: 2
+                              position: 'absolute',
+                              inset: 0,
+                              zIndex: 1,
+                              pointerEvents: 'none',
+                              background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.08) 64%, rgba(0, 0, 0, 0.22) 74%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.62) 100%)'
+                            }} />
+
+                            {/* 底部暖光：负责做出托底感 */}
+                            <div style={{
+                              position: 'absolute',
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              height: '34%',
+                              zIndex: 2,
+                              pointerEvents: 'none',
+                              background: 'radial-gradient(ellipse at center bottom, rgba(255, 170, 90, 0.30) 0%, rgba(255, 140, 70, 0.16) 28%, rgba(255, 120, 60, 0.06) 48%, rgba(255, 100, 50, 0.00) 72%)',
+                              mixBlendMode: 'screen'
+                            }} />
+
+                            {/* 文案层 */}
+                            <div style={{
+                              position: 'absolute',
+                              left: '32px',
+                              right: '32px',
+                              bottom: '10px',
+                              paddingBottom: '10px',
+                              zIndex: 3,
+                              textAlign: 'center'
                             }}>
                               {/* 主标题 */}
-                              <h3 className="text-3xl font-bold text-white" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.2, letterSpacing: '1px' }}>
+                              <div style={{
+                                margin: 0,
+                                fontSize: '26px',
+                                lineHeight: 1.3,
+                                fontWeight: 700,
+                                color: '#FFF6EE',
+                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)',
+                                fontFamily: "'Cormorant Garamond', serif"
+                              }}>
                                 {selectedCompanyPhoto.title}
-                              </h3>
+                              </div>
                               {/* 副标题 - 按需显示 */}
                               {selectedCompanyPhoto.subtitle && (
-                                <p className="text-lg text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.3, letterSpacing: '0.5px', opacity: 0.95 }}>
+                                <div style={{
+                                  marginTop: '8px',
+                                  fontSize: '16px',
+                                  lineHeight: 1.5,
+                                  fontWeight: 400,
+                                  color: 'rgba(255, 246, 238, 0.84)',
+                                  textShadow: '0 1px 8px rgba(0, 0, 0, 0.22)',
+                                  fontFamily: "'Cormorant Garamond', serif"
+                                }}>
                                   {selectedCompanyPhoto.subtitle}
-                                </p>
+                                </div>
                               )}
                             </div>
 
