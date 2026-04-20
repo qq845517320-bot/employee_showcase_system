@@ -75,6 +75,76 @@ function PhotoColumn({ employees, highlightedId, size = 150, fromX = 0, baseDela
   );
 }
 
+/* ========== HexCompanyPhoto ========== */
+function HexCompanyPhoto({ photo, size = 150, isHighlighted = false, onClick, delay = 0, fromX = 0 }: {
+  photo: any; size?: number; isHighlighted?: boolean; onClick?: (e: React.MouseEvent) => void; delay?: number; fromX?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: fromX }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: fromX }}
+      transition={{ duration: 0.5, delay }}
+      whileHover={{ scale: 1.15, filter: 'drop-shadow(0 0 20px rgba(239,68,68,0.6))' }}
+      className="cursor-pointer"
+      onClick={onClick}
+    >
+      {/* 金色边框包裹层 */}
+      <div style={{
+        width: `${size + 2}px`,
+        height: `${size + 2}px`,
+        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+        backgroundColor: '#d4af37',
+        filter: isHighlighted ? 'drop-shadow(0 0 25px rgba(212,175,55,0.8))' : 'drop-shadow(0 0 8px rgba(212,175,55,0.5))',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        <div
+          className={`relative flex items-center justify-center overflow-hidden group transition-all duration-500 ${isHighlighted ? 'scale-110 z-10' : ''}`}
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+            backgroundColor: '#dc2626',
+          }}
+        >
+          {photo.photoUrl ? (
+            <img src={photo.photoUrl} alt={photo.title || "公司风采"} className="w-full h-full object-cover object-center" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+              <span className="text-white text-2xl font-bold">图</span>
+            </div>
+          )}
+          <div className={`absolute inset-0 transition-all duration-500 ${isHighlighted ? 'bg-black/5' : 'bg-black/30 group-hover:bg-black/10'}`} />
+          {isHighlighted && (
+            <div className="absolute bottom-1 left-0 right-0 text-center">
+              <span className="text-white text-xs font-bold drop-shadow-lg bg-black/40 px-2 py-0.5 rounded">{photo.title?.substring(0, 6)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ========== CompanyPhotoColumn ========== */
+function CompanyPhotoColumn({ photos, highlightedId, size = 150, fromX = 0, baseDelay = 0, onClickPhoto }: {
+  photos: any[]; highlightedId?: number | null; size?: number; fromX?: number; baseDelay?: number; onClickPhoto: (photo: any) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-8 justify-center items-center">
+      {photos.map((photo, idx) => (
+        <HexCompanyPhoto key={photo.id} photo={photo} size={size} isHighlighted={highlightedId === photo.id}
+          fromX={fromX} delay={(baseDelay + idx) * 0.1}
+          onClick={(e) => { e.stopPropagation(); onClickPhoto(photo); }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ========== DetailPanel ========== */
 function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepartmentName, selectedEmployeeDetail, isLoadingDetail, onPrevious, onNext, canGoPrevious, canGoNext, fallbackHonors }: {
   employee: any; isAutoPlay?: boolean; onClose?: () => void; onClick?: (e: React.MouseEvent) => void; getDepartmentName?: (deptId: any) => string; selectedEmployeeDetail?: any; isLoadingDetail?: boolean; onPrevious?: () => void; onNext?: () => void; canGoPrevious?: boolean; canGoNext?: boolean; fallbackHonors?: any[];
@@ -430,6 +500,12 @@ export default function Showcase() {
   // Use showcaseCompanyPhotos (always enabled) instead of allCompanyPhotos to avoid enabled condition issues
   const displayPhotos = selectedCompany === null ? showcaseCompanyPhotos : companyPhotos;
   const showPhotos = selectedDepartment === 'company' && displayPhotos.length > 0;
+  
+  // Split company photos into 4 columns (left 2, right 2)
+  const companyPhotoLeftColumn = displayPhotos.slice(0, 2);
+  const companyPhotoLeftMiddleColumn = displayPhotos.slice(2, 5);
+  const companyPhotoRightMiddleColumn = displayPhotos.slice(5, 8);
+  const companyPhotoRightColumn = displayPhotos.slice(8, 10);
   
   console.log('[Showcase] displayPhotos calculation:', {
     selectedCompany,
@@ -1356,6 +1432,12 @@ export default function Showcase() {
               selectedCompanyPhoto ? (
                 /* 单张大卡片模式 */
                 <div className="w-full h-full flex items-center justify-between px-4 relative">
+                  {/* Left columns */}
+                  <div className="flex gap-6 items-center">
+                    <CompanyPhotoColumn photos={companyPhotoLeftColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={-100} baseDelay={0} onClickPhoto={setSelectedCompanyPhoto} />
+                    <CompanyPhotoColumn photos={companyPhotoLeftMiddleColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={-100} baseDelay={2} onClickPhoto={setSelectedCompanyPhoto} />
+                  </div>
+                  
                   {/* 中央大卡片 */}
                   <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center px-4 z-50">
                     <motion.div
@@ -1530,28 +1612,49 @@ export default function Showcase() {
                       </div>
                     </motion.div>
                   </div>
+                  
+                  {/* Right columns */}
+                  <div className="flex gap-6 items-center">
+                    <CompanyPhotoColumn photos={companyPhotoRightMiddleColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={100} baseDelay={0} onClickPhoto={setSelectedCompanyPhoto} />
+                    <CompanyPhotoColumn photos={companyPhotoRightColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={100} baseDelay={3} onClickPhoto={setSelectedCompanyPhoto} />
+                  </div>
                 </div>
               ) : (
                 /* 网格缩略图模式 */
-                <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
+                <motion.div className="w-full h-full flex items-center justify-between px-4 overflow-y-auto"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center items-center max-w-7xl py-8">
-                    {displayPhotos.map((photo: any, idx: number) => (
-                      <motion.div key={photo.id}
-                        initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.4, delay: idx * 0.05 }}
-                        whileHover={{ scale: 1.05 }}
-                        className="cursor-pointer"
-                        onClick={() => setSelectedCompanyPhoto(photo)}
-                      >
-                        <div style={{ width: '280px', height: '200px' }}>
-                          <CompanyPhotoCard 
-                            photoUrl={photo.photoUrl || ''} 
-                            alt={photo.title || "公司风采照片"} 
-                          />
-                        </div>
-                      </motion.div>
-                    ))}
+                  {/* Left columns */}
+                  <div className="flex gap-6 items-center">
+                    <CompanyPhotoColumn photos={companyPhotoLeftColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={-100} baseDelay={0} onClickPhoto={setSelectedCompanyPhoto} />
+                    <CompanyPhotoColumn photos={companyPhotoLeftMiddleColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={-100} baseDelay={2} onClickPhoto={setSelectedCompanyPhoto} />
+                  </div>
+                  
+                  {/* Center grid */}
+                  <div className="flex-1 flex flex-col items-center justify-center overflow-y-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center max-w-4xl py-8">
+                      {displayPhotos.map((photo: any, idx: number) => (
+                        <motion.div key={photo.id}
+                          initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.4, delay: idx * 0.05 }}
+                          whileHover={{ scale: 1.05 }}
+                          className="cursor-pointer"
+                          onClick={() => setSelectedCompanyPhoto(photo)}
+                        >
+                          <div style={{ width: '280px', height: '200px' }}>
+                            <CompanyPhotoCard 
+                              photoUrl={photo.photoUrl || ''} 
+                              alt={photo.title || "公司风采照片"} 
+                            />
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Right columns */}
+                  <div className="flex gap-6 items-center">
+                    <CompanyPhotoColumn photos={companyPhotoRightMiddleColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={100} baseDelay={0} onClickPhoto={setSelectedCompanyPhoto} />
+                    <CompanyPhotoColumn photos={companyPhotoRightColumn} highlightedId={selectedCompanyPhoto?.id} size={150} fromX={100} baseDelay={3} onClickPhoto={setSelectedCompanyPhoto} />
                   </div>
                 </motion.div>
               )
