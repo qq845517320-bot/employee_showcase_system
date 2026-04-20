@@ -340,12 +340,27 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: '36px', flex: '1 0 40%', marginTop: '-40px', minHeight: 0, overflow: 'hidden' }}>
           {/* 左侧：工作职责 + 工作信条 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '0px' }}>
-            {/* 工作职责 */}
+            {/* 工作职责 - 四角边框引述框 */}
             <div>
               <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作职责：</div>
-              <p style={{ margin: 0, fontSize: '21px', lineHeight: '37px', fontWeight: 400, color: 'rgba(255,246,238,0.75)' }}>
-                {employee.jobResponsibilities || '暂无数据'}
-              </p>
+              <div style={{ position: 'relative', padding: '14px 16px' }}>
+                {/* 四角装饰 */}
+                {[['0','0','top','left'],['0','auto','top','right'],['auto','0','bottom','left'],['auto','auto','bottom','right']].map(([t,r,_bt,_br], i) => (
+                  <span key={i} style={{
+                    position: 'absolute',
+                    top: i < 2 ? '0' : 'auto', bottom: i >= 2 ? '0' : 'auto',
+                    left: i % 2 === 0 ? '0' : 'auto', right: i % 2 === 1 ? '0' : 'auto',
+                    width: '22px', height: '22px',
+                    borderTop: i < 2 ? '2px solid rgba(212,175,55,0.7)' : 'none',
+                    borderBottom: i >= 2 ? '2px solid rgba(212,175,55,0.7)' : 'none',
+                    borderLeft: i % 2 === 0 ? '2px solid rgba(212,175,55,0.7)' : 'none',
+                    borderRight: i % 2 === 1 ? '2px solid rgba(212,175,55,0.7)' : 'none',
+                  }} />
+                ))}
+                <p style={{ margin: 0, fontSize: '21px', lineHeight: '37px', fontWeight: 400, color: 'rgba(255,246,238,0.82)', fontStyle: 'normal' }}>
+                  {employee.jobResponsibilities || '暂无数据'}
+                </p>
+              </div>
             </div>
 
             {/* 工作信条 - 四角边框引述框 */}
