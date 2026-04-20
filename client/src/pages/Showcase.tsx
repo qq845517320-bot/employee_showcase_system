@@ -1133,7 +1133,7 @@ export default function Showcase() {
                   transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 }}
                   className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative card-glow-pulse"
                   style={{
-                    width: '1100px',
+                    width: '1200px',
                     height: '800px',
                     paddingTop: '40px',
                     boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)'
@@ -1366,7 +1366,7 @@ export default function Showcase() {
                         <motion.div
                           key={selectedCompanyPhoto.id}
                           className="rounded-2xl text-white border border-red-600/60 relative card-glow-pulse overflow-hidden"
-                          style={{ width: '1100px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
+                          style={{ width: '1200px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
                           variants={{
                             initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
                             animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
