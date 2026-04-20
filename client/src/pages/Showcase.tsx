@@ -927,6 +927,9 @@ export default function Showcase() {
 
   const highlightedId = selectedEmployee?.id || null;
 
+  // 统一的覆盖层打开状态：员工详情卡片、公司风采卡片或自动轮播公司展示
+  const isOverlayOpen = !!selectedEmployee || !!selectedCompanyPhoto || isAutoPlayCompanyShowcase;
+
   return (
     <div
       className="w-full h-screen overflow-hidden relative"
@@ -957,13 +960,13 @@ export default function Showcase() {
           </div>
           <div className="text-2xl font-semibold tracking-wider" style={{ fontFamily: 'Noto Sans SC, sans-serif', color: '#ddc078', textShadow: '0 6px 22px rgba(84,22,0,0.22)' }}>{currentTime}</div>
         </div>
-        <motion.div
-          initial={{ opacity: 1 }}
-          animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
-          transition={{ duration: 0.5 }}
-          style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
-          className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
-        >
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isOverlayOpen ? 0 : 1 }}
+        transition={{ duration: 0.5 }}
+        style={{ pointerEvents: isOverlayOpen ? 'none' : 'auto' }}
+        className="flex items-center justify-center gap-3 px-8 pb-4 flex-wrap"
+      >
           {/* 部门下拉框 */}
           <div className="relative">
             <button onClick={() => handleDepartmentClick('department')}
@@ -1634,9 +1637,9 @@ export default function Showcase() {
       <motion.div
         className="absolute bottom-8 left-8 z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
+        animate={{ opacity: isOverlayOpen ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
+        style={{ pointerEvents: isOverlayOpen ? 'none' : 'auto' }}
       >
         <button onClick={handlePreviousBatch}
           className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-2xl font-bold transition-all border border-white/30">
@@ -1648,9 +1651,9 @@ export default function Showcase() {
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
+        animate={{ opacity: isOverlayOpen ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
+        style={{ pointerEvents: isOverlayOpen ? 'none' : 'auto' }}
       >
         <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/30">
           <Search className="w-5 h-5 text-white" />
@@ -1670,9 +1673,9 @@ export default function Showcase() {
       <motion.div
         className="absolute bottom-8 right-8 z-40"
         initial={{ opacity: 1 }}
-        animate={{ opacity: selectedEmployee || isAutoPlayCompanyShowcase ? 0 : 1 }}
+        animate={{ opacity: isOverlayOpen ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        style={{ pointerEvents: selectedEmployee || isAutoPlayCompanyShowcase ? 'none' : 'auto' }}
+        style={{ pointerEvents: isOverlayOpen ? 'none' : 'auto' }}
       >
         <button onClick={handleNextBatch}
           className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white text-2xl font-bold transition-all border border-white/30">
