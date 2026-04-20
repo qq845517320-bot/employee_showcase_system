@@ -1380,7 +1380,10 @@ export default function Showcase() {
                             {/* 主遮罩：负责把底部压暗 */}
                             <div style={{
                               position: 'absolute',
-                              inset: 0,
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
                               zIndex: 1,
                               pointerEvents: 'none',
                               background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.08) 64%, rgba(0, 0, 0, 0.22) 74%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.62) 100%)'
@@ -1396,7 +1399,7 @@ export default function Showcase() {
                               zIndex: 2,
                               pointerEvents: 'none',
                               background: 'radial-gradient(ellipse at center bottom, rgba(255, 170, 90, 0.30) 0%, rgba(255, 140, 70, 0.16) 28%, rgba(255, 120, 60, 0.06) 48%, rgba(255, 100, 50, 0.00) 72%)',
-                              mixBlendMode: 'screen'
+                              mixBlendMode: 'screen' as any
                             }} />
 
                             {/* 文案层 */}
