@@ -1399,15 +1399,15 @@ export default function Showcase() {
                                 borderRadius: '50%',
                                 border: '1.5px solid rgb(212,175,55)',
                                 background: 'transparent',
-                                color: 'rgba(255,246,238,0.85)',
+                                color: 'rgb(212,175,55)',
                                 fontSize: '20px',
                                 display: 'grid', placeItems: 'center',
                                 cursor: 'pointer',
                                 boxShadow: 'none',
                                 zIndex: 10
                               }}
-                              onMouseEnter={(e) => { e.currentTarget.style.color = 'rgb(212,175,55)'; }}
-                              onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = 'rgb(255,255,200)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'rgb(212,175,55)'; }}
                             >×</button>
 
                             {/* 左翻页按钮 */}
@@ -1479,11 +1479,12 @@ export default function Showcase() {
                               {/* 主标题 */}
                               <div style={{
                                 margin: 0,
-                                fontSize: '26px',
+                                fontSize: '32px',
                                 lineHeight: 1.3,
                                 fontWeight: 700,
-                                color: '#FFF6EE',
-                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)'
+                                color: 'rgb(212,175,55)',
+                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)',
+                                fontFamily: "'Cormorant Garamond', serif"
                               }}>
                                 {selectedCompanyPhoto.title}
                               </div>
@@ -1491,11 +1492,12 @@ export default function Showcase() {
                               {selectedCompanyPhoto.subtitle && (
                                 <div style={{
                                   marginTop: '8px',
-                                  fontSize: '16px',
+                                  fontSize: '20px',
                                   lineHeight: 1.5,
                                   fontWeight: 400,
-                                  color: 'rgba(255, 246, 238, 0.84)',
-                                  textShadow: '0 1px 8px rgba(0, 0, 0, 0.22)'
+                                  color: 'rgb(212,175,55)',
+                                  textShadow: '0 1px 8px rgba(0, 0, 0, 0.22)',
+                                  fontFamily: "'Cormorant Garamond', serif"
                                 }}>
                                   {selectedCompanyPhoto.subtitle}
                                 </div>

@@ -863,3 +863,13 @@
   - [x] 副标题样式：fontSize改为16px，color改为rgba(255, 246, 238, 0.84)，textShadow改为0 1px 8px rgba(0, 0, 0, 0.22)
   - [x] 副标题间距：marginTop改为8px，lineHeight改为1.5
 
+
+
+## 公司风采卡片标题和按钮金色优化（2026-04-20 第五十九轮）
+- [x] 将主标题和副标题颜色改为金色（rgb(212,175,55)）
+  - [x] 主标题：fontSize改为32px，color改为rgb(212,175,55)，fontFamily改为Cormorant Garamond
+  - [x] 副标题：fontSize改为20px，color改为rgb(212,175,55)，fontFamily改为Cormorant Garamond
+- [x] 将关闭按钮（叉叉）改为金色线条
+  - [x] 关闭按钮：color改为rgb(212,175,55)，悬停时变为rgb(255,255,200)
+- [x] 保持按钮的圆形黄色边框和透明背景
+
