@@ -1191,18 +1191,85 @@ export default function Showcase() {
                   transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 }}
                   className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl border border-red-600/60 relative card-glow-pulse"
                   style={{
-                    width: '950px',
-                    height: '750px',
+                    width: '1100px',
+                    height: '800px',
                     paddingTop: '40px',
                     boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)'
                   }}
                 >
-                  <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-xl">
+                  <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden rounded-xl relative">
+                    {/* 照片 */}
                     <img
                       src={photo.photoUrl}
                       alt="公司风采照片"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover absolute inset-0"
                     />
+                    
+                    {/* 主遮罩层 - 负责把底部压暗 */}
+                    <div style={{
+                      position: 'absolute',
+                      inset: 0,
+                      zIndex: 1,
+                      pointerEvents: 'none',
+                      background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.08) 64%, rgba(0, 0, 0, 0.22) 74%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.62) 100%)'
+                    }} />
+                    
+                    {/* 底部暖光 - 负责做出托底感 */}
+                    <div style={{
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: '34%',
+                      zIndex: 2,
+                      pointerEvents: 'none',
+                      background: 'radial-gradient(ellipse at center bottom, rgba(255, 170, 90, 0.30) 0%, rgba(255, 140, 70, 0.16) 28%, rgba(255, 120, 60, 0.06) 48%, rgba(255, 100, 50, 0.00) 72%)',
+                      mixBlendMode: 'screen' as any
+                    }} />
+                    
+                    {/* 文案层 */}
+                    <div style={{
+                      position: 'absolute',
+                      left: '32px',
+                      right: '32px',
+                      bottom: '10px',
+                      paddingBottom: '10px',
+                      zIndex: 3,
+                      textAlign: 'center'
+                    }}>
+                      {/* 主标题 */}
+                      <div style={{
+                        margin: 0,
+                        fontSize: '48px',
+                        lineHeight: 1.3,
+                        fontWeight: 900,
+                        background: 'linear-gradient(135deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        filter: 'drop-shadow(0 4px 20px rgba(212, 175, 55, 0.3))',
+                        fontFamily: "'Microsoft YaHei', '微软雅黑', sans-serif"
+                      } as React.CSSProperties}>
+                        {photo.title}
+                      </div>
+                      {/* 副标题 - 按需显示 */}
+                      {photo.subtitle && (
+                        <div style={{
+                          marginTop: '8px',
+                          fontSize: '28px',
+                          lineHeight: 1.5,
+                          fontWeight: 600,
+                          background: 'linear-gradient(135deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text',
+                          filter: 'drop-shadow(0 4px 20px rgba(212, 175, 55, 0.3))',
+                          fontFamily: "'Microsoft YaHei', '微软雅黑', sans-serif"
+                        } as React.CSSProperties}>
+                          {photo.subtitle}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               ) : (
