@@ -1369,7 +1369,7 @@ export default function Showcase() {
                         <motion.div
                           key={selectedCompanyPhoto.id}
                           className="rounded-2xl text-white border border-red-600/60 relative card-glow-pulse overflow-hidden"
-                          style={{ width: '1200px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
+                          style={{ width: '1200px', height: '920px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
                           variants={{
                             initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
                             animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
