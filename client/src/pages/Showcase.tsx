@@ -1356,8 +1356,8 @@ export default function Showcase() {
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={selectedCompanyPhoto.id}
-                          className="rounded-2xl text-white border border-red-600/60 relative card-glow-pulse overflow-hidden"
-                          style={{ width: '1100px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.8) 0%, rgba(80,10,10,0.9) 100%)', padding: '0' }}
+                          className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse"
+                          style={{ width: '1000px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column' }}
                           variants={{
                             initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
                             animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
@@ -1368,83 +1368,18 @@ export default function Showcase() {
                           exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
-                          {/* 内容容器 - 使用三层效果（照片 + 主遮罩 + 暖光 + 文案） */}
-                          <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-                            {/* 照片 */}
-                            <img
-                              src={selectedCompanyPhoto.photoUrl}
-                              alt="公司风采照片"
-                              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                            />
-
-                            {/* 主遮罩：负责把底部压暗 */}
-                            <div style={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              zIndex: 1,
-                              pointerEvents: 'none',
-                              background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.08) 64%, rgba(0, 0, 0, 0.22) 74%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.62) 100%)'
-                            }} />
-
-                            {/* 底部暖光：负责做出托底感 */}
-                            <div style={{
-                              position: 'absolute',
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              height: '34%',
-                              zIndex: 2,
-                              pointerEvents: 'none',
-                              background: 'radial-gradient(ellipse at center bottom, rgba(255, 170, 90, 0.30) 0%, rgba(255, 140, 70, 0.16) 28%, rgba(255, 120, 60, 0.06) 48%, rgba(255, 100, 50, 0.00) 72%)',
-                              mixBlendMode: 'screen' as any
-                            }} />
-
-                            {/* 文案层 */}
-                            <div style={{
-                              position: 'absolute',
-                              left: '32px',
-                              right: '32px',
-                              bottom: '10px',
-                              paddingBottom: '10px',
-                              zIndex: 3,
-                              textAlign: 'center'
-                            }}>
-                              {/* 主标题 */}
-                              <div style={{
-                                margin: 0,
-                                fontSize: '26px',
-                                lineHeight: 1.3,
-                                fontWeight: 700,
-                                color: '#FFF6EE',
-                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)',
-                                fontFamily: "'Cormorant Garamond', serif"
-                              }}>
-                                {selectedCompanyPhoto.title}
-                              </div>
-                              {/* 副标题 - 按需显示 */}
-                              {selectedCompanyPhoto.subtitle && (
-                                <div style={{
-                                  marginTop: '8px',
-                                  fontSize: '16px',
-                                  lineHeight: 1.5,
-                                  fontWeight: 400,
-                                  color: 'rgba(255, 246, 238, 0.84)',
-                                  textShadow: '0 1px 8px rgba(0, 0, 0, 0.22)',
-                                  fontFamily: "'Cormorant Garamond', serif"
-                                }}>
-                                  {selectedCompanyPhoto.subtitle}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* 关闭按钮 - 右上角 */}
+                          {/* 顶部控制栏 - 包含关闭按钮和标题 */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderBottom: '1px solid rgba(212,175,55,0.2)', position: 'relative', zIndex: 10 }}>
+                            {/* 左侧占位符 */}
+                            <div style={{ width: '40px' }}></div>
+                            {/* 中间标题 */}
+                            <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Cormorant Garamond', serif", flex: 1, textAlign: 'center', margin: 0 }}>
+                              {selectedCompanyPhoto.title}
+                            </h3>
+                            {/* 右侧关闭按钮 */}
                             <button onClick={() => setSelectedCompanyPhoto(null)}
-                              className="transition-all duration-200 flex-shrink-0 absolute"
+                              className="transition-all duration-200 flex-shrink-0"
                               style={{
-                                top: '16px', right: '16px',
                                 width: '40px', height: '40px',
                                 borderRadius: '50%',
                                 border: '1.5px solid rgba(212,175,55,0.55)',
@@ -1453,13 +1388,15 @@ export default function Showcase() {
                                 fontSize: '20px',
                                 display: 'grid', placeItems: 'center',
                                 cursor: 'pointer',
-                                boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                                zIndex: 10
+                                boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
                               }}
                               onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
                             >×</button>
+                          </div>
 
+                          {/* 中间内容区 - 图片 + 左右按钮 */}
+                          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', gap: '16px', position: 'relative' }}>
                             {/* 左翻页按钮 */}
                             <button onClick={() => {
                               const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
@@ -1469,9 +1406,8 @@ export default function Showcase() {
                                 setSelectedCompanyPhoto(displayPhotos[newIndex]);
                               }
                             }}
-                              className="transition-all duration-200 flex-shrink-0 absolute"
+                              className="transition-all duration-200 flex-shrink-0"
                               style={{
-                                left: '-26px', top: '50%', transform: 'translateY(-50%)',
                                 width: '52px', height: '52px',
                                 borderRadius: '50%',
                                 border: '1.5px solid rgba(212,175,55,0.45)',
@@ -1479,14 +1415,22 @@ export default function Showcase() {
                                 color: 'rgba(212,175,55,0.9)',
                                 display: 'grid', placeItems: 'center',
                                 boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                                cursor: 'pointer',
-                                zIndex: 5
+                                cursor: 'pointer'
                               }}
                               onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
                             >
                               <ChevronLeft size={26} strokeWidth={2} />
                             </button>
+
+                            {/* 图片区域 */}
+                            <div style={{ flex: 1, height: '100%', overflow: 'hidden', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <img
+                                src={selectedCompanyPhoto.photoUrl}
+                                alt="公司风采照片"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                              />
+                            </div>
 
                             {/* 右翻页按钮 */}
                             <button onClick={() => {
@@ -1497,9 +1441,8 @@ export default function Showcase() {
                                 setSelectedCompanyPhoto(displayPhotos[newIndex]);
                               }
                             }}
-                              className="transition-all duration-200 flex-shrink-0 absolute"
+                              className="transition-all duration-200 flex-shrink-0"
                               style={{
-                                right: '-26px', top: '50%', transform: 'translateY(-50%)',
                                 width: '52px', height: '52px',
                                 borderRadius: '50%',
                                 border: '1.5px solid rgba(212,175,55,0.45)',
@@ -1507,16 +1450,22 @@ export default function Showcase() {
                                 color: 'rgba(212,175,55,0.9)',
                                 display: 'grid', placeItems: 'center',
                                 boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                                cursor: 'pointer',
-                                zIndex: 5
+                                cursor: 'pointer'
                               }}
                               onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
                               onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
                             >
                               <ChevronRight size={26} strokeWidth={2} />
                             </button>
+                          </div>
 
-
+                          {/* 底部副标题区域 */}
+                          <div style={{ padding: '12px 24px', borderTop: '1px solid rgba(212,175,55,0.2)', backgroundColor: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)', minHeight: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {selectedCompanyPhoto.subtitle && (
+                              <p className="text-lg text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0 }}>
+                                {selectedCompanyPhoto.subtitle}
+                              </p>
+                            )}
                           </div>
                         </motion.div>
                       </AnimatePresence>
