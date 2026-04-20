@@ -1469,24 +1469,36 @@ export default function Showcase() {
                             {/* 标题和副标题 - 在红色相框上方 */}
                             <div style={{
                               position: 'absolute',
-                              bottom: '40px',
-                              left: 0,
-                              right: 0,
-                              padding: '0 48px',
+                              left: '32px',
+                              right: '32px',
+                              bottom: '10px',
+                              paddingBottom: '10px',
                               zIndex: 3,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '8px'
+                              textAlign: 'center'
                             }}>
                               {/* 主标题 */}
-                              <h3 className="text-4xl font-bold text-white" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.2, letterSpacing: '1px' }}>
+                              <div style={{
+                                margin: 0,
+                                fontSize: '26px',
+                                lineHeight: 1.3,
+                                fontWeight: 700,
+                                color: '#FFF6EE',
+                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.28)'
+                              }}>
                                 {selectedCompanyPhoto.title}
-                              </h3>
+                              </div>
                               {/* 副标题 - 按需显示 */}
                               {selectedCompanyPhoto.subtitle && (
-                                <p className="text-xl text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0, lineHeight: 1.3, letterSpacing: '0.5px', opacity: 0.95 }}>
+                                <div style={{
+                                  marginTop: '8px',
+                                  fontSize: '16px',
+                                  lineHeight: 1.5,
+                                  fontWeight: 400,
+                                  color: 'rgba(255, 246, 238, 0.84)',
+                                  textShadow: '0 1px 8px rgba(0, 0, 0, 0.22)'
+                                }}>
                                   {selectedCompanyPhoto.subtitle}
-                                </p>
+                                </div>
                               )}
                             </div>
                           </div>

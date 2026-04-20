@@ -852,3 +852,14 @@
 - [x] 保持boxShadow为none
 - [x] 保持按钮图标颜色和悬停效果
 
+
+
+## 公司风采卡片文案层样式优化（2026-04-20 第五十八轮）
+- [x] 按照参考代码修改文案层的样式
+  - [x] 调整文案层容器位置：left改为32px，right改为32px，bottom改为10px
+  - [x] 调整文案层容器padding：paddingBottom改为10px
+  - [x] 调整文案层容器对齐：textAlign改为center
+  - [x] 主标题样式：fontSize改为26px，color改为#FFF6EE，textShadow改为0 2px 10px rgba(0, 0, 0, 0.28)
+  - [x] 副标题样式：fontSize改为16px，color改为rgba(255, 246, 238, 0.84)，textShadow改为0 1px 8px rgba(0, 0, 0, 0.22)
+  - [x] 副标题间距：marginTop改为8px，lineHeight改为1.5
+
