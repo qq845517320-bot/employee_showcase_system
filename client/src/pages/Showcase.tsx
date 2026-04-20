@@ -1633,7 +1633,7 @@ export default function Showcase() {
                 /* 网格缩略图模式 */
                 <motion.div className="w-full h-full flex flex-col items-center justify-center px-4 overflow-y-auto"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center items-center w-full py-8" style={{ maxWidth: '1240px', margin: '0 auto' }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center items-center w-full pt-0 pb-8" style={{ maxWidth: '1240px', margin: '0 auto' }}>
                     {displayPhotos.map((photo: any, idx: number) => (
                       <motion.div key={photo.id}
                         initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
