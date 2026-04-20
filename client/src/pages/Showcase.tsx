@@ -399,18 +399,6 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               ) : ((selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0)) ? (
                 (selectedEmployeeDetail?.honors?.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <span style={{
-                      flexShrink: 0,
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      width: '80px', height: '35px',
-                      borderRadius: '4px',
-                      border: '1.5px solid rgba(212,175,55,0.5)',
-                      background: 'rgba(212,175,55,0.15)',
-                      color: 'rgb(212,175,55)',
-                      fontSize: '20px', fontWeight: 700, letterSpacing: '0.5px'
-                    }}>
-                      {honor.awardDate ? new Date(honor.awardDate).getFullYear() : '年份'}
-                    </span>
                     <span style={{ fontSize: '21px', lineHeight: '35px', fontWeight: 400, color: 'rgba(255,246,238,0.82)' }}>
                       {honor.title}
                     </span>
