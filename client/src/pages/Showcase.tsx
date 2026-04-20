@@ -158,7 +158,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
         width: '1200px',
         height: '920px',
         borderRadius: '12px',
-        background: 'linear-gradient(160deg, rgba(160,50,50,0.97) 0%, rgba(140,35,35,0.97) 40%, rgba(120,25,25,0.97) 70%, rgba(100,15,15,0.97) 100%)',
+        background: 'linear-gradient(160deg, rgba(220,80,80,0.95) 0%, rgba(200,60,60,0.95) 40%, rgba(180,50,50,0.95) 70%, rgba(160,40,40,0.95) 100%)',
         border: '2px solid rgba(212,175,55,0.5)',
         boxShadow: isAutoPlay
           ? '0 0 0 1px rgba(212,175,55,0.15), 0 0 60px rgba(212,175,55,0.4), 0 32px 80px rgba(0,0,0,0.6)'
@@ -731,6 +731,8 @@ export default function Showcase() {
     const handleClick = (e: MouseEvent) => {
       setIsAutoPlayCompanyShowcase(false);
       if (companyShowcaseIntervalRef.current) clearInterval(companyShowcaseIntervalRef.current);
+      // 重新启动 30 秒无操作计时器，以便退出轮播后能正常重新进入轮播模式
+      resetInactivityTimer();
     };
 
     document.addEventListener('click', handleClick);
@@ -1226,50 +1228,41 @@ export default function Showcase() {
                 return photos.length > 0 && photo ? (
                 <motion.div
                   key={`showcase-auto-${photo?.id || showcasePhotoIndex}`}
-                  initial={{ opacity: 0, scale: 0.85, y: 40 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.85, y: -40 }}
-                  transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 }}
-                  className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl px-12 py-8 text-white shadow-2xl relative card-glow-pulse"
-                  style={{
-                    width: '1200px',
-                    height: '920px',
-                    paddingTop: '40px',
-                    boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)',
-                    border: '2px solid rgba(212,175,55,0.8)'
+                  variants={{
+                    initial: { opacity: 0, scale: 0.85, y: 40 },
+                    animate: { opacity: 1, scale: 1, y: 0 },
+                    exit: { opacity: 0, scale: 0.85, y: -40 },
                   }}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1], type: 'spring', stiffness: 80, damping: 20 }}
+                  className="rounded-2xl text-white relative card-glow-pulse overflow-hidden"
+                  style={{ width: '1200px', height: '920px', border: '2px solid rgba(212,175,55,0.8)', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, rgba(120,20,20,0.3) 0%, rgba(80,10,10,0.4) 100%)' }}
                 >
-                  <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden rounded-xl relative">
+                  <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                     {/* 照片 */}
                     <img
                       src={photo.photoUrl}
                       alt="公司风采照片"
-                      className="w-full h-full object-cover absolute inset-0"
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
                     />
                     
-                    {/* 主遮罩层 - 负责把底部压暗 */}
+                    {/* 红色相框效果 - 底部区域，使用clip-path创建波浪形 */}
                     <div style={{
                       position: 'absolute',
-                      inset: 0,
-                      zIndex: 1,
-                      pointerEvents: 'none',
-                      background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.08) 64%, rgba(0, 0, 0, 0.22) 74%, rgba(0, 0, 0, 0.42) 86%, rgba(0, 0, 0, 0.62) 100%)'
-                    }} />
-                    
-                    {/* 底部暖光 - 负责做出托底感 */}
-                    <div style={{
-                      position: 'absolute',
+                      bottom: 0,
                       left: 0,
                       right: 0,
-                      bottom: 0,
-                      height: '34%',
-                      zIndex: 2,
+                      height: '220px',
+                      background: 'linear-gradient(180deg, rgba(220, 38, 38, 0) 0%, rgba(220, 38, 38, 0.2) 15%, rgba(220, 38, 38, 0.5) 50%, rgba(220, 38, 38, 0.8) 100%)',
                       pointerEvents: 'none',
-                      background: 'radial-gradient(ellipse at center bottom, rgba(255, 170, 90, 0.30) 0%, rgba(255, 140, 70, 0.16) 28%, rgba(255, 120, 60, 0.06) 48%, rgba(255, 100, 50, 0.00) 72%)',
-                      mixBlendMode: 'screen' as any
+                      zIndex: 2,
+                      clipPath: 'polygon(0 35%, 100% 25%, 100% 100%, 0 100%)'
                     }} />
                     
-                    {/* 文案层 */}
+                    
+                    {/* 标题和副标题 - 在红色相框上方 */}
                     <div style={{
                       position: 'absolute',
                       left: '32px',
