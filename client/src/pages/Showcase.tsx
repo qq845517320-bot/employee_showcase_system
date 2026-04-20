@@ -184,7 +184,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
             boxShadow: '0 4px 16px rgba(212,175,55,0.2)'
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.15)'; e.currentTarget.style.color = 'rgba(212,175,55,0.85)'; }}
         >×</button>
       )}
       {/* 左右导航按钮 - 卡片外侧 */}
@@ -205,7 +205,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               cursor: canGoPrevious ? 'pointer' : 'not-allowed'
             }}
             onMouseEnter={(e) => { if(canGoPrevious){ e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; } }}
-            onMouseLeave={(e) => { if(canGoPrevious){ e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; } }}
+            onMouseLeave={(e) => { if(canGoPrevious){ e.currentTarget.style.background='rgba(212,175,55,0.12)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.5)'; } }}
           >
             <ChevronLeft size={26} strokeWidth={2} />
           </button>
@@ -224,7 +224,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               cursor: canGoNext ? 'pointer' : 'not-allowed'
             }}
             onMouseEnter={(e) => { if(canGoNext){ e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; } }}
-            onMouseLeave={(e) => { if(canGoNext){ e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; } }}
+            onMouseLeave={(e) => { if(canGoNext){ e.currentTarget.style.background='rgba(212,175,55,0.12)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.5)'; } }}
           >
             <ChevronRight size={26} strokeWidth={2} />
           </button>
