@@ -1356,8 +1356,8 @@ export default function Showcase() {
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={selectedCompanyPhoto.id}
-                          className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse px-12 py-8"
-                          style={{ width: '950px', height: '750px', paddingTop: '40px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)' }}
+                          className="bg-gradient-to-br from-red-800/95 via-red-900/95 to-red-950/95 backdrop-blur-sm rounded-2xl text-white border border-red-600/60 relative card-glow-pulse"
+                          style={{ width: '1000px', height: '800px', boxShadow: '0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)', display: 'flex', flexDirection: 'column' }}
                           variants={{
                             initial: photoSlideDirection === 'right' ? { opacity: 0, scale: 0.85, x: -80, rotateZ: -5 } : { opacity: 0, scale: 0.85, x: 80, rotateZ: 5 },
                             animate: { opacity: 1, scale: 1, x: 0, rotateZ: 0 },
@@ -1368,92 +1368,104 @@ export default function Showcase() {
                           exit="exit"
                           transition={{ duration: 0.6, ease: 'easeInOut', type: 'spring', stiffness: 100, damping: 15 }}
                         >
-                          {/* 关闭按钮 - 右上角内侧 */}
-                          <button onClick={() => setSelectedCompanyPhoto(null)}
-                            className="absolute z-50 pointer-events-auto transition-all duration-200"
-                            style={{
-                              top: '18px', right: '18px',
-                              width: '40px', height: '40px',
-                              borderRadius: '50%',
-                              border: '1.5px solid rgba(212,175,55,0.55)',
-                              background: 'rgba(80,10,10,0.7)',
-                              color: 'rgba(255,246,238,0.85)',
-                              fontSize: '20px',
-                              display: 'grid', placeItems: 'center',
-                              cursor: 'pointer',
-                              boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
+                          {/* 顶部控制栏 - 包含关闭按钮和标题 */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderBottom: '1px solid rgba(212,175,55,0.2)', position: 'relative', zIndex: 10 }}>
+                            {/* 左侧占位符 */}
+                            <div style={{ width: '40px' }}></div>
+                            {/* 中间标题 */}
+                            <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Cormorant Garamond', serif", flex: 1, textAlign: 'center', margin: 0 }}>
+                              {selectedCompanyPhoto.title}
+                            </h3>
+                            {/* 右侧关闭按钮 */}
+                            <button onClick={() => setSelectedCompanyPhoto(null)}
+                              className="transition-all duration-200 flex-shrink-0"
+                              style={{
+                                width: '40px', height: '40px',
+                                borderRadius: '50%',
+                                border: '1.5px solid rgba(212,175,55,0.55)',
+                                background: 'rgba(80,10,10,0.7)',
+                                color: 'rgba(255,246,238,0.85)',
+                                fontSize: '20px',
+                                display: 'grid', placeItems: 'center',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 16px rgba(0,0,0,0.3)'
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
+                            >×</button>
+                          </div>
+
+                          {/* 中间内容区 - 图片 + 左右按钮 */}
+                          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', gap: '16px', position: 'relative' }}>
+                            {/* 左翻页按钮 */}
+                            <button onClick={() => {
+                              const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
+                              if (displayPhotos.length > 0) {
+                                const newIndex = (currentIndex - 1 + displayPhotos.length) % displayPhotos.length;
+                                setPhotoSlideDirection('left');
+                                setSelectedCompanyPhoto(displayPhotos[newIndex]);
+                              }
                             }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212,175,55,0.18)'; e.currentTarget.style.color = 'rgb(212,175,55)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(80,10,10,0.7)'; e.currentTarget.style.color = 'rgba(255,246,238,0.85)'; }}
-                          >×</button>
-                          {/* 左右导航按钮 - 卡片内侧 */}
-                          <button onClick={() => {
-                            const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
-                            if (displayPhotos.length > 0) {
-                              const newIndex = (currentIndex - 1 + displayPhotos.length) % displayPhotos.length;
-                              setPhotoSlideDirection('left');
-                              setSelectedCompanyPhoto(displayPhotos[newIndex]);
-                            }
-                          }}
-                            className="absolute z-20 transition-all duration-200"
-                            style={{
-                              left: '16px', top: '50%', transform: 'translateY(-50%)',
-                              width: '52px', height: '52px',
-                              borderRadius: '50%',
-                              border: '1.5px solid rgba(212,175,55,0.45)',
-                              background: 'rgba(60,8,8,0.75)',
-                              color: 'rgba(212,175,55,0.9)',
-                              display: 'grid', placeItems: 'center',
-                              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                              cursor: 'pointer'
-                            }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
-                          >
-                            <ChevronLeft size={26} strokeWidth={2} />
-                          </button>
-                          <button onClick={() => {
-                            const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
-                            if (displayPhotos.length > 0) {
-                              const newIndex = (currentIndex + 1) % displayPhotos.length;
-                              setPhotoSlideDirection('right');
-                              setSelectedCompanyPhoto(displayPhotos[newIndex]);
-                            }
-                          }}
-                            className="absolute z-20 transition-all duration-200"
-                            style={{
-                              right: '16px', top: '50%', transform: 'translateY(-50%)',
-                              width: '52px', height: '52px',
-                              borderRadius: '50%',
-                              border: '1.5px solid rgba(212,175,55,0.45)',
-                              background: 'rgba(60,8,8,0.75)',
-                              color: 'rgba(212,175,55,0.9)',
-                              display: 'grid', placeItems: 'center',
-                              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                              cursor: 'pointer'
-                            }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
-                          >
-                            <ChevronRight size={26} strokeWidth={2} />
-                          </button>
-                          <div className="w-full h-full overflow-hidden rounded-xl relative flex flex-col">
-                            <img
-                              src={selectedCompanyPhoto.photoUrl}
-                              alt="公司风采照片"
-                              className="flex-1 w-full object-cover"
-                            />
-                            {/* 标题和副标题区域 */}
-                            <div className="bg-black/60 backdrop-blur-sm px-6 py-4 border-t border-white/20">
-                              <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                                {selectedCompanyPhoto.title}
-                              </h3>
-                              {selectedCompanyPhoto.subtitle && (
-                                <p className="text-lg text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                                  {selectedCompanyPhoto.subtitle}
-                                </p>
-                              )}
+                              className="transition-all duration-200 flex-shrink-0"
+                              style={{
+                                width: '52px', height: '52px',
+                                borderRadius: '50%',
+                                border: '1.5px solid rgba(212,175,55,0.45)',
+                                background: 'rgba(60,8,8,0.75)',
+                                color: 'rgba(212,175,55,0.9)',
+                                display: 'grid', placeItems: 'center',
+                                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
+                            >
+                              <ChevronLeft size={26} strokeWidth={2} />
+                            </button>
+
+                            {/* 图片区域 */}
+                            <div style={{ flex: 1, height: '100%', overflow: 'hidden', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <img
+                                src={selectedCompanyPhoto.photoUrl}
+                                alt="公司风采照片"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                              />
                             </div>
+
+                            {/* 右翻页按钮 */}
+                            <button onClick={() => {
+                              const currentIndex = displayPhotos.findIndex(p => p.id === selectedCompanyPhoto.id);
+                              if (displayPhotos.length > 0) {
+                                const newIndex = (currentIndex + 1) % displayPhotos.length;
+                                setPhotoSlideDirection('right');
+                                setSelectedCompanyPhoto(displayPhotos[newIndex]);
+                              }
+                            }}
+                              className="transition-all duration-200 flex-shrink-0"
+                              style={{
+                                width: '52px', height: '52px',
+                                borderRadius: '50%',
+                                border: '1.5px solid rgba(212,175,55,0.45)',
+                                background: 'rgba(60,8,8,0.75)',
+                                color: 'rgba(212,175,55,0.9)',
+                                display: 'grid', placeItems: 'center',
+                                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background='rgba(212,175,55,0.15)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.8)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background='rgba(60,8,8,0.75)'; e.currentTarget.style.borderColor='rgba(212,175,55,0.45)'; }}
+                            >
+                              <ChevronRight size={26} strokeWidth={2} />
+                            </button>
+                          </div>
+
+                          {/* 底部副标题区域 */}
+                          <div style={{ padding: '12px 24px', borderTop: '1px solid rgba(212,175,55,0.2)', backgroundColor: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)', minHeight: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {selectedCompanyPhoto.subtitle && (
+                              <p className="text-lg text-yellow-200" style={{ fontFamily: "'Cormorant Garamond', serif", margin: 0 }}>
+                                {selectedCompanyPhoto.subtitle}
+                              </p>
+                            )}
                           </div>
                         </motion.div>
                       </AnimatePresence>
