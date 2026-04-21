@@ -233,7 +233,7 @@ export async function getHonorsByEmployeeId(employeeId: number) {
 export async function getNewHonors() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(honors).where(eq(honors.isNew, true));
+  return db.select().from(honors).where(eq(honors.isNew, true)).orderBy(honors.order);
 }
 
 export async function getEmployeesWithNewHonors() {
