@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,6 +56,10 @@ export default function HonorManagement() {
   const reorderMutation = trpc.honors.reorder.useMutation({
     onSuccess: () => {
       refetch();
+    },
+    onError: (error) => {
+      console.error('Reorder error:', error);
+      alert('上移/下移失败: ' + error.message);
     },
   });
 

@@ -52,7 +52,7 @@ async function runMigrations() {
     console.log('[Database] Migration completed: Added systemJoinDate column to employees table');
   } catch (error: any) {
     // Ignore errors if the column already exists
-    if (error.message && error.message.includes('Duplicate')) {
+    if (error.message && (error.message.includes('Duplicate') || error.message.includes('already exists'))) {
       console.log('[Database] Migration skipped: systemJoinDate column already exists');
     } else {
       console.warn('[Database] Migration error for systemJoinDate:', error.message);
@@ -67,7 +67,7 @@ async function runMigrations() {
     console.log('[Database] Migration completed: Added order column to honors table');
   } catch (error: any) {
     // Ignore errors if the column already exists
-    if (error.message && error.message.includes('Duplicate')) {
+    if (error.message && (error.message.includes('Duplicate') || error.message.includes('already exists'))) {
       console.log('[Database] Migration skipped: order column already exists in honors table');
     } else {
       console.warn('[Database] Migration error for honors order:', error.message);

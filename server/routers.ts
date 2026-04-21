@@ -516,6 +516,10 @@ const honorRouter = router({
       const db = await getDb();
       if (!db) throw new Error('Database not available');
       
+      // Get the max order value and increment by 1
+      const allHonors = await db.select().from(honors);
+      const maxOrder = allHonors.length > 0 ? Math.max(...allHonors.map(h => h.order || 0)) : 0;
+      
       const result = await db.insert(honors).values({
         employeeId: input.employeeId,
         title: input.title,
@@ -524,6 +528,7 @@ const honorRouter = router({
         icon: input.icon || 'trophy',
         category: input.category || '班组之星',
         isNew: true,
+        order: maxOrder + 1,
       });
       return result;
     }),
