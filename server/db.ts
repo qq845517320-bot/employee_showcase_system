@@ -47,30 +47,15 @@ async function runMigrations() {
   try {
     // Add systemJoinDate column to employees table
     await _db.execute(
-      'ALTER TABLE `employees` ADD COLUMN `systemJoinDate` timestamp'
+      `ALTER TABLE \`employees\` ADD COLUMN \`systemJoinDate\` timestamp`
     );
     console.log('[Database] Migration completed: Added systemJoinDate column to employees table');
   } catch (error: any) {
     // Ignore errors if the column already exists
-    if (error.message && (error.message.includes('Duplicate') || error.message.includes('already exists'))) {
+    if (error.message && error.message.includes('Duplicate')) {
       console.log('[Database] Migration skipped: systemJoinDate column already exists');
     } else {
       console.warn('[Database] Migration error for systemJoinDate:', error.message);
-    }
-  }
-  
-  try {
-    // Add order column to honors table
-    await _db.execute(
-      'ALTER TABLE `honors` ADD COLUMN `order` int DEFAULT 0 NOT NULL'
-    );
-    console.log('[Database] Migration completed: Added order column to honors table');
-  } catch (error: any) {
-    // Ignore errors if the column already exists
-    if (error.message && (error.message.includes('Duplicate') || error.message.includes('already exists'))) {
-      console.log('[Database] Migration skipped: order column already exists in honors table');
-    } else {
-      console.warn('[Database] Migration error for honors order:', error.message);
     }
   }
 }
@@ -233,7 +218,7 @@ export async function getHonorsByEmployeeId(employeeId: number) {
 export async function getNewHonors() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(honors).where(eq(honors.isNew, true)).orderBy(honors.order);
+  return db.select().from(honors).where(eq(honors.isNew, true));
 }
 
 export async function getEmployeesWithNewHonors() {

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function HonorManagement() {
@@ -50,16 +50,6 @@ export default function HonorManagement() {
   const deleteMutation = trpc.honors.delete.useMutation({
     onSuccess: () => {
       refetch();
-    },
-  });
-
-  const reorderMutation = trpc.honors.reorder.useMutation({
-    onSuccess: () => {
-      refetch();
-    },
-    onError: (error) => {
-      console.error('Reorder error:', error);
-      alert('上移/下移失败: ' + error.message);
     },
   });
 
@@ -197,46 +187,28 @@ export default function HonorManagement() {
                     </span>
                   </td>
                   <td className="px-4 py-2 flex gap-2">
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => reorderMutation.mutate({ id: honor.id, direction: 'up' })}
-                        disabled={reorderMutation.isPending}
-                        className="p-1 hover:bg-gray-100 rounded disabled:opacity-40"
-                        title="上移"
-                      >
-                        <ChevronUp className="w-4 h-4 text-gray-500" />
-                      </button>
-                      <button
-                        onClick={() => reorderMutation.mutate({ id: honor.id, direction: 'down' })}
-                        disabled={reorderMutation.isPending}
-                        className="p-1 hover:bg-gray-100 rounded disabled:opacity-40"
-                        title="下移"
-                      >
-                        <ChevronDown className="w-4 h-4 text-gray-500" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditingId(honor.id);
-                          setFormData({
-                            employeeId: honor.employeeId,
-                            title: honor.title,
-                            description: honor.description || '',
-                            awardDate: new Date(honor.awardDate).toISOString().split('T')[0],
-                            icon: honor.icon,
-                          });
-                          setIsAddingNew(false);
-                        }}
-                        className="p-1 hover:bg-blue-100 rounded"
-                      >
-                        <Edit2 className="w-4 h-4 text-blue-600" />
-                      </button>
-                      <button
-                        onClick={() => deleteMutation.mutate({ id: honor.id })}
-                        className="p-1 hover:bg-red-100 rounded"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => {
+                        setEditingId(honor.id);
+                        setFormData({
+                          employeeId: honor.employeeId,
+                          title: honor.title,
+                          description: honor.description || '',
+                          awardDate: new Date(honor.awardDate).toISOString().split('T')[0],
+                          icon: honor.icon,
+                        });
+                        setIsAddingNew(false);
+                      }}
+                      className="p-1 hover:bg-blue-100 rounded"
+                    >
+                      <Edit2 className="w-4 h-4 text-blue-600" />
+                    </button>
+                    <button
+                      onClick={() => deleteMutation.mutate({ id: honor.id })}
+                      className="p-1 hover:bg-red-100 rounded"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-600" />
+                    </button>
                   </td>
                 </tr>
               );

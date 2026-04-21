@@ -1,1 +1,0 @@
-ALTER TABLE `honors` ADD `order` int DEFAULT 0 NOT NULL;
