@@ -1077,7 +1077,8 @@ export default function Showcase() {
           {/* 部门下拉框 */}
           <div className="relative">
             <button onClick={() => handleDepartmentClick('department')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== 'company' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== 'company' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}
+              style={{ width: '132px' }}>
               <span>部门</span>
             </button>
             {showDepartmentDropdown && (
@@ -1124,7 +1125,8 @@ export default function Showcase() {
           {/* 公司下拉框 */}
           <div className="relative">
             <button onClick={() => handleDepartmentClick('company')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment === 'company' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 justify-center ${selectedDepartment === 'company' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}
+              style={{ width: '132px' }}>
               <span>公司</span>
             </button>
             {showCompanyDropdown && (
@@ -1174,7 +1176,8 @@ export default function Showcase() {
           {/* 荣誉榜按钮 */}
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 w-32 justify-center ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+              className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 justify-center ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}
+              style={{ width: '132px' }}>
               <span>☆</span>
               <span>荣誉榜</span>
               <span>☆</span>
