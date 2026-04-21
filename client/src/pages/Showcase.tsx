@@ -317,7 +317,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 </div>
               ))}
               {employee.systemJoinDate && (
-                <div style={{ fontSize: '34px', lineHeight: '52px', color: 'rgb(255,255,255)', marginTop: '-18px' }}>
+                <div style={{ fontSize: '20px', lineHeight: '28px', color: 'rgb(255,255,255)', marginTop: '-8px', opacity: 0.9, fontFamily: 'Noto Sans SC, sans-serif' }}>
                   <span style={{ fontWeight: 400, color: 'rgb(255,255,255)' }}>（</span>
                   <span style={{ fontWeight: 600 }}>{
                     (() => {
