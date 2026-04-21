@@ -369,7 +369,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                     borderRight: i % 2 === 1 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                   }} />
                 ))}
-                <p style={{ margin: 0, fontSize: '26px', lineHeight: '44px', fontWeight: 400, color: 'rgb(255,255,255)', fontStyle: 'normal' }}>
+                <p style={{ margin: 0, fontSize: '24px', lineHeight: '44px', fontWeight: 400, color: 'rgb(255,255,255)', fontStyle: 'normal' }}>
                   {employee.jobResponsibilities || '暂无数据'}
                 </p>
               </div>
@@ -392,7 +392,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                     borderRight: i % 2 === 1 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                   }} />
                 ))}
-                <p style={{ margin: 0, fontSize: '26px', lineHeight: '44px', fontWeight: 400, color: 'rgb(255,255,255)', fontStyle: 'normal' }}>
+                <p style={{ margin: 0, fontSize: '24px', lineHeight: '44px', fontWeight: 400, color: 'rgb(255,255,255)', fontStyle: 'normal' }}>
                   {employee.workTenet || '暂无数据'}
                 </p>
               </div>
@@ -411,13 +411,13 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               ) : ((selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0)) ? (
                 (selectedEmployeeDetail?.honors?.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <span style={{ fontSize: '26px', lineHeight: '42px', fontWeight: 400, color: 'rgb(255,255,255)' }}>
+                    <span style={{ fontSize: '24px', lineHeight: '42px', fontWeight: 400, color: 'rgb(255,255,255)' }}>
                       {honor.title}
                     </span>
                   </div>
                 ))
               ) : (
-                <div style={{ fontSize: '26px', color: 'rgb(255,255,255)' }}>暂无数据</div>
+                <div style={{ fontSize: '24px', color: 'rgb(255,255,255)' }}>暂无数据</div>
               )}
             </div>
           </div>
