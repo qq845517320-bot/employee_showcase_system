@@ -70,6 +70,7 @@ export const honors = mysqlTable("honors", {
   isNew: boolean("isNew").default(true).notNull(), // 是否为新荣誉（用于显示 New 标签）
   icon: varchar("icon", { length: 50 }).default("trophy").notNull(), // 图标类型（trophy、star 等）
   category: varchar("category", { length: 100 }).default("班组之星").notNull(), // 奖项分类
+  order: int("order").default(0).notNull(), // 排序顺序
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

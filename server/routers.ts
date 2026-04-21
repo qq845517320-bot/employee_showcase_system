@@ -570,6 +570,40 @@ const honorRouter = router({
       return result;
     }),
   
+  reorder: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      direction: z.enum(['up', 'down']),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      if (ctx.user.role !== 'admin') throw new Error('Unauthorized');
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+      
+      const allHonors = await db.select().from(honors).orderBy(honors.order);
+      const currentIndex = allHonors.findIndex(h => h.id === input.id);
+      
+      if (currentIndex === -1) throw new Error('Honor not found');
+      
+      let targetIndex = currentIndex;
+      if (input.direction === 'up' && currentIndex > 0) {
+        targetIndex = currentIndex - 1;
+      } else if (input.direction === 'down' && currentIndex < allHonors.length - 1) {
+        targetIndex = currentIndex + 1;
+      } else {
+        return { success: false };
+      }
+      
+      const currentHonor = allHonors[currentIndex];
+      const targetHonor = allHonors[targetIndex];
+      const tempOrder = currentHonor.order;
+      
+      await db.update(honors).set({ order: targetHonor.order }).where(eq(honors.id, currentHonor.id));
+      await db.update(honors).set({ order: tempOrder }).where(eq(honors.id, targetHonor.id));
+      
+      return { success: true };
+    }),
+  
   listCategories: publicProcedure.query(async () => {
     return await getAllHonorCategories();
   }),
