@@ -1078,7 +1078,7 @@ export default function Showcase() {
           <div className="relative">
             <button onClick={() => handleDepartmentClick('department')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 justify-center ${selectedDepartment !== 'honors' && selectedDepartment !== 'company' && selectedDepartment !== null ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}
-              style={{ width: '132px' }}>
+              style={{ width: '138px' }}>
               <span>部门</span>
             </button>
             {showDepartmentDropdown && (
@@ -1126,7 +1126,7 @@ export default function Showcase() {
           <div className="relative">
             <button onClick={() => handleDepartmentClick('company')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 justify-center ${selectedDepartment === 'company' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}
-              style={{ width: '132px' }}>
+              style={{ width: '138px' }}>
               <span>公司</span>
             </button>
             {showCompanyDropdown && (
@@ -1177,7 +1177,7 @@ export default function Showcase() {
           <div className="relative group">
             <button onClick={() => handleDepartmentClick('honors')}
               className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 justify-center ${selectedDepartment === 'honors' ? 'bg-red-600 text-white shadow-lg' : 'bg-white/20 text-white hover:bg-white/30'}`}
-              style={{ width: '132px' }}>
+              style={{ width: '138px' }}>
               <span>☆</span>
               <span>荣誉榜</span>
               <span>☆</span>
