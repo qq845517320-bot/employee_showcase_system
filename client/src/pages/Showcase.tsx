@@ -317,15 +317,15 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 </div>
               ))}
               {employee.systemJoinDate && (
-                <div style={{ fontSize: '20px', lineHeight: '28px', color: 'rgb(255,255,255)', marginTop: '-8px', opacity: 0.9, fontFamily: 'Noto Sans SC, sans-serif' }}>
-                  <span style={{ fontWeight: 400, color: 'rgb(255,255,255)' }}>（</span>
+                <div style={{ fontSize: '20px', lineHeight: '28px', color: 'rgb(255,255,255)', marginTop: '-8px', opacity: 0.9, fontFamily: 'Noto Sans SC, sans-serif', paddingLeft: '58px' }}>
+                  <span style={{ fontWeight: 400, color: 'rgb(255,255,255)' }}>( </span>
                   <span style={{ fontWeight: 600 }}>{
                     (() => {
                       const date = new Date(employee.systemJoinDate);
                       return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月`;
                     })()
                   }</span>
-                  <span style={{ fontWeight: 400, color: 'rgb(255,255,255)' }}>入职深国际系统）</span>
+                  <span style={{ fontWeight: 400, color: 'rgb(255,255,255)' }}>入职深国际系统)</span>
                 </div>
               )}
             </div>
