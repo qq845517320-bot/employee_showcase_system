@@ -470,5 +470,6 @@ export async function getAllCompanyPhotos() {
   const db = await getDb();
   if (!db) return [];
   const result = await db.select().from(companyPhotos).orderBy(companyPhotos.order);
+  // 返回的结果已经包含companyId字段，前端可以用来过滤
   return result;
 }

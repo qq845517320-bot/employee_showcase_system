@@ -508,7 +508,10 @@ export default function Showcase() {
   
   // Use single company photos when a specific company is selected, all photos when "全部" is selected
   // Use showcaseCompanyPhotos (always enabled) instead of allCompanyPhotos to avoid enabled condition issues
-  const displayPhotos = selectedCompany === null ? showcaseCompanyPhotos : companyPhotos;
+  // 修复：当选择了具体公司时，从 showcaseCompanyPhotos 中过滤出该公司的照片
+  const displayPhotos = selectedCompany === null 
+    ? showcaseCompanyPhotos 
+    : showcaseCompanyPhotos.filter((photo: any) => photo.companyId === selectedCompany);
   const showPhotos = selectedDepartment === 'company' && displayPhotos.length > 0;
   
   console.log('[Showcase] displayPhotos calculation:', {
