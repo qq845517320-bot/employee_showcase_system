@@ -319,7 +319,12 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               {employee.systemJoinDate && (
                 <div style={{ fontSize: '20px', lineHeight: '28px', color: 'rgb(255,255,255)', marginTop: '-8px', opacity: 0.9, fontFamily: 'Noto Sans SC, sans-serif' }}>
                   <span style={{ fontWeight: 400 }}>  入职深国际系统时间：</span>
-                  <span style={{ fontWeight: 500 }}>{new Date(employee.systemJoinDate).toLocaleDateString('zh-CN')}</span>
+                  <span style={{ fontWeight: 500 }}>{
+                    (() => {
+                      const date = new Date(employee.systemJoinDate);
+                      return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月`;
+                    })()
+                  }</span>
                 </div>
               )}
             </div>
