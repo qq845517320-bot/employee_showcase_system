@@ -290,7 +290,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <div style={{ flex: 1, paddingTop: '66px', paddingLeft: '132px' }}>
             {/* 姓名 + 党员徽章 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '35px' }}>
-              <h2 style={{ fontSize: '100px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,246,238)', letterSpacing: '2px', fontFamily: 'KaiTi, 楷体, serif' }}>
+              <h2 style={{ fontSize: '100px', lineHeight: '1', fontWeight: 900, margin: 0, color: 'rgb(255,255,255)', letterSpacing: '2px', fontFamily: 'KaiTi, 楷体, serif' }}>
                 {employee.name}
               </h2>
               {employee.isPartyMember && (
@@ -311,8 +311,8 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                 { label: '职务', value: employee.level },
                 { label: '入职时间', value: (() => { const date = new Date(employee.joinDate || 0); return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月`; })() },
               ].map(({ label, value }) => (
-                <div key={label} style={{ fontSize: '34px', lineHeight: '52px', color: 'rgba(255,246,238,0.88)' }}>
-                  <span style={{ fontWeight: 400, color: 'rgba(255,246,238,0.6)' }}>{label}：</span>
+                <div key={label} style={{ fontSize: '34px', lineHeight: '52px', color: 'rgb(255,255,255)' }}>
+                  <span style={{ fontWeight: 400, color: 'rgb(255,255,255)' }}>{label}：</span>
                   <span style={{ fontWeight: 600 }}>{value}</span>
                 </div>
               ))}
@@ -342,7 +342,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '0px' }}>
             {/* 工作职责 - 四角边框引述框 */}
             <div>
-              <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作职责：</div>
+              <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作职责：</div>
               <div style={{ position: 'relative', padding: '14px 16px' }}>
                 {/* 四角装饰 */}
                 {[['0','0','top','left'],['0','auto','top','right'],['auto','0','bottom','left'],['auto','auto','bottom','right']].map(([t,r,_bt,_br], i) => (
@@ -357,7 +357,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                     borderRight: i % 2 === 1 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                   }} />
                 ))}
-                <p style={{ margin: 0, fontSize: '21px', lineHeight: '37px', fontWeight: 400, color: 'rgba(255,246,238,0.82)', fontStyle: 'normal' }}>
+                <p style={{ margin: 0, fontSize: '26px', lineHeight: '44px', fontWeight: 400, color: 'rgb(255,255,255)', fontStyle: 'normal' }}>
                   {employee.jobResponsibilities || '暂无数据'}
                 </p>
               </div>
@@ -365,7 +365,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
 
             {/* 工作信条 - 四角边框引述框 */}
             <div>
-              <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作信条：</div>
+              <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作信条：</div>
               <div style={{ position: 'relative', padding: '14px 16px' }}>
                 {/* 四角装饰 */}
                 {[['0','0','top','left'],['0','auto','top','right'],['auto','0','bottom','left'],['auto','auto','bottom','right']].map(([t,r,_bt,_br], i) => (
@@ -380,7 +380,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                     borderRight: i % 2 === 1 ? '2px solid rgba(212,175,55,0.7)' : 'none',
                   }} />
                 ))}
-                <p style={{ margin: 0, fontSize: '21px', lineHeight: '37px', fontWeight: 400, color: 'rgba(255,246,238,0.82)', fontStyle: 'normal' }}>
+                <p style={{ margin: 0, fontSize: '26px', lineHeight: '44px', fontWeight: 400, color: 'rgb(255,255,255)', fontStyle: 'normal' }}>
                   {employee.workTenet || '暂无数据'}
                 </p>
               </div>
@@ -389,7 +389,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
 
           {/* 右侧：奖励荣誉 */}
           <div>
-            <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgba(255,246,238,0.9)', marginBottom: '18px', letterSpacing: '0.5px' }}>奖励荣誉：</div>
+            <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '18px', letterSpacing: '0.5px' }}>奖励荣誉：</div>
             <div style={{ display: 'grid', rowGap: '12px' }}>
               {isLoadingDetail && !fallbackHonors ? (
                 <>
@@ -399,13 +399,13 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               ) : ((selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0)) ? (
                 (selectedEmployeeDetail?.honors?.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <span style={{ fontSize: '21px', lineHeight: '35px', fontWeight: 400, color: 'rgba(255,246,238,0.82)' }}>
+                    <span style={{ fontSize: '26px', lineHeight: '42px', fontWeight: 400, color: 'rgb(255,255,255)' }}>
                       {honor.title}
                     </span>
                   </div>
                 ))
               ) : (
-                <div style={{ fontSize: '21px', color: 'rgba(255,246,238,0.5)' }}>暂无数据</div>
+                <div style={{ fontSize: '26px', color: 'rgb(255,255,255)' }}>暂无数据</div>
               )}
             </div>
           </div>
