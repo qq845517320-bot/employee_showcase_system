@@ -108,6 +108,7 @@ export default function EmployeeManagement() {
         position: formData.position,
         level: formData.level,
         joinDate: formData.joinDate,
+        systemJoinDate: formData.systemJoinDate || null,
         jobResponsibilities: formData.jobResponsibilities || undefined,
         workTenet: formData.workTenet || undefined,
         workPhoto: uploadedPhotoUrl || undefined,
@@ -122,6 +123,7 @@ export default function EmployeeManagement() {
         position: formData.position || '',
         level: formData.level || '',
         joinDate: formData.joinDate || new Date(),
+        systemJoinDate: formData.systemJoinDate || undefined,
         jobResponsibilities: formData.jobResponsibilities || undefined,
         workTenet: formData.workTenet || undefined,
         workPhoto: uploadedPhotoUrl || undefined,
@@ -372,6 +374,20 @@ export default function EmployeeManagement() {
                 setFormData({ ...formData, joinDate: new Date(e.target.value) })
               }
               required
+            />
+            <Input
+              type="date"
+              placeholder="入职深国际系统时间（可选）"
+              value={
+                formData.systemJoinDate
+                  ? new Date(formData.systemJoinDate as any)
+                      .toISOString()
+                      .split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({ ...formData, systemJoinDate: e.target.value ? new Date(e.target.value) : undefined })
+              }
             />
           </div>
 

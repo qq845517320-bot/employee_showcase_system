@@ -43,6 +43,21 @@ async function runMigrations() {
       console.warn('[Database] Migration error:', error.message);
     }
   }
+  
+  try {
+    // Add systemJoinDate column to employees table
+    await _db.execute(
+      `ALTER TABLE \`employees\` ADD COLUMN \`systemJoinDate\` timestamp`
+    );
+    console.log('[Database] Migration completed: Added systemJoinDate column to employees table');
+  } catch (error: any) {
+    // Ignore errors if the column already exists
+    if (error.message && error.message.includes('Duplicate')) {
+      console.log('[Database] Migration skipped: systemJoinDate column already exists');
+    } else {
+      console.warn('[Database] Migration error for systemJoinDate:', error.message);
+    }
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {

@@ -42,7 +42,8 @@ export const employees = mysqlTable("employees", {
   departmentId: int("departmentId").notNull(), // 外键关联部门
   position: varchar("position", { length: 100 }).notNull(), // 岗位
   level: varchar("level", { length: 50 }).notNull(), // 职级（如：高级、中级、初级）
-  joinDate: timestamp("joinDate").notNull(), // 入职时间
+  joinDate: timestamp("joinDate").notNull(), // 入职时间（本公司入职时间）
+  systemJoinDate: timestamp("systemJoinDate"), // 入职深国际系统时间（可选）
   workPhoto: varchar("workPhoto", { length: 500 }), // 工作照 URL（S3）
   jobResponsibilities: text("jobResponsibilities"), // 工作职责
   workTenet: text("workTenet"), // 工作信条

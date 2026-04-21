@@ -650,6 +650,28 @@
 - [x] 测试图片配文功能的完整流程
 - [x] 验证政企风格和视觉效果
 
+## 双重入职时间维度功能（2026-04-21）
+- [x] 数据库架构更新
+  - [x] 在employees表中添加systemJoinDate字段（可选，timestamp类型）
+  - [x] 生成数据库迁移文件
+  - [x] 在server/db.ts中添加迁移逻辑
+- [x] 后端API接口扩展
+  - [x] 在employee.create过程中添加systemJoinDate参数
+  - [x] 在employee.update过程中添加systemJoinDate参数
+- [x] 后台管理表单改造
+  - [x] 在EmployeeManagement.tsx中添加systemJoinDate日期选择器
+  - [x] 在handleSubmit中传递systemJoinDate字段
+- [x] 前端详情卡片展示优化
+  - [x] 在DetailPanel中添加systemJoinDate的条件展示
+  - [x] 样式为较小字体（20px）、亮白色、Noto Sans SC字体
+  - [x] 仅在systemJoinDate存在时显示
+- [ ] 端到端流程验证与测试
+  - [ ] 在后台管理页面添加员工并设置systemJoinDate
+  - [ ] 验证数据库中systemJoinDate字段已正确保存
+  - [ ] 在大屏展示页面点击员工卡片，验证systemJoinDate正确显示
+  - [ ] 验证当systemJoinDate为空时，不显示该行文案
+  - [ ] 验证两个时间字段独立维护，互不影响
+
 ## 新需求实现（2026-04-12 第四十八轮 - 公司风采展示轮播策略）
 - [ ] 修改数据库schema，扩展轮播策略支持公司风采模式
   - [ ] 修改 playback_strategies 表的 displayMode 枚举，添加 'company_showcase' 模式

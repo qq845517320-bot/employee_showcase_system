@@ -316,6 +316,12 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
                   <span style={{ fontWeight: 600 }}>{value}</span>
                 </div>
               ))}
+              {employee.systemJoinDate && (
+                <div style={{ fontSize: '20px', lineHeight: '28px', color: 'rgb(255,255,255)', marginTop: '-8px', opacity: 0.9, fontFamily: 'Noto Sans SC, sans-serif' }}>
+                  <span style={{ fontWeight: 400 }}>  入职深国际系统时间：</span>
+                  <span style={{ fontWeight: 500 }}>{new Date(employee.systemJoinDate).toLocaleDateString('zh-CN')}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
