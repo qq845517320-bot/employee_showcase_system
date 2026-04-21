@@ -1085,7 +1085,7 @@ export default function Showcase() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-32"
+                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-full"
               >
                 <button
                   onClick={() => {
@@ -1133,7 +1133,7 @@ export default function Showcase() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-32"
+                className="absolute top-full mt-2 left-0 bg-transparent z-50 w-full"
               >
                 <button
                   onClick={() => {
