@@ -1062,7 +1062,7 @@ export default function Showcase() {
           </div>
           <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
             <h1 className="showcase-title" style={{ fontFamily: 'Microsoft YaHei, 微软雅黑, sans-serif' }}>
-              {activeStrategy?.displayMode === 'core_bones' ? '骨干风采展示' : activeStrategy?.displayMode === 'company_showcase' ? '公司风采展示' : '员工展示墙'}
+              {activeStrategy?.displayMode === 'core_bones' ? '骨干展示墙' : activeStrategy?.displayMode === 'company_showcase' ? '公司风采展示' : '员工展示墙'}
             </h1>
           </div>
           <div className="text-2xl font-semibold tracking-wider" style={{ fontFamily: 'Noto Sans SC, sans-serif', color: '#ddc078', textShadow: '0 6px 22px rgba(84,22,0,0.22)' }}>{currentTime}</div>
