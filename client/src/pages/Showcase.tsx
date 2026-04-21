@@ -354,7 +354,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '0px' }}>
             {/* 工作职责 - 四角边框引述框 */}
             <div>
-              <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作职责：</div>
+              <div style={{ fontSize: '26px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作职责：</div>
               <div style={{ position: 'relative', padding: '14px 16px' }}>
                 {/* 四角装饰 */}
                 {[['0','0','top','left'],['0','auto','top','right'],['auto','0','bottom','left'],['auto','auto','bottom','right']].map(([t,r,_bt,_br], i) => (
@@ -377,7 +377,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
 
             {/* 工作信条 - 四角边框引述框 */}
             <div>
-              <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作信条：</div>
+              <div style={{ fontSize: '26px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '12px', letterSpacing: '0.5px' }}>工作信条：</div>
               <div style={{ position: 'relative', padding: '14px 16px' }}>
                 {/* 四角装饰 */}
                 {[['0','0','top','left'],['0','auto','top','right'],['auto','0','bottom','left'],['auto','auto','bottom','right']].map(([t,r,_bt,_br], i) => (
@@ -401,7 +401,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
 
           {/* 右侧：奖励荣誉 */}
           <div>
-            <div style={{ fontSize: '23px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '18px', letterSpacing: '0.5px' }}>奖励荣誉：</div>
+            <div style={{ fontSize: '26px', fontWeight: 700, color: 'rgb(255,255,255)', marginBottom: '18px', letterSpacing: '0.5px' }}>奖励荣誉：</div>
             <div style={{ display: 'grid', rowGap: '12px' }}>
               {isLoadingDetail && !fallbackHonors ? (
                 <>
