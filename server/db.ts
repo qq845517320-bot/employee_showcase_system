@@ -1,4 +1,4 @@
-import { eq, and, inArray, asc } from "drizzle-orm";
+import { eq, and, inArray, asc, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, departments, employees, honors, playbackStrategies, showcaseBackgrounds, honorCategories, companies, companyPhotos } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -212,7 +212,7 @@ export async function getCoreEmployees() {
 export async function getHonorsByEmployeeId(employeeId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(honors).where(eq(honors.employeeId, employeeId));
+  return db.select().from(honors).where(eq(honors.employeeId, employeeId)).orderBy(desc(honors.id));
 }
 
 export async function getNewHonors() {

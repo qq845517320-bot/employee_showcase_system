@@ -1,0 +1,1 @@
+ALTER TABLE `honors` DROP COLUMN `order`;
