@@ -411,7 +411,7 @@ function DetailPanel({ employee, isAutoPlay = false, onClose, onClick, getDepart
               ) : ((selectedEmployeeDetail?.honors && selectedEmployeeDetail.honors.length > 0) || (fallbackHonors && fallbackHonors.length > 0)) ? (
                 (selectedEmployeeDetail?.honors?.length > 0 ? selectedEmployeeDetail.honors : fallbackHonors).map((honor: any, idx: number) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '15px', maxWidth: '100%' }}>
-                    <span style={{ fontSize: '24px', lineHeight: '42px', fontWeight: 400, color: 'rgb(255,255,255)', whiteSpace: 'normal', display: 'block', width: '100%' }}>
+                    <span style={{ fontSize: '24px', lineHeight: '42px', fontWeight: 400, color: 'rgb(255,255,255)', whiteSpace: 'normal', display: 'block', width: '100%', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
                       {honor.title}
                     </span>
                   </div>
