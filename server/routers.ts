@@ -258,6 +258,18 @@ const employeeRouter = router({
       const db = await getDb();
       if (!db) throw new Error('Database not available');
       
+      // 计算新员工的sortOrder：获取所有在职员工的最大sortOrder，然后+1
+      const { asc: ascFn } = await import('drizzle-orm');
+      const allEmps = await db.select()
+        .from(employees)
+        .where(eq(employees.status, 'active'))
+        .orderBy(ascFn(employees.sortOrder), ascFn(employees.id));
+      
+      const maxSortOrder = allEmps.length > 0 
+        ? Math.max(...allEmps.map(e => e.sortOrder || 0))
+        : -1;
+      const newSortOrder = maxSortOrder + 1;
+      
       const result = await db.insert(employees).values({
         name: input.name,
         departmentId: input.departmentId,
@@ -270,6 +282,7 @@ const employeeRouter = router({
         workPhoto: input.workPhoto,
         isCoreBone: input.isCoreBone || false,
         isPartyMember: input.isPartyMember || false,
+        sortOrder: newSortOrder,
       });
       return result;
     }),
