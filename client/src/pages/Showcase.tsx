@@ -522,6 +522,16 @@ export default function Showcase() {
     displayPhotosLength: displayPhotos.length,
     showPhotos
   });
+
+  // 每5分钟自动刷新页面，防止内存溢出（测试版本）
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      console.log('自动刷新页面，时间：' + new Date().toLocaleString());
+      window.location.reload();
+    }, 24 * 60 * 60 * 1000); // 24小时
+
+    return () => clearInterval(refreshInterval);
+  }, []);
   
   // When displayPhotos changes, always show grid for all company selections (both "全部" and specific companies)
   useEffect(() => {
